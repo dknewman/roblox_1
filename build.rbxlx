@@ -1,0 +1,257 @@
+<roblox version="4">
+  <Item class="Lighting" referent="0">
+    <Properties>
+      <string name="Name">Lighting</string>
+      <Color3 name="Ambient">
+        <R>0</R>
+        <G>0</G>
+        <B>0</B>
+      </Color3>
+      <float name="Brightness">2</float>
+      <bool name="GlobalShadows">true</bool>
+      <bool name="Outlines">false</bool>
+      <token name="Technology">1</token>
+    </Properties>
+  </Item>
+  <Item class="ReplicatedStorage" referent="1">
+    <Properties>
+      <string name="Name">ReplicatedStorage</string>
+    </Properties>
+    <Item class="Folder" referent="2">
+      <Properties>
+        <string name="Name">Shared</string>
+      </Properties>
+      <Item class="ModuleScript" referent="3">
+        <Properties>
+          <string name="Name">Hello</string>
+          <string name="Source"><![CDATA[return function()
+	print("Hello, world!")
+end
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="ServerScriptService" referent="4">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Script" referent="5">
+      <Properties>
+        <string name="Name">Server</string>
+        <token name="RunContext">0</token>
+        <string name="Source"><![CDATA[local HouseBuilder = require(script:WaitForChild("HouseBuilder"))
+
+local house = HouseBuilder.build()
+print("Spawned demo house at " .. tostring(house.PrimaryPart.Position))
+]]></string>
+      </Properties>
+      <Item class="ModuleScript" referent="6">
+        <Properties>
+          <string name="Name">HouseBuilder</string>
+          <string name="Source"><![CDATA[local HouseBuilder = {}
+
+local HOUSE_MODEL_NAME = "DemoHouse"
+local FLOOR_THICKNESS = 1
+local WALL_THICKNESS = 1
+local WALL_HEIGHT = 9
+local HOUSE_WIDTH = 20
+local HOUSE_DEPTH = 16
+local DOOR_WIDTH = 4
+local DOOR_HEIGHT = 7
+local DEFAULT_POSITION = Vector3.new(0, FLOOR_THICKNESS / 2, 0)
+
+local function createPart(model: Model, config)
+	local className = config.ClassName or "Part"
+	local part = Instance.new(className)
+	part.Name = config.Name or className
+	part.Size = config.Size or Vector3.new(4, 4, 4)
+	part.CFrame = config.CFrame or CFrame.new()
+	part.Anchored = config.Anchored ~= false
+	if config.CanCollide ~= nil then
+		part.CanCollide = config.CanCollide
+	end
+	if config.Color then
+		part.Color = config.Color
+	end
+	if config.Material then
+		part.Material = config.Material
+	end
+	if config.Transparency then
+		part.Transparency = config.Transparency
+	end
+	part.Parent = model
+	return part
+end
+
+function HouseBuilder.build(position: Vector3?)
+	local buildPosition = position or DEFAULT_POSITION
+
+	local existing = workspace:FindFirstChild(HOUSE_MODEL_NAME)
+	if existing then
+		existing:Destroy()
+	end
+
+	local model = Instance.new("Model")
+	model.Name = HOUSE_MODEL_NAME
+	model.Parent = workspace
+
+	local floor = createPart(model, {
+		Name = "Floor",
+		Size = Vector3.new(HOUSE_WIDTH, FLOOR_THICKNESS, HOUSE_DEPTH),
+		CFrame = CFrame.new(buildPosition),
+		Color = Color3.fromRGB(193, 172, 132),
+		Material = Enum.Material.WoodPlanks,
+	})
+
+	local wallY = buildPosition.Y + (FLOOR_THICKNESS / 2) + (WALL_HEIGHT / 2)
+	local halfWidth = HOUSE_WIDTH / 2
+	local halfDepth = HOUSE_DEPTH / 2
+
+	local wallColor = Color3.fromRGB(235, 226, 201)
+
+	createPart(model, {
+		Name = "BackWall",
+		Size = Vector3.new(HOUSE_WIDTH, WALL_HEIGHT, WALL_THICKNESS),
+		CFrame = CFrame.new(buildPosition.X, wallY, buildPosition.Z + halfDepth - (WALL_THICKNESS / 2)),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	createPart(model, {
+		Name = "LeftWall",
+		Size = Vector3.new(WALL_THICKNESS, WALL_HEIGHT, HOUSE_DEPTH),
+		CFrame = CFrame.new(buildPosition.X - halfWidth + (WALL_THICKNESS / 2), wallY, buildPosition.Z),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	createPart(model, {
+		Name = "RightWall",
+		Size = Vector3.new(WALL_THICKNESS, WALL_HEIGHT, HOUSE_DEPTH),
+		CFrame = CFrame.new(buildPosition.X + halfWidth - (WALL_THICKNESS / 2), wallY, buildPosition.Z),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	local frontWallZ = buildPosition.Z - halfDepth + (WALL_THICKNESS / 2)
+	local frontSegmentWidth = (HOUSE_WIDTH - DOOR_WIDTH) / 2
+
+	createPart(model, {
+		Name = "FrontWallLeft",
+		Size = Vector3.new(frontSegmentWidth, WALL_HEIGHT, WALL_THICKNESS),
+		CFrame = CFrame.new(buildPosition.X - (DOOR_WIDTH / 2) - (frontSegmentWidth / 2), wallY, frontWallZ),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	createPart(model, {
+		Name = "FrontWallRight",
+		Size = Vector3.new(frontSegmentWidth, WALL_HEIGHT, WALL_THICKNESS),
+		CFrame = CFrame.new(buildPosition.X + (DOOR_WIDTH / 2) + (frontSegmentWidth / 2), wallY, frontWallZ),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	local headerHeight = WALL_HEIGHT - DOOR_HEIGHT
+	createPart(model, {
+		Name = "FrontWallHeader",
+		Size = Vector3.new(DOOR_WIDTH, headerHeight, WALL_THICKNESS),
+		CFrame = CFrame.new(buildPosition.X, buildPosition.Y + (FLOOR_THICKNESS / 2) + DOOR_HEIGHT + (headerHeight / 2), frontWallZ),
+		Color = wallColor,
+		Material = Enum.Material.SmoothPlastic,
+	})
+
+	createPart(model, {
+		Name = "Door",
+		Size = Vector3.new(DOOR_WIDTH - 0.5, DOOR_HEIGHT, 0.4),
+		CFrame = CFrame.new(buildPosition.X, buildPosition.Y + (FLOOR_THICKNESS / 2) + (DOOR_HEIGHT / 2), frontWallZ - (WALL_THICKNESS / 2) + 0.2),
+		Color = Color3.fromRGB(128, 92, 50),
+		Material = Enum.Material.Wood,
+	})
+
+	createPart(model, {
+		Name = "FrontStep",
+		Size = Vector3.new(DOOR_WIDTH, 0.5, 2),
+		CFrame = CFrame.new(buildPosition.X, buildPosition.Y - (FLOOR_THICKNESS / 2) + 0.25, frontWallZ - 1.25),
+		Color = Color3.fromRGB(151, 154, 161),
+		Material = Enum.Material.Concrete,
+	})
+
+	createPart(model, {
+		Name = "Window",
+		Size = Vector3.new(0.4, 4, 5),
+		CFrame = CFrame.new(buildPosition.X + halfWidth - (WALL_THICKNESS / 2) - 0.2, buildPosition.Y + (FLOOR_THICKNESS / 2) + 4.5, buildPosition.Z + 1),
+		Color = Color3.fromRGB(180, 217, 255),
+		Material = Enum.Material.Glass,
+		Transparency = 0.3,
+		CanCollide = false,
+	})
+
+	createPart(model, {
+		Name = "Roof",
+		Size = Vector3.new(HOUSE_WIDTH + 2, 1, HOUSE_DEPTH + 2),
+		CFrame = CFrame.new(buildPosition.X, buildPosition.Y + (FLOOR_THICKNESS / 2) + WALL_HEIGHT + 0.5, buildPosition.Z),
+		Color = Color3.fromRGB(117, 23, 17),
+		Material = Enum.Material.Slate,
+	})
+
+	model.PrimaryPart = floor
+	return model
+end
+
+return HouseBuilder
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="SoundService" referent="7">
+    <Properties>
+      <string name="Name">SoundService</string>
+      <bool name="RespectFilteringEnabled">true</bool>
+    </Properties>
+  </Item>
+  <Item class="StarterPlayer" referent="8">
+    <Properties>
+      <string name="Name">StarterPlayer</string>
+    </Properties>
+    <Item class="StarterPlayerScripts" referent="9">
+      <Properties>
+        <string name="Name">StarterPlayerScripts</string>
+      </Properties>
+      <Item class="LocalScript" referent="10">
+        <Properties>
+          <string name="Name">Client</string>
+          <string name="Source"><![CDATA[print("Hello world, from client!")
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="Workspace" referent="11">
+    <Properties>
+      <string name="Name">Workspace</string>
+      <bool name="FilteringEnabled">true</bool>
+      <bool name="NeedsPivotMigration">false</bool>
+    </Properties>
+    <Item class="Part" referent="12">
+      <Properties>
+        <string name="Name">Baseplate</string>
+        <bool name="Anchored">true</bool>
+        <Color3uint8 name="Color3uint8">6512483</Color3uint8>
+        <bool name="Locked">true</bool>
+        <Vector3 name="Position">
+          <X>0</X>
+          <Y>-10</Y>
+          <Z>0</Z>
+        </Vector3>
+        <Vector3 name="size">
+          <X>512</X>
+          <Y>20</Y>
+          <Z>512</Z>
+        </Vector3>
+      </Properties>
+    </Item>
+  </Item>
+</roblox>
