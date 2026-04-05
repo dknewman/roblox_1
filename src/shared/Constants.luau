@@ -3,31 +3,68 @@ local Constants = {}
 Constants.HubName = "SocialHub"
 
 Constants.Colors = {
-	Floor = Color3.fromRGB(250, 244, 250),
-	Border = Color3.fromRGB(237, 160, 214),
-	NeonPrimary = Color3.fromRGB(255, 140, 220),
-	NeonSecondary = Color3.fromRGB(180, 90, 255),
-	WallLight = Color3.fromRGB(212, 183, 241),
-	Kiosk = Color3.fromRGB(240, 174, 220),
-	Vehicle = Color3.fromRGB(255, 94, 188),
-	ScreenBackground = Color3.fromRGB(67, 46, 110),
-	ScreenAccent = Color3.fromRGB(102, 196, 255)
+	-- Floor & Structure
+	Floor = Color3.fromRGB(248, 240, 252),
+	FloorGrid = Color3.fromRGB(238, 228, 244),
+	WallPrimary = Color3.fromRGB(210, 185, 230),
+	WallSecondary = Color3.fromRGB(188, 158, 215),
+	Ceiling = Color3.fromRGB(232, 222, 242),
+
+	-- Neon accents
+	NeonPink = Color3.fromRGB(255, 100, 200),
+	NeonHotPink = Color3.fromRGB(255, 50, 170),
+	NeonPurple = Color3.fromRGB(180, 80, 255),
+	NeonCyan = Color3.fromRGB(80, 200, 255),
+	NeonWhite = Color3.fromRGB(210, 185, 225),
+
+	-- Stage
+	StagePink = Color3.fromRGB(255, 130, 200),
+	StageHotPink = Color3.fromRGB(240, 60, 170),
+	StageAccent = Color3.fromRGB(220, 100, 190),
+
+	-- Screens
+	ScreenFrame = Color3.fromRGB(55, 38, 90),
+	ScreenCyan = Color3.fromRGB(60, 190, 255),
+	ScreenAccent = Color3.fromRGB(100, 210, 255),
+
+	-- Props
+	KioskPink = Color3.fromRGB(245, 130, 200),
+	VehiclePink = Color3.fromRGB(255, 90, 180),
+	SeatingPurple = Color3.fromRGB(160, 90, 175),
+
+	-- Stairs & Rails
+	StairTread = Color3.fromRGB(155, 118, 88),
+	StairRiser = Color3.fromRGB(195, 172, 218),
+	RailMetal = Color3.fromRGB(185, 185, 198),
+	RailGlass = Color3.fromRGB(215, 225, 255),
+
+	-- Sign
+	SignGold = Color3.fromRGB(255, 210, 100),
+
+	-- Portal circle
+	CircleDark = Color3.fromRGB(58, 28, 88),
+	CircleDivider = Color3.fromRGB(120, 80, 165),
+
+	-- Border/trim
+	BorderPink = Color3.fromRGB(237, 160, 214),
+	TrimNeon = Color3.fromRGB(255, 180, 240),
 }
 
 Constants.Dimensions = {
 	FloorSize = Vector3.new(220, 1, 220),
-	StagePosition = Vector3.new(0, 2.5, -20),
+	WallHeight = 42,
+	CeilingHeight = 42,
+	BalconyHeight = 24,
+	StageZ = -76,
 	CenterY = 0.5,
-	RunwayArmLength = 40,
-	BalconyHeight = 23
 }
 
 Constants.NPC = {
-	Count = 38,
+	Count = 40,
 	AnimationIds = {
 		"rbxassetid://507771019", -- dance
 		"rbxassetid://507770818", -- wave
-		"rbxassetid://33796059", -- cheer
+		"rbxassetid://33796059",  -- cheer
 		"rbxassetid://180435571", -- applaud
 	}
 }
@@ -35,6 +72,14 @@ Constants.NPC = {
 Constants.ScreenFaces = {
 	Enum.NormalId.Front,
 	Enum.NormalId.Back
+}
+
+Constants.Firebase = {
+	-- Set to your Firebase Realtime Database URL to enable logging.
+	-- Example: "https://my-project-default-rtdb.firebaseio.com"
+	-- Leave empty string to disable.
+	DatabaseUrl = "https://roblox-baddies-default-rtdb.firebaseio.com/",
+	Enabled = true,
 }
 
 return Constants

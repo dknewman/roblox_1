@@ -1,7 +1,15 @@
+--[[
+	LightingController - Sets up the atmospheric lighting for Social Spotlight Plaza
+	Target: soft lavender/purple ambient with colorful neon accents that glow
+	without washing out the scene. Think dimmed venue with accent lighting,
+	NOT a brightly lit room.
+]]
+
 local Lighting = game:GetService("Lighting")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local FirebaseLogger = require(script.Parent.FirebaseLogger)
 
 local LightingController = {}
 
@@ -20,44 +28,71 @@ end
 
 function LightingController.apply()
 	Lighting.ClockTime = 14
-	Lighting.Ambient = Color3.fromRGB(40, 10, 60)
-	Lighting.OutdoorAmbient = Color3.fromRGB(50, 20, 60)
-	Lighting.ColorShift_Bottom = Color3.fromRGB(20, 0, 30)
-	Lighting.ColorShift_Top = Color3.fromRGB(120, 0, 100)
-	Lighting.Brightness = 3
+	Lighting.GeographicLatitude = 0
+	Lighting.Ambient = Color3.fromRGB(75, 45, 95)
+	Lighting.OutdoorAmbient = Color3.fromRGB(80, 50, 100)
+	Lighting.ColorShift_Bottom = Color3.fromRGB(30, 8, 40)
+	Lighting.ColorShift_Top = Color3.fromRGB(140, 50, 130)
+	Lighting.Brightness = 0.6
+	Lighting.EnvironmentDiffuseScale = 0.3
+	Lighting.EnvironmentSpecularScale = 0.15
+	Lighting.Technology = Enum.Technology.Future
 
+	-- Bloom — only the hottest neon parts bloom, and gently
 	ensureEffect("BloomEffect", {
-		Intensity = 1.8,
-		Size = 24,
-		Threshold = 0.8
+		Intensity = 0.5,
+		Size = 20,
+		Threshold = 0.92,
 	})
 
+	-- Color correction — pink tint, no brightness boost
 	ensureEffect("ColorCorrectionEffect", {
-		TintColor = Color3.fromRGB(255, 180, 255),
-		Brightness = 0.05,
-		Contrast = 0.12,
-		Saturation = 0.25
+		TintColor = Color3.fromRGB(240, 210, 240),
+		Brightness = -0.02,
+		Contrast = 0.14,
+		Saturation = 0.25,
 	})
 
+	-- Depth of field — subtle
 	ensureEffect("DepthOfFieldEffect", {
-		FarIntensity = 0.2,
-		FocusDistance = 80,
-		InFocusRadius = 80,
-		NearIntensity = 0.1
+		FarIntensity = 0.12,
+		FocusDistance = 100,
+		InFocusRadius = 100,
+		NearIntensity = 0.06,
 	})
 
-	local stageLight = workspace:FindFirstChild(Constants.HubName)
-	if stageLight then
-		for _, part in stageLight:GetDescendants() do
+	-- Atmosphere — gentle haze
+	ensureEffect("Atmosphere", {
+		Density = 0.15,
+		Offset = 0.4,
+		Color = Color3.fromRGB(210, 185, 225),
+		Decay = Color3.fromRGB(195, 170, 215),
+		Glare = 0.1,
+		Haze = 1.2,
+	})
+
+	-- Auto-add very dim PointLights to larger Neon parts
+	local neonLightCount = 0
+	local hub = workspace:FindFirstChild(Constants.HubName)
+	if hub then
+		for _, part in hub:GetDescendants() do
 			if part:IsA("BasePart") and part.Material == Enum.Material.Neon and not part:FindFirstChildOfClass("PointLight") then
-				local point = Instance.new("PointLight")
-				point.Brightness = 1.5
-				point.Range = 30
-				point.Color = part.Color
-				point.Parent = part
+				local vol = part.Size.X * part.Size.Y * part.Size.Z
+				if vol > 2 then
+					local point = Instance.new("PointLight")
+					point.Brightness = math.clamp(vol * 0.005, 0.1, 0.4)
+					point.Range = math.clamp(vol * 0.08, 3, 12)
+					point.Color = part.Color
+					point.Shadows = false
+					point.Parent = part
+					neonLightCount += 1
+				end
 			end
 		end
 	end
+
+	FirebaseLogger.log("lighting", "applied", { neonLightCount = neonLightCount })
+	print("[LightingController] Atmosphere applied")
 end
 
 return LightingController
