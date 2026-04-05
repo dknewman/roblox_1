@@ -86,6 +86,7 @@ Constants.FeatureFlags = {
 	MusicEnabled = true,
 	IntroScreenEnabled = true,
 	NewPlayer = true, -- show new-player onboarding / welcome flow
+	Maintenance = false, -- kick players and block joins when true
 }
 
 Constants.Firebase = {

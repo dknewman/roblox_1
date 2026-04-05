@@ -84,6 +84,7 @@ Remote feature flag system backed by Firebase Realtime Database.
 | `MusicEnabled` | `true` | Background music (client) |
 | `IntroScreenEnabled` | `true` | Intro screen + camera intro (client) |
 | `NewPlayer` | `true` | New-player onboarding flow (reserved for future use) |
+| `Maintenance` | `false` | Kicks all players and blocks joins when true; halts server init |
 
 ### FirebaseLogger (`src/server/Modules/FirebaseLogger.luau`)
 
@@ -149,6 +150,7 @@ Manages the full player experience flow:
 init.server.luau
   ├─ FeatureFlags: fetch remote overrides from Firebase, sync to ReplicatedStorage
   ├─ FirebaseLogger.log("server", "startup_begin")
+  ├─ if Maintenance: kick all players, block new joins, return early
   ├─ ScriptContext.Error → FirebaseLogger (error/script_error)
   ├─ MapBuilder.build()
   │    ├─ FirebaseLogger (build_start / build_complete with timing)

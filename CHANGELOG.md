@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-04-05 (rev 6)
+### Added
+- `Maintenance` feature flag (default `false`). When enabled via Firebase, the server kicks all connected players, blocks new joins with a maintenance message, and halts further server initialization.
+
 ## 2026-04-05 (rev 5)
 ### Added
 - `FeatureFlags.luau` server module: fetches remote flag overrides from Firebase Realtime Database (`/config/featureFlags.json`), falls back to `Constants.FeatureFlags` defaults, syncs flag values to clients via StringValue instances in `ReplicatedStorage/FeatureFlags`.

@@ -39,6 +39,21 @@ else
 end
 
 FirebaseLogger.log("server", "startup_complete")
+
+-- Maintenance mode — kick everyone and block new joins
+if FeatureFlags.get("Maintenance") then
+	local MESSAGE = "Server is under maintenance. Please try again later!"
+	FirebaseLogger.log("server", "maintenance_mode_active")
+	for _, p in Players:GetPlayers() do
+		p:Kick(MESSAGE)
+	end
+	Players.PlayerAdded:Connect(function(p)
+		p:Kick(MESSAGE)
+	end)
+	warn("[Server] Maintenance mode is ON — all players will be kicked")
+	return -- stop server init here
+end
+
 print("Social Spotlight Plaza is live!")
 
 -- Hold players at intro screen until they click Play
