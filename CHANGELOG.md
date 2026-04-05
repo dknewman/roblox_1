@@ -1,5 +1,16 @@
 # Changelog
 
+## 2026-04-05 (rev 3)
+### Changed
+- Rewrote NPCSpawner: builds one R6 rig template and clones it instead of 760 `Instance.new()` calls. Switched from `CreateHumanoidModelFromDescription` (network-dependent) to local Part-based rigs.
+- Added PhysicsService collision groups (NPCs, Players, Default) so NPCs pass through each other and players while still standing on floors/walls.
+- Rewrote FirebaseLogger: caches enabled state and base URL at startup, strips trailing slash from database URL.
+- Removed unused `Constants.NPC.AnimationIds`, reduced NPC count from 40 to 20.
+- Removed stale `SocialPlaza` cleanup from MapBuilder.
+- Added global `ScriptContext.Error` handler to log all unhandled script errors to Firebase.
+- Fixed stage tower screens facing backwards (rotated 180°) and clipping into pillars (repositioned to front face).
+- Removed `Lighting.Technology` write (Studio-only property, now set only via `default.project.json`).
+
 ## 2026-04-05 (rev 2)
 ### Changed
 - Repositioned grand staircases to center X=±55 (width 18, inner edge X=±46) so they connect directly to balconies. 16 brown tread steps from Z=-18 Y=1 to Z=-66 Y=24.

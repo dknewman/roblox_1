@@ -52,12 +52,13 @@ Configures `Lighting` service properties and post-processing effects:
 
 ### NPCSpawner (`src/server/Modules/NPCSpawner.luau`)
 
-Spawns crowd NPCs using `Players:CreateHumanoidModelFromDescription`:
+Spawns crowd NPCs from a cloned R6 rig template (no network dependency):
 
-- **Count**: 40 NPCs (configurable in Constants)
-- **Appearance**: Random HSV coloring, R15 rig
-- **Animations**: Random selection from 4 idle animations (dance, wave, cheer, applaud)
-- **Behavior**: Wanders between navigation points with random pauses (2-6 seconds)
+- **Count**: 20 NPCs (configurable in Constants)
+- **Architecture**: Builds one R6 template at module load, clones it per NPC for efficiency
+- **Appearance**: Random HSV skin/shirt/pants coloring, R6 rig with face decal
+- **Collision**: Uses PhysicsService collision groups — NPCs pass through each other and players, but collide with environment (floors, walls)
+- **Behavior**: Wanders between navigation points with random pauses (2-6 seconds), cleanup via `model.Destroying`
 - **Safety**: Wrapped in pcall for graceful failure
 
 ### FirebaseLogger (`src/server/Modules/FirebaseLogger.luau`)

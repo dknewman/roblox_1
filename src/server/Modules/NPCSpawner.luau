@@ -13,20 +13,27 @@ local FirebaseLogger = require(script.Parent.FirebaseLogger)
 local NPCSpawner = {}
 
 local NPC_GROUP = "NPCs"
+local PLAYER_GROUP = "Players"
 
--- Set up collision groups: NPCs don't collide with each other or players
+-- NPCs don't collide with each other or players, but DO collide with environment (Default)
 PhysicsService:RegisterCollisionGroup(NPC_GROUP)
+PhysicsService:RegisterCollisionGroup(PLAYER_GROUP)
 PhysicsService:CollisionGroupSetCollidable(NPC_GROUP, NPC_GROUP, false)
-PhysicsService:CollisionGroupSetCollidable(NPC_GROUP, "Default", false)
+PhysicsService:CollisionGroupSetCollidable(NPC_GROUP, PLAYER_GROUP, false)
 
--- Assign player characters to Default group on spawn
+-- Assign player characters to the Players group so they pass through NPCs
 Players.PlayerAdded:Connect(function(player)
 	player.CharacterAdded:Connect(function(character)
 		for _, part in character:GetDescendants() do
 			if part:IsA("BasePart") then
-				part.CollisionGroup = "Default"
+				part.CollisionGroup = PLAYER_GROUP
 			end
 		end
+		character.DescendantAdded:Connect(function(part)
+			if part:IsA("BasePart") then
+				part.CollisionGroup = PLAYER_GROUP
+			end
+		end)
 	end)
 end)
 
