@@ -68,6 +68,11 @@ Constants.ScreenFaces = {
 	Enum.NormalId.Back
 }
 
+-- Intro screen: upload pts_intro.png to Roblox and paste the asset ID here
+Constants.IntroScreen = {
+	ImageId = "rbxassetid://87062994599591", -- Decal ID from Creator Dashboard
+}
+
 Constants.Firebase = {
 	-- Set to your Firebase Realtime Database URL to enable logging.
 	-- Example: "https://my-project-default-rtdb.firebaseio.com"

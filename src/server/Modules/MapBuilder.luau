@@ -485,17 +485,48 @@ local function buildProps(hub)
 	props.Name = "Props"
 	props.Parent = hub
 
+	-- Helper: build a sittable chair facing a direction
+	local function makeChair(name, pos, faceDir, parent)
+		local chair = Instance.new("Model"); chair.Name = name; chair.Parent = parent
+		local cf = CFrame.new(pos, pos + faceDir)
+		-- Seat (Seat instance so players/NPCs can sit)
+		local seat = Instance.new("Seat")
+		seat.Name = "Seat"
+		seat.Size = Vector3.new(2.2, 0.4, 2.2)
+		seat.CFrame = cf * CFrame.new(0, 2.2, 0)
+		seat.Color = C.SeatingPurple
+		seat.Material = Enum.Material.SmoothPlastic
+		seat.Anchored = true
+		seat.Parent = chair
+		-- Backrest (behind the sitter, away from faceDir)
+		makePart({ Name = "Back", Size = Vector3.new(2.2, 2.4, 0.4),
+			CFrame = cf * CFrame.new(0, 3.2, 1), Color = C.SeatingPurple }, chair)
+		-- Four legs
+		for _, lp in ipairs({{-0.8, -0.8}, {0.8, -0.8}, {-0.8, 0.8}, {0.8, 0.8}}) do
+			makePart({ Name = "Leg", Size = Vector3.new(0.3, 2, 0.3),
+				CFrame = cf * CFrame.new(lp[1], 1, lp[2]), Color = C.RailMetal }, chair)
+		end
+	end
+
 	-- ARCADE STATION (left)
 	local arcade = Instance.new("Model"); arcade.Name = "ArcadeStation"; arcade.Parent = props
-	makeCylinder({ Name = "ArcadeBase", Size = Vector3.new(3.5, 14, 14),
-		CFrame = CFrame.new(-58, 1.75, 42) * CFrame.Angles(0, 0, math.rad(90)), Color = C.KioskPink }, arcade)
-	makePart({ Name = "ArcadeTop", Size = Vector3.new(14, 1, 14), Position = Vector3.new(-58, 4.5, 42), Color = Color3.new(1, 1, 1) }, arcade)
-	local arcScreen = makePart({ Name = "ArcadeScreen", Size = Vector3.new(6, 4, 0.5), Position = Vector3.new(-58, 7.5, 42), Color = C.ScreenFrame }, arcade)
+	local arcX, arcZ = -58, 42
+	-- Round table: pedestal + top
+	makeCylinder({ Name = "ArcadePedestal", Size = Vector3.new(4, 4, 4),
+		CFrame = CFrame.new(arcX, 2, arcZ) * CFrame.Angles(0, 0, math.rad(90)), Color = C.KioskPink }, arcade)
+	makeCylinder({ Name = "ArcadeTabletop", Size = Vector3.new(1, 14, 14),
+		CFrame = CFrame.new(arcX, 4.5, arcZ) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1) }, arcade)
+	makeNeon({ Name = "TableEdge", Size = Vector3.new(0.3, 0.3, 0.3),
+		CFrame = CFrame.new(arcX, 4.5, arcZ), Color = C.NeonPink, CanCollide = false }, arcade)
+	-- Screen on table
+	local arcScreen = makePart({ Name = "ArcadeScreen", Size = Vector3.new(6, 4, 0.5), Position = Vector3.new(arcX, 7.5, arcZ), Color = C.ScreenFrame }, arcade)
 	ScreenGenerator.decorate(arcScreen, 7.77)
+	-- 6 chairs around the table, facing the table
 	for i = 0, 5 do
 		local a = (i / 6) * math.pi * 2
-		makePart({ Name = `Chair_{i}`, Size = Vector3.new(3, 3, 3),
-			Position = Vector3.new(-58 + math.cos(a) * 10, 1.5, 42 + math.sin(a) * 10), Color = C.SeatingPurple }, arcade)
+		local chairPos = Vector3.new(arcX + math.cos(a) * 9, 0, arcZ + math.sin(a) * 9)
+		local faceDir = (Vector3.new(arcX, 0, arcZ) - chairPos).Unit
+		makeChair(`ArcadeChair_{i}`, chairPos, faceDir, arcade)
 	end
 
 	-- GAMING KIOSKS
@@ -525,16 +556,23 @@ local function buildProps(hub)
 			Color = Color3.fromRGB(40, 40, 40) }, truck)
 	end
 
-	-- CURVED SEATING (right)
+	-- LOUNGE SEATING (right) — chairs around a coffee table
 	local seating = Instance.new("Model"); seating.Name = "Seating"; seating.Parent = props
+	local boothX, boothZ = 78, 68
+	-- Round coffee table: pedestal + top
+	makeCylinder({ Name = "TablePedestal", Size = Vector3.new(2.5, 2, 2),
+		CFrame = CFrame.new(boothX, 1.25, boothZ) * CFrame.Angles(0, 0, math.rad(90)), Color = C.RailMetal }, seating)
+	makeCylinder({ Name = "CoffeeTable", Size = Vector3.new(0.6, 6, 6),
+		CFrame = CFrame.new(boothX, 2.8, boothZ) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1) }, seating)
+	makeNeon({ Name = "TableGlow", Size = Vector3.new(0.2, 0.2, 0.2),
+		CFrame = CFrame.new(boothX, 3.15, boothZ), Color = C.NeonCyan, CanCollide = false }, seating)
+	-- 6 chairs around the table, facing inward
 	for i = 0, 5 do
-		local angle = math.rad(-40 + i * 16)
-		makePart({ Name = `CouchSeg_{i}`, Size = Vector3.new(5, 3.5, 3),
-			CFrame = CFrame.new(78 + math.cos(angle) * 12, 1.75, 68 + math.sin(angle) * 12) * CFrame.Angles(0, angle, 0),
-			Color = C.SeatingPurple }, seating)
+		local a = (i / 6) * math.pi * 2
+		local chairPos = Vector3.new(boothX + math.cos(a) * 6, 0, boothZ + math.sin(a) * 6)
+		local faceDir = (Vector3.new(boothX, 0, boothZ) - chairPos).Unit
+		makeChair(`LoungeChair_{i}`, chairPos, faceDir, seating)
 	end
-	makeCylinder({ Name = "CoffeeTable", Size = Vector3.new(2, 5, 5),
-		CFrame = CFrame.new(78, 2, 68) * CFrame.Angles(0, 0, math.rad(90)), Color = Color3.new(1, 1, 1) }, seating)
 
 	-- SELFIE BOOTHS (both sides)
 	for _, side in ipairs({-1, 1}) do

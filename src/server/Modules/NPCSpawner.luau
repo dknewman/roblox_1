@@ -138,11 +138,69 @@ local function colorize(model)
 	model["Right Leg"].Color = pants
 end
 
+local SCREEN_RANGE = 18
+local WATCH_TIME_MIN = 4
+local WATCH_TIME_MAX = 12
+local SIT_CHANCE = 0.25 -- 25% chance to try sitting after reaching a waypoint
+local SIT_TIME_MIN = 6
+local SIT_TIME_MAX = 15
+local SEAT_RANGE = 20
+local SCREEN_NAMES = { "MainScreen", "ScreenPanel_", "StairScreen_", "ArcadeScreen", "KioskDisplay" }
+
+-- Cached interactable parts (populated in spawn())
+local screenParts: { BasePart } = {}
+local seatParts: { Seat } = {}
+
+local function cacheInteractables()
+	screenParts = {}
+	seatParts = {}
+	local hub = workspace:FindFirstChild(Constants.HubName)
+	if not hub then return end
+	for _, part in hub:GetDescendants() do
+		if part:IsA("Seat") then
+			table.insert(seatParts, part)
+		elseif part:IsA("BasePart") then
+			for _, prefix in SCREEN_NAMES do
+				if part.Name:sub(1, #prefix) == prefix then
+					table.insert(screenParts, part)
+					break
+				end
+			end
+		end
+	end
+end
+
+local function findNearbyScreen(pos: Vector3): BasePart?
+	local best, bestDist = nil, SCREEN_RANGE
+	for _, screen in screenParts do
+		local dist = (screen.Position - pos).Magnitude
+		if dist < bestDist then
+			best = screen
+			bestDist = dist
+		end
+	end
+	return best
+end
+
+-- Find an empty seat nearby
+local function findEmptySeat(pos: Vector3): Seat?
+	local best, bestDist = nil, SEAT_RANGE
+	for _, seat in seatParts do
+		if seat.Occupant then continue end -- already taken
+		local dist = (seat.Position - pos).Magnitude
+		if dist < bestDist then
+			best = seat
+			bestDist = dist
+		end
+	end
+	return best
+end
+
 local function wander(model, anchors)
 	local humanoid = model:FindFirstChildWhichIsA("Humanoid")
-	if not humanoid then return end
+	local rootPart = model.PrimaryPart
+	if not humanoid or not rootPart then return end
 
-	-- Stop the loop when the model is destroyed
 	local alive = true
 	model.Destroying:Connect(function()
 		alive = false
@@ -150,11 +208,41 @@ local function wander(model, anchors)
 
 	task.spawn(function()
 		while alive and model.Parent do
+			-- Walk to a random nav point
 			local target = anchors[math.random(1, #anchors)]
 			local offset = Vector3.new(math.random(-8, 8), 0, math.random(-8, 8))
 			humanoid:MoveTo(target + offset)
 			humanoid.MoveToFinished:Wait()
-			task.wait(math.random(2, 6))
+			if not alive then break end
+
+			-- Try to sit in a nearby chair (25% chance)
+			if math.random() < SIT_CHANCE then
+				local seat = findEmptySeat(rootPart.Position)
+				if seat then
+					-- Walk to the seat, then sit
+					humanoid:MoveTo(seat.Position)
+					humanoid.MoveToFinished:Wait()
+					if not alive then break end
+					seat:Sit(humanoid)
+					task.wait(math.random(SIT_TIME_MIN, SIT_TIME_MAX))
+					if not alive then break end
+					humanoid.Jump = true -- stand up
+					task.wait(0.5)
+					continue
+				end
+			end
+
+			-- Check for a nearby screen to watch
+			local screen = findNearbyScreen(rootPart.Position)
+			if screen then
+				local lookDir = (screen.Position - rootPart.Position) * Vector3.new(1, 0, 1)
+				if lookDir.Magnitude > 0.1 then
+					rootPart.CFrame = CFrame.new(rootPart.Position, rootPart.Position + lookDir)
+				end
+				task.wait(math.random(WATCH_TIME_MIN, WATCH_TIME_MAX))
+			else
+				task.wait(math.random(2, 6))
+			end
 		end
 	end)
 end
@@ -162,7 +250,8 @@ end
 function NPCSpawner.spawn(config)
 	local info = config or { navPoints = { Vector3.new(0, 3, 0) } }
 	local count = Constants.NPC.Count
-	FirebaseLogger.log("npc", "spawn_start", { targetCount = count })
+	cacheInteractables()
+	FirebaseLogger.log("npc", "spawn_start", { targetCount = count, screenCount = #screenParts, seatCount = #seatParts })
 
 	local container = workspace:FindFirstChild("NPCs")
 	if container then container:Destroy() end
