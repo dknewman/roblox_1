@@ -672,9 +672,6 @@ function MapBuilder.build()
 	end
 	local existing = workspace:FindFirstChild(Constants.HubName)
 	if existing then existing:Destroy() end
-	local staticPlaza = workspace:FindFirstChild("SocialPlaza")
-	if staticPlaza then staticPlaza:Destroy() end
-
 	local hub = Instance.new("Model")
 	hub.Name = Constants.HubName
 	hub.Parent = workspace

@@ -60,13 +60,7 @@ Constants.Dimensions = {
 }
 
 Constants.NPC = {
-	Count = 40,
-	AnimationIds = {
-		"rbxassetid://507771019", -- dance
-		"rbxassetid://507770818", -- wave
-		"rbxassetid://33796059",  -- cheer
-		"rbxassetid://180435571", -- applaud
-	}
+	Count = 20,
 }
 
 Constants.ScreenFaces = {

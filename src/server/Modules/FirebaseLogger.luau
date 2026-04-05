@@ -18,49 +18,31 @@ local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild(
 
 local FirebaseLogger = {}
 
-local function getConfig()
-	return Constants.Firebase or {}
-end
+-- Cache config at startup so we don't re-read Constants on every log call
+local cfg = Constants.Firebase or {}
+local enabled = cfg.Enabled ~= false and cfg.DatabaseUrl ~= nil and cfg.DatabaseUrl ~= ""
+local baseUrl = enabled and cfg.DatabaseUrl:gsub("/$", "") or "" -- strip trailing slash
+local serverId = game.JobId ~= "" and game.JobId or "studio"
 
-local function isEnabled()
-	local cfg = getConfig()
-	if cfg.Enabled == false then
-		return false
-	end
-	local url = cfg.DatabaseUrl
-	return url ~= nil and url ~= ""
-end
-
---[[
-	Post a log entry to Firebase Realtime Database.
-	Runs in a detached thread so it never blocks the caller.
-
-	@param category  string   Grouping key (e.g. "server", "map", "npc", "player", "client")
-	@param event     string   Event name (e.g. "startup_begin", "build_complete")
-	@param data      table?   Arbitrary payload merged into the log entry
-]]
 function FirebaseLogger.log(category: string, event: string, data: { [string]: any }?)
-	if not isEnabled() then
-		return
-	end
+	if not enabled then return end
 
+	local now = os.time()
 	local entry = {
-		timestamp = os.time(),
-		isoTime = os.date("!%Y-%m-%dT%H:%M:%SZ", os.time()),
+		timestamp = now,
+		isoTime = os.date("!%Y-%m-%dT%H:%M:%SZ", now),
 		category = category,
 		event = event,
 		data = data or {},
-		serverId = game.JobId ~= "" and game.JobId or "studio",
+		serverId = serverId,
 		placeId = game.PlaceId,
 		placeVersion = game.PlaceVersion,
 	}
 
 	task.spawn(function()
 		local ok, err = pcall(function()
-			local cfg = getConfig()
-			local url = cfg.DatabaseUrl .. "/logs/" .. category .. ".json"
-			local body = HttpService:JSONEncode(entry)
-			HttpService:PostAsync(url, body, Enum.HttpContentType.ApplicationJson)
+			local url = baseUrl .. "/logs/" .. category .. ".json"
+			HttpService:PostAsync(url, HttpService:JSONEncode(entry), Enum.HttpContentType.ApplicationJson)
 		end)
 		if not ok then
 			warn(`[FirebaseLogger] {category}/{event} failed: {err}`)
@@ -68,15 +50,6 @@ function FirebaseLogger.log(category: string, event: string, data: { [string]: a
 	end)
 end
 
---[[
-	Convenience: log with automatic timing.
-	Returns a function — call it when the operation finishes to post
-	the elapsed time in milliseconds.
-
-	local done = FirebaseLogger.startTimer("map", "build")
-	-- ... do work ...
-	done({ instanceCount = 500 })   -- merges extra data into the log
-]]
 function FirebaseLogger.startTimer(category: string, event: string): (data: { [string]: any }?) -> ()
 	local start = os.clock()
 	return function(data)
