@@ -1,3 +1,3 @@
-local DoorController = require(script:WaitForChild("DoorController"))
+local DoorService = require(script:WaitForChild("DoorService"))
 
-DoorController.init()
+DoorService.init()

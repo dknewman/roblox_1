@@ -49,274 +49,1630 @@
           ]
         }
       },
-      "DemoHouse": {
+      "Neighborhood": {
         "$className": "Model",
-        "Floor": {
+        "RoadMain": {
           "$className": "Part",
           "$properties": {
             "Anchored": true,
             "Color": [
-              0.75686,
-              0.67451,
-              0.51765
+              0.12941,
+              0.12941,
+              0.12941
             ],
-            "Material": "WoodPlanks",
+            "Material": "Asphalt",
             "Position": [
               0,
               0.5,
               0
             ],
             "Size": [
-              20,
+              80,
               1,
-              16
+              24
             ]
           }
         },
-        "BackWall": {
+        "RoadStripe": {
           "$className": "Part",
           "$properties": {
             "Anchored": true,
             "Color": [
-              0.92157,
-              0.88627,
-              0.78824
+              1,
+              0.9451,
+              0
             ],
             "Material": "SmoothPlastic",
             "Position": [
               0,
-              5.5,
-              7.5
-            ],
-            "Size": [
-              20,
-              9,
-              1
-            ]
-          }
-        },
-        "LeftWall": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.92157,
-              0.88627,
-              0.78824
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              -9.5,
-              5.5,
+              0.55,
               0
             ],
             "Size": [
-              1,
-              9,
-              16
+              80,
+              0.1,
+              0.5
             ]
           }
         },
-        "RightWall": {
+        "SidewalkNorth": {
           "$className": "Part",
           "$properties": {
             "Anchored": true,
             "Color": [
-              0.92157,
-              0.88627,
-              0.78824
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              9.5,
-              5.5,
-              0
-            ],
-            "Size": [
-              1,
-              9,
-              16
-            ]
-          }
-        },
-        "FrontWallLeft": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.92157,
-              0.88627,
-              0.78824
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              -6,
-              5.5,
-              -7.5
-            ],
-            "Size": [
-              8,
-              9,
-              1
-            ]
-          }
-        },
-        "FrontWallRight": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.92157,
-              0.88627,
-              0.78824
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              6,
-              5.5,
-              -7.5
-            ],
-            "Size": [
-              8,
-              9,
-              1
-            ]
-          }
-        },
-        "FrontWallHeader": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.92157,
-              0.88627,
-              0.78824
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              0,
-              8.5,
-              -7.5
-            ],
-            "Size": [
-              4,
-              2,
-              1
-            ]
-          }
-        },
-        "Door": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.50196,
-              0.36078,
-              0.19608
-            ],
-            "Material": "Wood",
-            "Position": [
-              0,
-              4,
-              -7.8
-            ],
-            "Size": [
-              3.5,
-              7,
-              0.4
-            ]
-          }
-        },
-        "DoorSensor": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "CanCollide": false,
-            "Color": [
-              1,
-              1,
-              1
-            ],
-            "Material": "SmoothPlastic",
-            "Position": [
-              0,
-              4,
-              -9.5
-            ],
-            "Size": [
-              6,
-              8,
-              1
-            ],
-            "Transparency": 1
-          }
-        },
-        "FrontStep": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "Color": [
-              0.59216,
-              0.60392,
-              0.63137
+              0.83921,
+              0.83921,
+              0.83921
             ],
             "Material": "Concrete",
             "Position": [
               0,
-              0.25,
-              -8.75
+              0.75,
+              13.5
             ],
             "Size": [
-              4,
+              80,
               0.5,
-              2
+              3
             ]
           }
         },
-        "Window": {
-          "$className": "Part",
-          "$properties": {
-            "Anchored": true,
-            "CanCollide": false,
-            "Color": [
-              0.70588,
-              0.85098,
-              1
-            ],
-            "Material": "Glass",
-            "Position": [
-              9.3,
-              5,
-              1
-            ],
-            "Size": [
-              0.4,
-              4,
-              5
-            ],
-            "Transparency": 0.3
-          }
-        },
-        "Roof": {
+        "SidewalkSouth": {
           "$className": "Part",
           "$properties": {
             "Anchored": true,
             "Color": [
-              0.45882,
-              0.0902,
-              0.06667
+              0.83921,
+              0.83921,
+              0.83921
             ],
-            "Material": "Slate",
+            "Material": "Concrete",
             "Position": [
               0,
-              10.5,
-              0
+              0.75,
+              -13.5
             ],
             "Size": [
-              22,
-              1,
-              18
+              80,
+              0.5,
+              3
             ]
+          }
+        },
+        "HouseMaple": {
+          "$className": "Model",
+          "Foundation": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.78431,
+                0.72157,
+                0.65882
+              ],
+              "Material": "Concrete",
+              "Position": [
+                -30,
+                0.5,
+                24
+              ],
+              "Size": [
+                18,
+                1,
+                14
+              ]
+            }
+          },
+          "Floor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.63921,
+                0.51765,
+                0.37647
+              ],
+              "Material": "WoodPlanks",
+              "Position": [
+                -30,
+                1,
+                24
+              ],
+              "Size": [
+                18,
+                0.2,
+                14
+              ]
+            }
+          },
+          "BackWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.97255,
+                0.93725,
+                0.86275
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -30,
+                5.5,
+                30.5
+              ],
+              "Size": [
+                18,
+                9,
+                1
+              ]
+            }
+          },
+          "LeftWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.96863,
+                0.91373,
+                0.82745
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -38.5,
+                5.5,
+                24
+              ],
+              "Size": [
+                1,
+                9,
+                14
+              ]
+            }
+          },
+          "RightWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.96863,
+                0.91373,
+                0.82745
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -21.5,
+                5.5,
+                24
+              ],
+              "Size": [
+                1,
+                9,
+                14
+              ]
+            }
+          },
+          "FrontWallLeft": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.96863,
+                0.91373,
+                0.82745
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -33.5,
+                5.5,
+                17.5
+              ],
+              "Size": [
+                7,
+                9,
+                1
+              ]
+            }
+          },
+          "FrontWallRight": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.96863,
+                0.91373,
+                0.82745
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -26.5,
+                5.5,
+                17.5
+              ],
+              "Size": [
+                7,
+                9,
+                1
+              ]
+            }
+          },
+          "FrontWallHeader": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.96863,
+                0.91373,
+                0.82745
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -30,
+                8.3,
+                17.5
+              ],
+              "Size": [
+                4,
+                2.6,
+                1
+              ]
+            }
+          },
+          "Door": {
+            "$className": "Part",
+            "$attributes": {
+              "AutoDoor": true,
+              "DoorSensorName": "DoorSensor",
+              "OpenAngle": 95,
+              "OpenDirection": -1,
+              "AutoCloseDelay": 4,
+              "HingeSide": -1
+            },
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.5098,
+                0.38039,
+                0.19608
+              ],
+              "Material": "Wood",
+              "Position": [
+                -30,
+                4,
+                17.2
+              ],
+              "Size": [
+                4,
+                7,
+                0.4
+              ]
+            }
+          },
+          "DoorSensor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                1,
+                1,
+                1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -30,
+                4,
+                15.8
+              ],
+              "Size": [
+                6,
+                8,
+                1
+              ],
+              "Transparency": 1
+            }
+          },
+          "Roof": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.42353,
+                0.0902,
+                0.06667
+              ],
+              "Material": "Slate",
+              "Position": [
+                -30,
+                10.5,
+                24
+              ],
+              "Size": [
+                20,
+                1.2,
+                16
+              ]
+            }
+          },
+          "WindowFront": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                0.68627,
+                0.86667,
+                1
+              ],
+              "Material": "Glass",
+              "Position": [
+                -23.5,
+                5.5,
+                17.2
+              ],
+              "Size": [
+                2,
+                4,
+                0.5
+              ],
+              "Transparency": 0.3
+            }
+          },
+          "Chimney": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.30196,
+                0.30196,
+                0.30196
+              ],
+              "Material": "Brick",
+              "Position": [
+                -35,
+                12,
+                21
+              ],
+              "Size": [
+                2,
+                5,
+                2
+              ]
+            }
+          },
+          "WalkPath": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.70196,
+                0.70196,
+                0.70196
+              ],
+              "Material": "Concrete",
+              "Position": [
+                -30,
+                0.55,
+                15
+              ],
+              "Size": [
+                4,
+                0.1,
+                9
+              ]
+            }
+          }
+        },
+        "HousePine": {
+          "$className": "Model",
+          "Foundation": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.72157,
+                0.68235,
+                0.63921
+              ],
+              "Material": "Concrete",
+              "Position": [
+                2,
+                0.5,
+                30
+              ],
+              "Size": [
+                22,
+                1,
+                16
+              ]
+            }
+          },
+          "Floor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.6549,
+                0.5451,
+                0.37647
+              ],
+              "Material": "WoodPlanks",
+              "Position": [
+                2,
+                1,
+                30
+              ],
+              "Size": [
+                22,
+                0.2,
+                16
+              ]
+            }
+          },
+          "BackWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.97255,
+                0.94118,
+                0.88235
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                2,
+                6,
+                38
+              ],
+              "Size": [
+                22,
+                10,
+                1
+              ]
+            }
+          },
+          "LeftWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.92157,
+                0.90196,
+                0.8549
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -9,
+                6,
+                30
+              ],
+              "Size": [
+                1,
+                10,
+                16
+              ]
+            }
+          },
+          "RightWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.92157,
+                0.90196,
+                0.8549
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                13,
+                6,
+                30
+              ],
+              "Size": [
+                1,
+                10,
+                16
+              ]
+            }
+          },
+          "FrontWallLeft": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.92157,
+                0.90196,
+                0.8549
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -2.5,
+                6,
+                22
+              ],
+              "Size": [
+                9,
+                10,
+                1
+              ]
+            }
+          },
+          "FrontWallRight": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.92157,
+                0.90196,
+                0.8549
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                6.5,
+                6,
+                22
+              ],
+              "Size": [
+                9,
+                10,
+                1
+              ]
+            }
+          },
+          "FrontWallHeader": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.92157,
+                0.90196,
+                0.8549
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                2,
+                9.2,
+                22
+              ],
+              "Size": [
+                4,
+                3,
+                1
+              ]
+            }
+          },
+          "Door": {
+            "$className": "Part",
+            "$attributes": {
+              "AutoDoor": true,
+              "DoorSensorName": "DoorSensor",
+              "OpenAngle": 100,
+              "OpenDirection": 1,
+              "AutoCloseDelay": 5,
+              "HingeSide": 1
+            },
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.38039,
+                0.26667,
+                0.26667
+              ],
+              "Material": "Wood",
+              "Position": [
+                2,
+                4.5,
+                21.6
+              ],
+              "Size": [
+                4,
+                8,
+                0.4
+              ]
+            }
+          },
+          "DoorSensor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                1,
+                1,
+                1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                2,
+                4.5,
+                19.8
+              ],
+              "Size": [
+                6,
+                9,
+                1
+              ],
+              "Transparency": 1
+            }
+          },
+          "Roof": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.32941,
+                0.18824,
+                0.08627
+              ],
+              "Material": "Slate",
+              "Position": [
+                2,
+                11.5,
+                30
+              ],
+              "Size": [
+                24,
+                1.2,
+                18
+              ]
+            }
+          },
+          "UpperWindow": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                0.68627,
+                0.86667,
+                1
+              ],
+              "Material": "Glass",
+              "Position": [
+                9.5,
+                8,
+                22.3
+              ],
+              "Size": [
+                2.5,
+                4.5,
+                0.4
+              ],
+              "Transparency": 0.3
+            }
+          },
+          "WalkPath": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.74902,
+                0.74902,
+                0.74902
+              ],
+              "Material": "Concrete",
+              "Position": [
+                2,
+                0.55,
+                16.5
+              ],
+              "Size": [
+                4,
+                0.1,
+                10
+              ]
+            }
+          },
+          "PorchOverhang": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.90196,
+                0.90196,
+                0.90196
+              ],
+              "Material": "Wood",
+              "Position": [
+                2,
+                7,
+                21.5
+              ],
+              "Size": [
+                6,
+                0.6,
+                4
+              ]
+            }
+          }
+        },
+        "HouseCedar": {
+          "$className": "Model",
+          "Foundation": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.76471,
+                0.70588,
+                0.63921
+              ],
+              "Material": "Concrete",
+              "Position": [
+                34,
+                0.5,
+                22
+              ],
+              "Size": [
+                16,
+                1,
+                12
+              ]
+            }
+          },
+          "Floor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.62353,
+                0.51765,
+                0.38039
+              ],
+              "Material": "WoodPlanks",
+              "Position": [
+                34,
+                1,
+                22
+              ],
+              "Size": [
+                16,
+                0.2,
+                12
+              ]
+            }
+          },
+          "BackWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.98431,
+                0.9451,
+                0.86667
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                34,
+                5,
+                28
+              ],
+              "Size": [
+                16,
+                8,
+                1
+              ]
+            }
+          },
+          "LeftWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.94902,
+                0.90588,
+                0.83137
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                26,
+                5,
+                22
+              ],
+              "Size": [
+                1,
+                8,
+                12
+              ]
+            }
+          },
+          "RightWall": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.94902,
+                0.90588,
+                0.83137
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                42,
+                5,
+                22
+              ],
+              "Size": [
+                1,
+                8,
+                12
+              ]
+            }
+          },
+          "FrontWallLeft": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.94902,
+                0.90588,
+                0.83137
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                30.5,
+                5,
+                16
+              ],
+              "Size": [
+                7,
+                8,
+                1
+              ]
+            }
+          },
+          "FrontWallRight": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.94902,
+                0.90588,
+                0.83137
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                37.5,
+                5,
+                16
+              ],
+              "Size": [
+                7,
+                8,
+                1
+              ]
+            }
+          },
+          "FrontWallHeader": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.94902,
+                0.90588,
+                0.83137
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                34,
+                7.6,
+                16
+              ],
+              "Size": [
+                4,
+                2,
+                1
+              ]
+            }
+          },
+          "Door": {
+            "$className": "Part",
+            "$attributes": {
+              "AutoDoor": true,
+              "DoorSensorName": "DoorSensor",
+              "OpenAngle": 85,
+              "OpenDirection": -1,
+              "AutoCloseDelay": 3,
+              "HingeSide": 1
+            },
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.44314,
+                0.24706,
+                0.18431
+              ],
+              "Material": "Wood",
+              "Position": [
+                34,
+                3.8,
+                15.7
+              ],
+              "Size": [
+                3.5,
+                7,
+                0.4
+              ]
+            }
+          },
+          "DoorSensor": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                1,
+                1,
+                1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                34,
+                3.8,
+                14.2
+              ],
+              "Size": [
+                5,
+                7,
+                1
+              ],
+              "Transparency": 1
+            }
+          },
+          "Roof": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.37647,
+                0.20784,
+                0.13725
+              ],
+              "Material": "Slate",
+              "Position": [
+                34,
+                9.5,
+                22
+              ],
+              "Size": [
+                18,
+                1,
+                14
+              ]
+            }
+          },
+          "WindowSide": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "CanCollide": false,
+              "Color": [
+                0.68627,
+                0.86667,
+                1
+              ],
+              "Material": "Glass",
+              "Position": [
+                42,
+                4.5,
+                22
+              ],
+              "Size": [
+                0.5,
+                3.5,
+                4
+              ],
+              "Transparency": 0.3
+            }
+          },
+          "WalkPath": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.69804,
+                0.69804,
+                0.69804
+              ],
+              "Material": "Concrete",
+              "Position": [
+                34,
+                0.55,
+                13.5
+              ],
+              "Size": [
+                4,
+                0.1,
+                7
+              ]
+            }
+          }
+        },
+        "CarBlue": {
+          "$className": "Model",
+          "Body": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.07059,
+                0.30588,
+                0.58824
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -10,
+                1.3,
+                -2
+              ],
+              "Size": [
+                8,
+                2,
+                4
+              ]
+            }
+          },
+          "Roof": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.2,
+                0.2,
+                0.2
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -10,
+                2.4,
+                -2
+              ],
+              "Size": [
+                6,
+                1,
+                3
+              ]
+            }
+          },
+          "WheelFL": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.1,
+                0.1,
+                0.1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -13,
+                0.7,
+                -3.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelFR": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.1,
+                0.1,
+                0.1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -7,
+                0.7,
+                -3.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelRL": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.1,
+                0.1,
+                0.1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -13,
+                0.7,
+                -0.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelRR": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.1,
+                0.1,
+                0.1
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                -7,
+                0.7,
+                -0.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          }
+        },
+        "CarRed": {
+          "$className": "Model",
+          "Body": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.7098,
+                0.05098,
+                0.05098
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                20,
+                1.3,
+                -4
+              ],
+              "Size": [
+                7,
+                2,
+                4
+              ]
+            }
+          },
+          "Roof": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.2,
+                0.2,
+                0.2
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                20,
+                2.4,
+                -4
+              ],
+              "Size": [
+                5,
+                1,
+                3
+              ]
+            }
+          },
+          "WheelFL": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.0902,
+                0.0902,
+                0.0902
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                17,
+                0.7,
+                -5.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelFR": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.0902,
+                0.0902,
+                0.0902
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                23,
+                0.7,
+                -5.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelRL": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.0902,
+                0.0902,
+                0.0902
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                17,
+                0.7,
+                -2.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          },
+          "WheelRR": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.0902,
+                0.0902,
+                0.0902
+              ],
+              "Material": "SmoothPlastic",
+              "Position": [
+                23,
+                0.7,
+                -2.5
+              ],
+              "Shape": "Cylinder",
+              "Size": [
+                1,
+                2,
+                2
+              ]
+            }
+          }
+        },
+        "TreeOak1": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.37647,
+                0.24706,
+                0.16078
+              ],
+              "Material": "Wood",
+              "Position": [
+                -50,
+                3.5,
+                10
+              ],
+              "Size": [
+                2,
+                7,
+                2
+              ]
+            }
+          },
+          "Leaves": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.23137,
+                0.39216,
+                0.17255
+              ],
+              "Material": "Grass",
+              "Position": [
+                -50,
+                8.5,
+                10
+              ],
+              "Shape": "Ball",
+              "Size": [
+                8,
+                8,
+                8
+              ]
+            }
+          }
+        },
+        "TreeOak2": {
+          "$className": "Model",
+          "Trunk": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.37647,
+                0.24706,
+                0.16078
+              ],
+              "Material": "Wood",
+              "Position": [
+                48,
+                3,
+                5
+              ],
+              "Size": [
+                2,
+                6,
+                2
+              ]
+            }
+          },
+          "Leaves": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.25098,
+                0.43922,
+                0.18824
+              ],
+              "Material": "Grass",
+              "Position": [
+                48,
+                7,
+                5
+              ],
+              "Shape": "Ball",
+              "Size": [
+                7,
+                7,
+                7
+              ]
+            }
+          }
+        },
+        "BushCluster1": {
+          "$className": "Model",
+          "Bush1": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.27843,
+                0.4902,
+                0.21176
+              ],
+              "Material": "Grass",
+              "Position": [
+                -15,
+                1.5,
+                18
+              ],
+              "Shape": "Ball",
+              "Size": [
+                3,
+                3,
+                3
+              ]
+            }
+          },
+          "Bush2": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.27843,
+                0.4902,
+                0.21176
+              ],
+              "Material": "Grass",
+              "Position": [
+                -12,
+                1.3,
+                20
+              ],
+              "Shape": "Ball",
+              "Size": [
+                2.5,
+                2.5,
+                2.5
+              ]
+            }
+          }
+        },
+        "BushCluster2": {
+          "$className": "Model",
+          "Bush1": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.19216,
+                0.35686,
+                0.15294
+              ],
+              "Material": "Grass",
+              "Position": [
+                18,
+                1.4,
+                18
+              ],
+              "Shape": "Ball",
+              "Size": [
+                3,
+                3,
+                3
+              ]
+            }
+          },
+          "Bush2": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.2,
+                0.4,
+                0.2
+              ],
+              "Material": "Grass",
+              "Position": [
+                21,
+                1,
+                16
+              ],
+              "Shape": "Ball",
+              "Size": [
+                2,
+                2,
+                2
+              ]
+            }
+          },
+          "Bush3": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.23922,
+                0.45882,
+                0.21176
+              ],
+              "Material": "Grass",
+              "Position": [
+                24,
+                1.2,
+                18
+              ],
+              "Shape": "Ball",
+              "Size": [
+                2.5,
+                2.5,
+                2.5
+              ]
+            }
+          }
+        },
+        "StreetLamp1": {
+          "$className": "Model",
+          "Pole": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.2,
+                0.2,
+                0.2
+              ],
+              "Material": "Metal",
+              "Position": [
+                -38,
+                4,
+                -8
+              ],
+              "Size": [
+                0.5,
+                8,
+                0.5
+              ]
+            }
+          },
+          "Head": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                1,
+                0.95686,
+                0.84314
+              ],
+              "Material": "Neon",
+              "Position": [
+                -38,
+                8,
+                -8
+              ],
+              "Size": [
+                1.5,
+                1,
+                1.5
+              ]
+            }
+          }
+        },
+        "StreetLamp2": {
+          "$className": "Model",
+          "Pole": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                0.2,
+                0.2,
+                0.2
+              ],
+              "Material": "Metal",
+              "Position": [
+                38,
+                4,
+                -8
+              ],
+              "Size": [
+                0.5,
+                8,
+                0.5
+              ]
+            }
+          },
+          "Head": {
+            "$className": "Part",
+            "$properties": {
+              "Anchored": true,
+              "Color": [
+                1,
+                0.95686,
+                0.84314
+              ],
+              "Material": "Neon",
+              "Position": [
+                38,
+                8,
+                -8
+              ],
+              "Size": [
+                1.5,
+                1,
+                1.5
+              ]
+            }
           }
         }
       }
@@ -324,9 +1680,9 @@
     "Lighting": {
       "$properties": {
         "Ambient": [
-          0,
-          0,
-          0
+          0.04706,
+          0.04706,
+          0.04706
         ],
         "Brightness": 2,
         "GlobalShadows": true,

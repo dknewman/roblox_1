@@ -1,31 +1,49 @@
 # Code Documentation
 
 ## Overview
-This project defines a small demo house that appears instantly in Studio via Rojo, plus a server-side controller that animates the door whenever a player character approaches. Everything is organized for quick iteration: geometry stays in `default.project.json`, while behavior lives in Luau modules under `src`.
+The project now ships with a small suburban block that loads instantly in Studio through `default.project.json`. The scene includes a paved road, sidewalks, three unique homes, parked cars, street lights, and foliage. Interactable doors are handled by server-side modules so every house can be entered as soon as the simulation starts.
 
 ## Project Layout
-- `default.project.json`: Mirrors the DataModel tree. Workspace contains the `DemoHouse` model with declarative parts (floor, walls, roof, door, window, invisible sensor) so assets sync without running scripts.
-- `src/server`: Holds runtime logic that executes on the server when Play starts. Currently includes `init.server.luau` (bootstrap) and `DoorController.luau` (door automation).
-- `src/client` and `src/shared`: Reserved for future gameplay/UI logic.
+- `default.project.json`: Describes the DataModel tree. `Workspace.Neighborhood` contains the entire environment, broken down into reusable models:
+  - Road + sidewalks + street lamps for the shared public space.
+  - `HouseMaple`, `HousePine`, `HouseCedar` – different footprints and details to keep the block varied. Each house embeds a `Door` and invisible `DoorSensor` part, plus decorative windows, chimneys, porches, etc.
+  - Vehicle props (`CarBlue`, `CarRed`) and foliage models (`TreeOak*`, `BushCluster*`).
+- `src/server`:
+  - `init.server.luau` – boots runtime services.
+  - `DoorService.luau` – finds every part tagged with the `AutoDoor` attribute and wires up interactions.
+  - `AutoDoor.luau` – encapsulates the tweening/state machine for a single door.
+- `src/client` / `src/shared`: still placeholders for future gameplay systems.
 
-## DemoHouse Composition
-Each child under `Workspace.DemoHouse` is a single anchored part. Sizes/positions are defined relative to the origin so the house rests on the baseplate.
-- `Floor`: 20×1×16 wood plank platform at Y=0.5.
-- `BackWall`, `LeftWall`, `RightWall`: 9-stud-tall smooth plastic walls enclosing the back and sides.
-- `FrontWallLeft`, `FrontWallRight`, `FrontWallHeader`: Frame the doorway opening.
-- `Door`: Anchored wood plank that the controller rotates about its left edge.
-- `DoorSensor`: Invisible, non-colliding trigger part in front of the doorway to register approaching players early.
-- `FrontStep`: Small concrete step to ease entry.
-- `Window`: Non-colliding, semi-transparent glass accent on the right wall.
-- `Roof`: Slate slab slightly oversized to create an overhang.
+## Neighborhood Composition Highlights
+- **Road & sidewalks**: Asphalt strip with a center stripe and concrete sidewalks north/south of the road for navigation, plus walkway segments leading up to each house.
+- **Houses**:
+  - *Maple*: cozy single-story (18×14 footprint) with chimney, porch path, and door swinging outward to the left.
+  - *Pine*: widest footprint with taller walls, porch overhang, and a right-hinged door that opens inward toward the house.
+  - *Cedar*: compact footprint with side window and short walkway.
+- **Cars**: Simple multi-part models with colored bodies and cylindrical wheels, parked along the road for life/scale cues.
+- **Foliage**: Trees built from a trunk part + spherical canopy, plus clustered bushes for ground cover.
+
+Every interactable door part carries attributes defined directly in the JSON:
+```json
+"$attributes": {
+  "AutoDoor": true,
+  "DoorSensorName": "DoorSensor",
+  "OpenAngle": 95,
+  "OpenDirection": -1,
+  "AutoCloseDelay": 4,
+  "HingeSide": -1
+}
+```
+Adjust those values per house to control swing direction, hinge side, and closing delay without editing Lua.
 
 ## Door Interaction Flow
-1. `ServerScriptService.Server.init.server.luau` requires `DoorController` on server start.
-2. `DoorController.init()` locates `workspace.DemoHouse.Door` and `DoorSensor`, precalculates open/closed `CFrame`s (90° swing outward) using a hinge at the door's left edge, and subscribes to `Touched` events on both parts.
-3. When a `Humanoid` touches either part, the controller tweens the door open over 0.8s and schedules an auto-close after 3s of inactivity. Additional touches reset the timer.
-4. The door remains anchored, so every client sees the same animation without physics constraints.
+1. When the server starts, `init.server.luau` requires `DoorService`.
+2. `DoorService` scans `workspace` for any `BasePart` whose `AutoDoor` attribute is `true`, instantiating an `AutoDoor` controller for each and watching for new parts added later.
+3. `AutoDoor` precalculates open/closed `CFrame`s using the configured hinge side/direction, listens to `Touched` events from the door and its paired sensor, and tweens the door over 0.8 seconds.
+4. After the last humanoid touch, a delayed task automatically closes the door once the configured timeout elapses.
 
 ## Workflow Notes
-- Geometry tweaks happen in `default.project.json`; Rojo immediately reflects them in Studio.
-- Runtime behavior should be encapsulated in modules (like `DoorController`) and required from `init.server.luau` to keep the server side organized.
-- Update this documentation whenever new systems, assets, or scripts are introduced so newcomers understand how pieces fit together.
+- Keep geometry declarative in the project file so Rojo mirrors the neighborhood instantly.
+- When adding a new house or prop, prefer grouping it inside `Workspace.Neighborhood` for clarity.
+- To make any door interactive, add the `AutoDoor` attribute block plus a matching sensor part; `DoorService` will pick it up automatically.
+- Update this document whenever you add new services, systems, or notable scene components so contributors have a current mental model of the project.
