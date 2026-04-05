@@ -257,6 +257,206 @@ music.Looped = true
 music.Parent = playerGui
 music:Play()
 
+--------------------------------------------------------------------------------
+-- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)
+--------------------------------------------------------------------------------
+
+local Lighting = game:GetService("Lighting")
+
+local settingsGui = Instance.new("ScreenGui")
+settingsGui.Name = "SettingsGui"
+settingsGui.IgnoreGuiInset = true
+settingsGui.DisplayOrder = 110
+settingsGui.ResetOnSpawn = false
+settingsGui.Parent = playerGui
+
+-- Gear icon button (top-right)
+local gearBtn = Instance.new("TextButton")
+gearBtn.Name = "GearButton"
+gearBtn.Size = UDim2.new(0, 40, 0, 40)
+gearBtn.Position = UDim2.new(1, -55, 0, 15)
+gearBtn.BackgroundColor3 = Color3.fromRGB(30, 15, 40)
+gearBtn.BackgroundTransparency = 0.4
+gearBtn.Text = "\u{2699}"
+gearBtn.TextColor3 = Color3.fromRGB(220, 200, 240)
+gearBtn.TextSize = 28
+gearBtn.Font = Enum.Font.GothamBold
+gearBtn.ZIndex = 20
+gearBtn.Parent = settingsGui
+
+local gearCorner = Instance.new("UICorner")
+gearCorner.CornerRadius = UDim.new(0, 10)
+gearCorner.Parent = gearBtn
+
+-- Settings panel
+local panel = Instance.new("Frame")
+panel.Name = "SettingsPanel"
+panel.Size = UDim2.new(0, 260, 0, 220)
+panel.Position = UDim2.new(1, -275, 0, 60)
+panel.BackgroundColor3 = Color3.fromRGB(30, 12, 45)
+panel.BackgroundTransparency = 0.1
+panel.BorderSizePixel = 0
+panel.Visible = false
+panel.ZIndex = 20
+panel.Parent = settingsGui
+
+local panelCorner = Instance.new("UICorner")
+panelCorner.CornerRadius = UDim.new(0, 14)
+panelCorner.Parent = panel
+
+local panelStroke = Instance.new("UIStroke")
+panelStroke.Color = Color3.fromRGB(180, 80, 200)
+panelStroke.Thickness = 1.5
+panelStroke.Parent = panel
+
+-- Title
+local panelTitle = Instance.new("TextLabel")
+panelTitle.Name = "Title"
+panelTitle.Size = UDim2.new(1, 0, 0, 36)
+panelTitle.BackgroundTransparency = 1
+panelTitle.Text = "Settings"
+panelTitle.TextColor3 = Color3.fromRGB(255, 180, 230)
+panelTitle.TextSize = 20
+panelTitle.Font = Enum.Font.GothamBold
+panelTitle.ZIndex = 21
+panelTitle.Parent = panel
+
+-- Helper: create a slider row
+local function makeSlider(name, label, yPos, initial, onChange)
+	local row = Instance.new("Frame")
+	row.Name = name
+	row.Size = UDim2.new(1, -30, 0, 60)
+	row.Position = UDim2.new(0, 15, 0, yPos)
+	row.BackgroundTransparency = 1
+	row.ZIndex = 21
+	row.Parent = panel
+
+	local lbl = Instance.new("TextLabel")
+	lbl.Size = UDim2.new(0.5, 0, 0, 20)
+	lbl.BackgroundTransparency = 1
+	lbl.Text = label
+	lbl.TextColor3 = Color3.fromRGB(210, 190, 230)
+	lbl.TextSize = 14
+	lbl.Font = Enum.Font.GothamMedium
+	lbl.TextXAlignment = Enum.TextXAlignment.Left
+	lbl.ZIndex = 22
+	lbl.Parent = row
+
+	local valueLabel = Instance.new("TextLabel")
+	valueLabel.Name = "Value"
+	valueLabel.Size = UDim2.new(0.5, 0, 0, 20)
+	valueLabel.Position = UDim2.new(0.5, 0, 0, 0)
+	valueLabel.BackgroundTransparency = 1
+	valueLabel.Text = tostring(math.floor(initial * 100)) .. "%"
+	valueLabel.TextColor3 = Color3.fromRGB(255, 150, 220)
+	valueLabel.TextSize = 14
+	valueLabel.Font = Enum.Font.GothamMedium
+	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+	valueLabel.ZIndex = 22
+	valueLabel.Parent = row
+
+	-- Track
+	local track = Instance.new("Frame")
+	track.Name = "Track"
+	track.Size = UDim2.new(1, 0, 0, 8)
+	track.Position = UDim2.new(0, 0, 0, 30)
+	track.BackgroundColor3 = Color3.fromRGB(60, 30, 80)
+	track.BorderSizePixel = 0
+	track.ZIndex = 22
+	track.Parent = row
+
+	local trackCorner = Instance.new("UICorner")
+	trackCorner.CornerRadius = UDim.new(1, 0)
+	trackCorner.Parent = track
+
+	-- Fill
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.Size = UDim2.new(initial, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(255, 100, 200)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = 23
+	fill.Parent = track
+
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = fill
+
+	-- Thumb
+	local thumb = Instance.new("Frame")
+	thumb.Name = "Thumb"
+	thumb.Size = UDim2.new(0, 16, 0, 16)
+	thumb.Position = UDim2.new(initial, -8, 0.5, -8)
+	thumb.BackgroundColor3 = Color3.new(1, 1, 1)
+	thumb.BorderSizePixel = 0
+	thumb.ZIndex = 24
+	thumb.Parent = track
+
+	local thumbCorner = Instance.new("UICorner")
+	thumbCorner.CornerRadius = UDim.new(1, 0)
+	thumbCorner.Parent = thumb
+
+	-- Drag interaction
+	local dragging = false
+	local inputBtn = Instance.new("TextButton")
+	inputBtn.Size = UDim2.new(1, 0, 0, 24)
+	inputBtn.Position = UDim2.new(0, 0, 0, 24)
+	inputBtn.BackgroundTransparency = 1
+	inputBtn.Text = ""
+	inputBtn.ZIndex = 25
+	inputBtn.Parent = row
+
+	local function updateSlider(inputX)
+		local trackAbsPos = track.AbsolutePosition.X
+		local trackAbsSize = track.AbsoluteSize.X
+		local pct = math.clamp((inputX - trackAbsPos) / trackAbsSize, 0, 1)
+		fill.Size = UDim2.new(pct, 0, 1, 0)
+		thumb.Position = UDim2.new(pct, -8, 0.5, -8)
+		valueLabel.Text = tostring(math.floor(pct * 100)) .. "%"
+		onChange(pct)
+	end
+
+	inputBtn.MouseButton1Down:Connect(function()
+		dragging = true
+	end)
+
+	inputBtn.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			updateSlider(input.Position.X)
+		end
+	end)
+
+	inputBtn.MouseButton1Up:Connect(function()
+		dragging = false
+	end)
+
+	inputBtn.MouseButton1Click:Connect(function(x)
+		local absX = inputBtn.AbsolutePosition.X
+		local relX = game:GetService("UserInputService"):GetMouseLocation().X
+		updateSlider(relX)
+	end)
+end
+
+-- Volume slider
+makeSlider("Volume", "Volume", 45, Constants.Music.Volume, function(pct)
+	music.Volume = pct
+end)
+
+-- Brightness slider
+local baseBrightness = Lighting.Brightness
+makeSlider("Brightness", "Brightness", 120, 0.5, function(pct)
+	Lighting.Brightness = pct * 2 -- 0% = 0, 50% = 1.0 (default), 100% = 2.0
+end)
+
+-- Toggle panel
+gearBtn.MouseButton1Click:Connect(function()
+	panel.Visible = not panel.Visible
+end)
+
+--------------------------------------------------------------------------------
+-- INTRO SCREEN + SPAWN
+--------------------------------------------------------------------------------
+
 -- Show intro screen and wait for it to be dismissed (Play clicked)
 local introGui = createIntroScreen()
 logToServer("intro_shown")

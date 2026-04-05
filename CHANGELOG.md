@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-05 (rev 4)
+### Added
+- Intro screen with full-screen background image (`Constants.IntroScreen.ImageId`), animated purple-to-pink galaxy sparkle fill, and `UIAspectRatioConstraint` for cross-device scaling. Invisible hitboxes over graphic's PLAY/CUSTOMIZE/SHOP buttons.
+- "Coming Soon!" popup for CUSTOMIZE and SHOP buttons.
+- Character spawn gated behind PLAY button (`CharacterAutoLoads = false`, `PlayerReady` RemoteEvent).
+- Looping background music starting on intro screen (`Constants.Music.SoundId`).
+- Persistent settings menu (gear icon, top-right) with volume and brightness sliders, visible on intro and in-game.
+- Sittable chairs: arcade table and lounge area use `Seat` instances with proper seat/backrest/leg geometry.
+- NPC screen-watching behavior (face nearby screens for 4-12s) and chair-sitting behavior (25% chance, 6-15s in empty seats).
+- Global `ScriptContext.Error` handler logging all unhandled errors to Firebase.
+
+### Changed
+- Rebuilt arcade and lounge furniture with proper chairs (seat + backrest + 4 legs) arranged around tables.
+- Fixed chair orientation (backrests now face away from tables).
+- Fixed stage tower screens: rotated 180° to face audience, repositioned flush on pillar front face.
+
 ## 2026-04-05 (rev 3)
 ### Changed
 - Rewrote NPCSpawner: builds one R6 rig template and clones it instead of 760 `Instance.new()` calls. Switched from `CreateHumanoidModelFromDescription` (network-dependent) to local Part-based rigs.

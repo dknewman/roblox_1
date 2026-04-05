@@ -101,19 +101,28 @@ Central configuration:
 
 - **Colors**: 28 named colors organized by category (floor, walls, neon, stage, screens, props, stairs, sign, portal)
 - **Dimensions**: Floor size (220x220), wall/ceiling height (42), balcony height (24), stage Z position
-- **NPC**: Count (40) and animation asset IDs
+- **NPC**: Count (20)
 - **ScreenFaces**: Front and Back
+- **IntroScreen**: `ImageId` for the intro background image asset
+- **Music**: `SoundId` and `Volume` for looping background music
 - **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging configuration
 
 ## Client (`src/client/init.client.luau`)
 
-Provides a cinematic intro camera: starts with an elevated overview (Y=80) and smoothly sweeps down over 2.5 seconds using cubic ease-out, then hands control to the player's default camera.
+Manages the full player experience flow:
+
+1. **Background music** — starts immediately, loops for entire session (volume configurable in Constants)
+2. **Settings menu** — persistent gear icon (top-right) with volume and brightness sliders, visible on both intro screen and in-game
+3. **Intro screen** — full-screen image with animated purple-to-pink galaxy sparkle fill behind it, `UIAspectRatioConstraint` for cross-device scaling. Invisible button hitboxes over the graphic's PLAY/CUSTOMIZE/SHOP buttons. PLAY fires `PlayerReady` to spawn the character; CUSTOMIZE and SHOP show a "Coming Soon!" popup.
+4. **Camera intro** — elevated overview (Y=80) sweeping down over 2.5 seconds with cubic ease-out after PLAY is pressed
+5. **Character spawn** — `CharacterAutoLoads` is disabled server-side; character loads only after clicking PLAY via the `PlayerReady` RemoteEvent
 
 ## Data Flow
 
 ```
 init.server.luau
   ├─ FirebaseLogger.log("server", "startup_begin")
+  ├─ ScriptContext.Error → FirebaseLogger (error/script_error)
   ├─ MapBuilder.build()
   │    ├─ FirebaseLogger (build_start / build_complete with timing)
   │    ├─ Creates hub Model in Workspace
@@ -123,15 +132,22 @@ init.server.luau
   │    ├─ Configures Lighting service + adds PointLights to hub
   │    └─ FirebaseLogger (lighting/applied)
   ├─ NPCSpawner.spawn({ navPoints })
-  │    ├─ Creates NPC folder in Workspace, spawns rigs
+  │    ├─ Creates NPC folder, clones R6 template rigs
+  │    ├─ Caches screen + seat parts for NPC interactions
   │    └─ FirebaseLogger (spawn_start / spawn_failed / spawn_summary)
   ├─ FirebaseLogger.log("server", "startup_complete")
+  ├─ Players.CharacterAutoLoads = false
+  ├─ PlayerReady RemoteEvent → player:LoadCharacter()
   ├─ Players.PlayerAdded → FirebaseLogger (player/joined)
   └─ Players.PlayerRemoving → FirebaseLogger (player/left + sessionSeconds)
 
 init.client.luau
-  ├─ FirebaseLogEvent:FireServer("ready")
-  └─ Camera intro done → FirebaseLogEvent:FireServer("camera_intro_complete")
+  ├─ Background music starts (looped)
+  ├─ Settings GUI created (gear icon + sliders)
+  ├─ Intro screen shown → FirebaseLogEvent:FireServer("intro_shown")
+  ├─ PLAY clicked → PlayerReady:FireServer()
+  ├─ Camera intro → FirebaseLogEvent:FireServer("camera_intro_complete")
+  └─ FirebaseLogEvent:FireServer("ready")
        └─ Server receives via RemoteEvent → FirebaseLogger.log("client", ...)
 ```
 
