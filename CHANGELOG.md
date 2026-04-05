@@ -1,10 +1,7 @@
 # Changelog
-All notable changes to this project will be documented here.
 
 ## 2024-05-14
 ### Added
-- Reset repository to a clean Rojo template with only the grey baseplate defined in `default.project.json`.
-- Restored minimal client/server/shared scripts plus project documentation (`CODE_DOCUMENTATION.md`).
-
-### Removed
-- Previous suburban neighborhood content to provide a blank slate for future work.
+- Replaced all procedural generation with a static `Workspace.SocialPlaza` layout inside `default.project.json`, including the floor grid, neon runway, stacked stage + central screen, side screens, stair and balcony volumes, kiosks, selfie booths, speaker pillars, and food truck.
+- Simplified server/client scripts (they now only print readiness messages) so the level is purely visual.
+- Updated README and documentation to describe the manual editing workflow.

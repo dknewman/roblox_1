@@ -1,1 +1,1 @@
-print("Client ready - baseplate scene loaded")
+print("Client ready")

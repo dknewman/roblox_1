@@ -1,16 +1,16 @@
 # Code Documentation
 
-## Overview
-The workspace has been reset to the default Rojo layout with nothing but the grey baseplate visible in Studio. Geometry lives entirely in `default.project.json`, while runtime folders are ready for future scripts.
+The plaza is now authored entirely inside `default.project.json` under `Workspace.SocialPlaza`. There is no procedural build step—the moment Rojo syncs, the geometry appears in Studio.
 
-## Project Layout
-- `default.project.json`: Mirrors the DataModel with only `Workspace.Baseplate` plus default Lighting and SoundService properties.
-- `src/server/init.server.luau`: Placeholder server bootstrap that currently just logs when the world loads.
-- `src/client/init.client.luau`: Minimal client stub for future local logic.
-- `src/shared/Hello.luau`: Example module returning a simple function.
+## Layout Summary
+- **Floor & Runway**: `Floor`, `FloorBorder`, `RunwayStem`, and `RunwayHead` establish the glossy base and neon keyhole pattern.
+- **Stage Wall**: `StageBase`, `StageTier`, `StageTop`, `Podium`, `BackdropFrame`, `BackdropPanel`, `BackdropCircle`, and the `MainScreen*` parts recreate the magenta stage stack and center LED.
+- **Side Screens & Rear Screens**: parts named `SideScreen*` and `RearScreen*` represent the additional billboards.
+- **Staircases & Balconies**: `GrandStairLeft/Right`, `Balcony*` parts block out the twin stair volumes and upper rails.
+- **Props**: kiosks, selfie booths, ring lights, speaker pillars, and the food truck are individual parts near the social ring.
 
-## Scene
-- Workspace contains only the standard 512×20×512 anchored baseplate at Y = -10, giving a clean slate for future builds.
+## Scripts
+- `src/server/init.server.luau` and `src/client/init.client.luau` are empty placeholders; no runtime logic runs today.
 
-## Workflow Notes
-- Update this document whenever new systems or assets are added so the current structure stays discoverable.
+## Editing Flow
+Use Studio + Rojo to nudge parts into the exact positions you want. Because everything lives in `default.project.json`, edits made in Studio will be reflected when you pull the file back through Rojo.

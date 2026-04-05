@@ -3,14 +3,22 @@
     <Properties>
       <string name="Name">Lighting</string>
       <Color3 name="Ambient">
-        <R>0</R>
-        <G>0</G>
-        <B>0</B>
+        <R>0.15</R>
+        <G>0.05</G>
+        <B>0.16</B>
       </Color3>
-      <float name="Brightness">2</float>
-      <bool name="GlobalShadows">true</bool>
-      <bool name="Outlines">false</bool>
-      <token name="Technology">1</token>
+      <float name="Brightness">3</float>
+      <Color3 name="ColorShift_Top">
+        <R>0.45</R>
+        <G>0</G>
+        <B>0.35</B>
+      </Color3>
+      <Color3 name="OutdoorAmbient">
+        <R>0.18</R>
+        <G>0.06</G>
+        <B>0.18</B>
+      </Color3>
+      <token name="Technology">4</token>
     </Properties>
   </Item>
   <Item class="ReplicatedStorage" referent="1">
@@ -23,6 +31,1650 @@
       </Properties>
       <Item class="ModuleScript" referent="3">
         <Properties>
+          <string name="Name">BuildPlaza</string>
+          <string name="Source"><![CDATA[--[[
+    ╔══════════════════════════════════════════════════════════════╗
+    ║         SOCIAL SPOTLIGHT PLAZA — MASTER BUILD SCRIPT        ║
+    ║                                                              ║
+    ║  Run in Roblox Studio Command Bar to generate the complete   ║
+    ║  Social Spotlight Plaza central hub.                         ║
+    ║                                                              ║
+    ║  WARNING: Removes any existing "SocialSpotlightPlaza"        ║
+    ║  folder in Workspace before building.                        ║
+    ╚══════════════════════════════════════════════════════════════╝
+]]
+
+-- ================================================================
+-- CLEANUP
+-- ================================================================
+local existing = workspace:FindFirstChild("SocialSpotlightPlaza")
+if existing then
+	existing:Destroy()
+	wait(0.1)
+end
+
+-- ================================================================
+-- ROOT HIERARCHY
+-- ================================================================
+local Root = Instance.new("Folder")
+Root.Name = "SocialSpotlightPlaza"
+Root.Parent = workspace
+
+local function makeFolder(name, parent)
+	local f = Instance.new("Folder")
+	f.Name = name
+	f.Parent = parent or Root
+	return f
+end
+
+local Foundation   = makeFolder("Foundation")
+local Structure    = makeFolder("Structure")
+local RunwayFolder = makeFolder("Runway")
+local StageFolder  = makeFolder("Stage")
+local ScreensFolder = makeFolder("Screens")
+local SocialRing   = makeFolder("SocialRing")
+local Activities   = makeFolder("ActivityZones")
+local LightingFolder = makeFolder("Lighting")
+local SpawnsFolder = makeFolder("Spawns")
+
+-- ================================================================
+-- COLOR PALETTE
+-- ================================================================
+local C = {
+	Floor         = Color3.fromRGB(248, 240, 252),   -- soft lavender-white
+	WallBase      = Color3.fromRGB(242, 236, 248),   -- light pastel wall
+	WallUpper     = Color3.fromRGB(235, 228, 242),   -- slightly darker upper
+	NeonPink      = Color3.fromRGB(255, 70, 165),    -- primary neon pink
+	NeonHotPink   = Color3.fromRGB(255, 40, 140),    -- intense pink accents
+	NeonPurple    = Color3.fromRGB(155, 70, 255),    -- purple accents
+	NeonSoftPink  = Color3.fromRGB(255, 150, 200),   -- soft pink glow
+	NeonBlue      = Color3.fromRGB(50, 160, 255),    -- screen glow blue
+	StageWhite    = Color3.fromRGB(255, 255, 255),   -- bright white surfaces
+	SeatPink      = Color3.fromRGB(255, 120, 175),   -- furniture pink
+	SeatDarkPink  = Color3.fromRGB(200, 60, 120),    -- deeper seat accent
+	ScreenBlue    = Color3.fromRGB(30, 140, 220),    -- screen background
+	ScreenFrame   = Color3.fromRGB(60, 50, 80),      -- screen bezel
+	DarkAccent    = Color3.fromRGB(70, 35, 110),     -- dark purple accent
+	Metal         = Color3.fromRGB(175, 175, 185),   -- metallic grey
+	MetalDark     = Color3.fromRGB(100, 100, 110),   -- darker metal
+	Glass         = Color3.fromRGB(200, 215, 250),   -- glass tint
+	RunwayGlow    = Color3.fromRGB(255, 180, 220),   -- runway edge glow
+	WarmPink      = Color3.fromRGB(255, 100, 155),   -- warm pink
+	CoolPurple    = Color3.fromRGB(115, 55, 195),    -- cool purple
+	Lavender      = Color3.fromRGB(215, 195, 240),   -- soft lavender
+	ArcadeDark    = Color3.fromRGB(40, 25, 60),      -- arcade cabinet
+	FoodTruckPink = Color3.fromRGB(255, 130, 180),   -- food truck body
+	RailingGrey   = Color3.fromRGB(190, 190, 200),   -- railing color
+	StairBase     = Color3.fromRGB(220, 215, 230),   -- stair surface
+	SignGold      = Color3.fromRGB(255, 215, 100),   -- signage gold
+}
+
+-- ================================================================
+-- DIMENSION CONSTANTS
+-- ================================================================
+local D = {
+	HUB_SIZE         = 220,
+	WALL_HEIGHT      = 55,
+	WALL_THICKNESS   = 2,
+	CEILING_HEIGHT   = 55,
+	-- Runway
+	RUNWAY_CENTER    = 20,     -- center platform size
+	RUNWAY_ARM_W     = 10,     -- arm width
+	RUNWAY_ARM_L     = 30,     -- arm length
+	RUNWAY_HEIGHT    = 2.5,    -- raised height
+	-- Stage
+	STAGE_WIDTH      = 30,
+	STAGE_DEPTH      = 16,
+	STAGE_HEIGHT     = 4,
+	-- Screens
+	SCREEN_W         = 20,
+	SCREEN_H         = 12,
+	SCREEN_DIST      = 48,     -- from center
+	SCREEN_ELEV      = 14,     -- bottom edge height
+	-- Balcony
+	BALCONY_HEIGHT   = 22,
+	BALCONY_DEPTH    = 18,
+	BALCONY_RAIL_H   = 4,
+	-- VIP
+	VIP_HEIGHT       = 42,
+	-- Stairs
+	STAIR_WIDTH      = 16,
+	STAIR_RISE       = 22,     -- matches balcony height
+	-- Social
+	SELFIE_SIZE      = 12,
+	SQUAD_PAD_SIZE   = 8,
+	-- Buildings (outer ring facades)
+	BUILDING_W       = 40,
+	BUILDING_H       = 35,
+	BUILDING_D       = 10,     -- facade depth (not full buildings)
+	BUILDING_DIST    = 95,     -- from center
+	-- Spawns
+	SPAWN_RADIUS     = 70,
+	SPAWN_COUNT      = 8,
+	-- Entrance
+	ENTRANCE_WIDTH   = 44,
+}
+
+-- ================================================================
+-- HELPER: Create Part
+-- ================================================================
+local function createPart(props)
+	local p = Instance.new("Part")
+	p.Anchored = true
+	p.CanCollide = (props.CanCollide ~= false)
+	p.Name = props.Name or "Part"
+	p.Size = props.Size or Vector3.new(1, 1, 1)
+	p.CFrame = props.CFrame or CFrame.new(0, 0, 0)
+	p.Color = props.Color or C.WallBase
+	p.Material = props.Material or Enum.Material.SmoothPlastic
+	p.Transparency = props.Transparency or 0
+	p.TopSurface = Enum.SurfaceType.Smooth
+	p.BottomSurface = Enum.SurfaceType.Smooth
+	p.CastShadow = (props.CastShadow ~= false)
+	if props.Shape == "Cylinder" then
+		p.Shape = Enum.PartType.Cylinder
+	elseif props.Shape == "Ball" then
+		p.Shape = Enum.PartType.Ball
+	end
+	p.Parent = props.Parent or Root
+	return p
+end
+
+-- ================================================================
+-- HELPER: Create Wedge
+-- ================================================================
+local function createWedge(props)
+	local w = Instance.new("WedgePart")
+	w.Anchored = true
+	w.CanCollide = (props.CanCollide ~= false)
+	w.Name = props.Name or "Wedge"
+	w.Size = props.Size or Vector3.new(1, 1, 1)
+	w.CFrame = props.CFrame or CFrame.new(0, 0, 0)
+	w.Color = props.Color or C.WallBase
+	w.Material = props.Material or Enum.Material.SmoothPlastic
+	w.Transparency = props.Transparency or 0
+	w.TopSurface = Enum.SurfaceType.Smooth
+	w.BottomSurface = Enum.SurfaceType.Smooth
+	w.Parent = props.Parent or Root
+	return w
+end
+
+-- ================================================================
+-- HELPER: Attach Light
+-- ================================================================
+local function addLight(part, lightType, props)
+	local light = Instance.new(lightType)
+	light.Color = props.Color or Color3.new(1, 1, 1)
+	light.Brightness = props.Brightness or 1
+	if lightType == "SpotLight" then
+		light.Angle = props.Angle or 45
+		light.Face = props.Face or Enum.NormalId.Bottom
+		light.Range = props.Range or 40
+	elseif lightType == "SurfaceLight" then
+		light.Face = props.Face or Enum.NormalId.Front
+		light.Range = props.Range or 20
+		light.Brightness = props.Brightness or 0.6
+	elseif lightType == "PointLight" then
+		light.Range = props.Range or 25
+		light.Brightness = props.Brightness or 1
+	end
+	light.Parent = part
+	return light
+end
+
+-- ================================================================
+-- HELPER: SurfaceGui with text
+-- ================================================================
+local function addSurfaceGui(part, config)
+	local sg = Instance.new("SurfaceGui")
+	sg.Face = config.Face or Enum.NormalId.Front
+	sg.LightInfluence = 0
+	sg.Brightness = 1.5
+	sg.Parent = part
+
+	local bg = Instance.new("Frame")
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.BackgroundColor3 = config.BgColor or C.ScreenBlue
+	bg.BorderSizePixel = 0
+	bg.Parent = sg
+
+	-- Gradient overlay for visual interest
+	local grad = Instance.new("UIGradient")
+	grad.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(180, 200, 255)),
+	}
+	grad.Rotation = 45
+	grad.Parent = bg
+
+	if config.Title then
+		local title = Instance.new("TextLabel")
+		title.Size = UDim2.new(0.9, 0, 0.25, 0)
+		title.Position = UDim2.new(0.05, 0, 0.08, 0)
+		title.BackgroundTransparency = 1
+		title.Text = config.Title
+		title.TextColor3 = config.TextColor or Color3.new(1, 1, 1)
+		title.TextScaled = true
+		title.Font = Enum.Font.GothamBold
+		title.Parent = bg
+	end
+
+	if config.Subtitle then
+		local sub = Instance.new("TextLabel")
+		sub.Size = UDim2.new(0.8, 0, 0.15, 0)
+		sub.Position = UDim2.new(0.1, 0, 0.38, 0)
+		sub.BackgroundTransparency = 1
+		sub.Text = config.Subtitle
+		sub.TextColor3 = config.TextColor or Color3.new(1, 1, 1)
+		sub.TextScaled = true
+		sub.Font = Enum.Font.Gotham
+		sub.Parent = bg
+	end
+
+	-- Silhouette placeholders (represent character art on screens)
+	if config.ShowSilhouettes then
+		for i = 1, 3 do
+			local sil = Instance.new("Frame")
+			sil.Size = UDim2.new(0.18, 0, 0.4, 0)
+			sil.Position = UDim2.new(0.12 + (i - 1) * 0.28, 0, 0.5, 0)
+			sil.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			sil.BackgroundTransparency = 0.7
+			sil.BorderSizePixel = 0
+			sil.Parent = bg
+			local corner = Instance.new("UICorner")
+			corner.CornerRadius = UDim.new(0.15, 0)
+			corner.Parent = sil
+		end
+	end
+
+	return sg
+end
+
+-- ================================================================
+-- HELPER: Create neon strip
+-- ================================================================
+local function createNeonStrip(name, size, cframe, color, parent)
+	local strip = createPart({
+		Name = name,
+		Size = size,
+		CFrame = cframe,
+		Color = color or C.NeonPink,
+		Material = Enum.Material.Neon,
+		CanCollide = false,
+		CastShadow = false,
+		Parent = parent,
+	})
+	return strip
+end
+
+-- ================================================================
+-- HELPER: Create a column/pillar
+-- ================================================================
+local function createPillar(name, pos, height, radius, color, parent)
+	return createPart({
+		Name = name,
+		Shape = "Cylinder",
+		Size = Vector3.new(height, radius * 2, radius * 2),
+		CFrame = CFrame.new(pos) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = color or C.Metal,
+		Material = Enum.Material.SmoothPlastic,
+		Parent = parent,
+	})
+end
+
+-- ################################################################
+--                    PHASE 1: FOUNDATION & SHELL
+-- ################################################################
+
+-- === MAIN FLOOR ===
+createPart({
+	Name = "MainFloor",
+	Size = Vector3.new(D.HUB_SIZE, 1, D.HUB_SIZE),
+	CFrame = CFrame.new(0, -0.5, 0),
+	Color = C.Floor,
+	Parent = Foundation,
+})
+
+-- Decorative floor border ring (inset neon line)
+for _, data in ipairs({
+	{ Vector3.new(200, 0.2, 0.4), CFrame.new(0, 0.01, -96) },
+	{ Vector3.new(200, 0.2, 0.4), CFrame.new(0, 0.01, 96) },
+	{ Vector3.new(0.4, 0.2, 192), CFrame.new(-96, 0.01, 0) },
+	{ Vector3.new(0.4, 0.2, 192), CFrame.new(96, 0.01, 0) },
+}) do
+	createNeonStrip("FloorBorderStrip", data[1], data[2], C.NeonSoftPink, Foundation)
+end
+
+-- === PERIMETER WALLS ===
+local wH = D.WALL_HEIGHT
+local wT = D.WALL_THICKNESS
+local half = D.HUB_SIZE / 2
+
+-- Back wall (North, -Z)
+createPart({
+	Name = "WallNorth",
+	Size = Vector3.new(D.HUB_SIZE, wH, wT),
+	CFrame = CFrame.new(0, wH / 2, -half),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+
+-- Side walls
+createPart({
+	Name = "WallWest",
+	Size = Vector3.new(wT, wH, D.HUB_SIZE),
+	CFrame = CFrame.new(-half, wH / 2, 0),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+createPart({
+	Name = "WallEast",
+	Size = Vector3.new(wT, wH, D.HUB_SIZE),
+	CFrame = CFrame.new(half, wH / 2, 0),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+
+-- Front wall (South, +Z) — split for entrance
+local sideW = (D.HUB_SIZE - D.ENTRANCE_WIDTH) / 2
+createPart({
+	Name = "WallSouth_Left",
+	Size = Vector3.new(sideW, wH, wT),
+	CFrame = CFrame.new(-(D.ENTRANCE_WIDTH / 2 + sideW / 2), wH / 2, half),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+createPart({
+	Name = "WallSouth_Right",
+	Size = Vector3.new(sideW, wH, wT),
+	CFrame = CFrame.new((D.ENTRANCE_WIDTH / 2 + sideW / 2), wH / 2, half),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+-- Entrance header
+createPart({
+	Name = "WallSouth_Header",
+	Size = Vector3.new(D.ENTRANCE_WIDTH, wH - 22, wT),
+	CFrame = CFrame.new(0, 22 + (wH - 22) / 2, half),
+	Color = C.WallBase,
+	Parent = Structure,
+})
+
+-- === CEILING (partial — open skylight center) ===
+local ceilY = D.CEILING_HEIGHT
+for _, cp in ipairs({
+	{ "CeilingNorth", Vector3.new(220, 1, 65), CFrame.new(0, ceilY, -77.5) },
+	{ "CeilingSouth", Vector3.new(220, 1, 65), CFrame.new(0, ceilY, 77.5) },
+	{ "CeilingWest",  Vector3.new(45, 1, 90),  CFrame.new(-87.5, ceilY, 0) },
+	{ "CeilingEast",  Vector3.new(45, 1, 90),  CFrame.new(87.5, ceilY, 0) },
+}) do
+	createPart({
+		Name = cp[1],
+		Size = cp[2],
+		CFrame = cp[3],
+		Color = C.WallUpper,
+		Parent = Structure,
+	})
+end
+
+-- === NEON TRIM ALONG WALL TOPS ===
+local trimY = wH - 1.5
+for _, td in ipairs({
+	{ "TrimNorth", Vector3.new(220, 1, 0.5), CFrame.new(0, trimY, -half + 1) },
+	{ "TrimWest",  Vector3.new(0.5, 1, 220), CFrame.new(-half + 1, trimY, 0) },
+	{ "TrimEast",  Vector3.new(0.5, 1, 220), CFrame.new(half - 1, trimY, 0) },
+}) do
+	local strip = createNeonStrip(td[1], td[2], td[3], C.NeonPink, Structure)
+	addLight(strip, "SurfaceLight", {
+		Color = C.NeonPink,
+		Brightness = 0.4,
+		Range = 12,
+		Face = Enum.NormalId.Bottom,
+	})
+end
+
+-- Mid-wall accent neon line (~15 studs high)
+for _, td in ipairs({
+	{ "MidAccentNorth", Vector3.new(220, 0.4, 0.3), CFrame.new(0, 16, -half + 1.2) },
+	{ "MidAccentWest",  Vector3.new(0.3, 0.4, 220), CFrame.new(-half + 1.2, 16, 0) },
+	{ "MidAccentEast",  Vector3.new(0.3, 0.4, 220), CFrame.new(half - 1.2, 16, 0) },
+}) do
+	createNeonStrip(td[1], td[2], td[3], C.NeonPurple, Structure)
+end
+
+
+-- ################################################################
+--                 PHASE 2: VERTICAL LAYERS
+-- ################################################################
+
+local balcH = D.BALCONY_HEIGHT
+local balcD = D.BALCONY_DEPTH
+local railH = D.BALCONY_RAIL_H
+
+-- === LEFT (WEST) BALCONY ===
+createPart({
+	Name = "BalconyWest_Floor",
+	Size = Vector3.new(balcD, 1, 140),
+	CFrame = CFrame.new(-half + balcD / 2, balcH, 0),
+	Color = C.StairBase,
+	Parent = Structure,
+})
+-- Railing
+createPart({
+	Name = "BalconyWest_Rail",
+	Size = Vector3.new(1, railH, 140),
+	CFrame = CFrame.new(-half + balcD, balcH + railH / 2, 0),
+	Color = C.RailingGrey,
+	Material = Enum.Material.Glass,
+	Transparency = 0.3,
+	Parent = Structure,
+})
+-- Rail top bar
+createPart({
+	Name = "BalconyWest_RailTop",
+	Size = Vector3.new(1.5, 0.5, 140),
+	CFrame = CFrame.new(-half + balcD, balcH + railH + 0.25, 0),
+	Color = C.Metal,
+	Material = Enum.Material.SmoothPlastic,
+	Parent = Structure,
+})
+-- Neon strip under balcony edge
+createNeonStrip("BalconyWest_NeonEdge",
+	Vector3.new(0.4, 0.4, 140),
+	CFrame.new(-half + balcD - 0.5, balcH - 0.5, 0),
+	C.NeonPink, Structure)
+
+-- === RIGHT (EAST) BALCONY ===
+createPart({
+	Name = "BalconyEast_Floor",
+	Size = Vector3.new(balcD, 1, 140),
+	CFrame = CFrame.new(half - balcD / 2, balcH, 0),
+	Color = C.StairBase,
+	Parent = Structure,
+})
+createPart({
+	Name = "BalconyEast_Rail",
+	Size = Vector3.new(1, railH, 140),
+	CFrame = CFrame.new(half - balcD, balcH + railH / 2, 0),
+	Color = C.RailingGrey,
+	Material = Enum.Material.Glass,
+	Transparency = 0.3,
+	Parent = Structure,
+})
+createPart({
+	Name = "BalconyEast_RailTop",
+	Size = Vector3.new(1.5, 0.5, 140),
+	CFrame = CFrame.new(half - balcD, balcH + railH + 0.25, 0),
+	Color = C.Metal,
+	Parent = Structure,
+})
+createNeonStrip("BalconyEast_NeonEdge",
+	Vector3.new(0.4, 0.4, 140),
+	CFrame.new(half - balcD + 0.5, balcH - 0.5, 0),
+	C.NeonPink, Structure)
+
+-- === BACK (NORTH) BALCONY ===
+createPart({
+	Name = "BalconyNorth_Floor",
+	Size = Vector3.new(D.HUB_SIZE - 2 * balcD, 1, balcD),
+	CFrame = CFrame.new(0, balcH, -half + balcD / 2),
+	Color = C.StairBase,
+	Parent = Structure,
+})
+createPart({
+	Name = "BalconyNorth_Rail",
+	Size = Vector3.new(D.HUB_SIZE - 2 * balcD, railH, 1),
+	CFrame = CFrame.new(0, balcH + railH / 2, -half + balcD),
+	Color = C.RailingGrey,
+	Material = Enum.Material.Glass,
+	Transparency = 0.3,
+	Parent = Structure,
+})
+
+-- === GRAND STAIRCASES (wide ramps, one per side) ===
+-- Each staircase: ramp from ground to balcony height
+local stairW = D.STAIR_WIDTH
+local stairRun = 40  -- horizontal length of ramp
+
+-- West staircase (going up toward -Z along west wall)
+local stairFolder = makeFolder("Staircases", Structure)
+
+-- Ramp surface (using a series of steps for visual fidelity)
+local stepCount = 16
+local stepH = balcH / stepCount
+local stepD = stairRun / stepCount
+
+for i = 0, stepCount - 1 do
+	local yPos = (i + 0.5) * stepH
+	local zPos = -30 + i * stepD  -- starts at z=-30, goes toward +Z
+
+	-- West staircase step
+	createPart({
+		Name = "StairWest_Step" .. i,
+		Size = Vector3.new(stairW, stepH, stepD),
+		CFrame = CFrame.new(-half + balcD / 2, yPos, zPos),
+		Color = C.StairBase,
+		Parent = stairFolder,
+	})
+
+	-- East staircase step (mirrored)
+	createPart({
+		Name = "StairEast_Step" .. i,
+		Size = Vector3.new(stairW, stepH, stepD),
+		CFrame = CFrame.new(half - balcD / 2, yPos, zPos),
+		Color = C.StairBase,
+		Parent = stairFolder,
+	})
+end
+
+-- Staircase side walls / railings
+for _, xSign in ipairs({-1, 1}) do
+	local side = xSign == -1 and "West" or "East"
+	local xBase = xSign * (half - balcD / 2)
+	local railX = xBase + xSign * (stairW / 2 + 0.5)
+	-- Inner railing runs alongside staircase
+	-- Simplified: a single angled railing using a tall part
+	createPart({
+		Name = "StairRail_" .. side .. "_Inner",
+		Size = Vector3.new(0.8, railH, stairRun + 4),
+		CFrame = CFrame.new(
+			xBase - xSign * (stairW / 2 + 0.5),
+			balcH / 2 + railH / 2,
+			-30 + stairRun / 2
+		),
+		Color = C.RailingGrey,
+		Material = Enum.Material.Glass,
+		Transparency = 0.4,
+		Parent = stairFolder,
+	})
+end
+
+-- Neon strips on stair edges
+for _, xSign in ipairs({-1, 1}) do
+	local side = xSign == -1 and "West" or "East"
+	createNeonStrip(
+		"StairNeon_" .. side,
+		Vector3.new(0.3, 0.3, stairRun),
+		CFrame.new(xSign * (half - balcD / 2), 0.2, -30 + stairRun / 2),
+		C.NeonPink, stairFolder
+	)
+end
+
+-- === VIP LEVEL (upper back, +40 studs) ===
+local vipFolder = makeFolder("VIPLevel", Structure)
+createPart({
+	Name = "VIP_Floor",
+	Size = Vector3.new(80, 1, 20),
+	CFrame = CFrame.new(0, D.VIP_HEIGHT, -half + 10),
+	Color = C.Lavender,
+	Parent = vipFolder,
+})
+createPart({
+	Name = "VIP_Rail",
+	Size = Vector3.new(80, railH, 1),
+	CFrame = CFrame.new(0, D.VIP_HEIGHT + railH / 2, -half + 20),
+	Color = C.RailingGrey,
+	Material = Enum.Material.Glass,
+	Transparency = 0.3,
+	Parent = vipFolder,
+})
+-- VIP neon accent
+createNeonStrip("VIP_NeonEdge",
+	Vector3.new(80, 0.4, 0.4),
+	CFrame.new(0, D.VIP_HEIGHT - 0.3, -half + 20),
+	C.NeonPurple, vipFolder)
+
+-- VIP access stairs (small ramp from back balcony up to VIP)
+local vipRise = D.VIP_HEIGHT - balcH
+local vipSteps = 8
+for i = 0, vipSteps - 1 do
+	createPart({
+		Name = "VIPStair_Step" .. i,
+		Size = Vector3.new(10, vipRise / vipSteps, 2),
+		CFrame = CFrame.new(0, balcH + (i + 0.5) * (vipRise / vipSteps), -half + balcD - i * 1.5),
+		Color = C.Lavender,
+		Parent = vipFolder,
+	})
+end
+
+
+-- ################################################################
+--                   PHASE 3: RUNWAY ZONE
+-- ################################################################
+
+local rH = D.RUNWAY_HEIGHT
+local rC = D.RUNWAY_CENTER
+local rW = D.RUNWAY_ARM_W
+local rL = D.RUNWAY_ARM_L
+
+-- === CENTER PLATFORM (circular feel via octagon of parts) ===
+-- Main center square
+createPart({
+	Name = "RunwayCenter",
+	Size = Vector3.new(rC, rH, rC),
+	CFrame = CFrame.new(0, rH / 2, 0),
+	Color = C.StageWhite,
+	Material = Enum.Material.SmoothPlastic,
+	Parent = RunwayFolder,
+})
+
+-- Center glow disc (thin neon circle on top)
+createPart({
+	Name = "RunwayCenter_Glow",
+	Shape = "Cylinder",
+	Size = Vector3.new(0.3, rC - 2, rC - 2),
+	CFrame = CFrame.new(0, rH + 0.15, 0) * CFrame.Angles(0, 0, math.rad(90)),
+	Color = C.NeonSoftPink,
+	Material = Enum.Material.Neon,
+	CanCollide = false,
+	CastShadow = false,
+	Parent = RunwayFolder,
+})
+
+-- Corner fills to soften the center into a more rounded shape
+for _, offset in ipairs({
+	{rC/2 - 2, rC/2 - 2}, {-rC/2 + 2, rC/2 - 2},
+	{rC/2 - 2, -rC/2 + 2}, {-rC/2 + 2, -rC/2 + 2},
+}) do
+	createPart({
+		Name = "RunwayCenter_Corner",
+		Shape = "Cylinder",
+		Size = Vector3.new(rH, 6, 6),
+		CFrame = CFrame.new(offset[1], rH / 2, offset[2]) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = C.StageWhite,
+		Parent = RunwayFolder,
+	})
+end
+
+-- === FOUR RUNWAY ARMS ===
+local armData = {
+	{ name = "ArmNorth", size = Vector3.new(rW, rH, rL), pos = CFrame.new(0, rH/2, -(rC/2 + rL/2)) },
+	{ name = "ArmSouth", size = Vector3.new(rW, rH, rL), pos = CFrame.new(0, rH/2, (rC/2 + rL/2)) },
+	{ name = "ArmWest",  size = Vector3.new(rL, rH, rW), pos = CFrame.new(-(rC/2 + rL/2), rH/2, 0) },
+	{ name = "ArmEast",  size = Vector3.new(rL, rH, rW), pos = CFrame.new((rC/2 + rL/2), rH/2, 0) },
+}
+for _, arm in ipairs(armData) do
+	createPart({
+		Name = arm.name,
+		Size = arm.size,
+		CFrame = arm.pos,
+		Color = C.StageWhite,
+		Parent = RunwayFolder,
+	})
+end
+
+-- === LED NEON EDGE STRIPS (along all runway edges) ===
+local neonThick = 0.4
+local neonH = 0.5
+
+-- Center platform edge neons
+for _, nd in ipairs({
+	-- North edge of center
+	{ Vector3.new(rC + 2, neonH, neonThick), CFrame.new(0, rH + 0.1, -rC/2) },
+	-- South edge
+	{ Vector3.new(rC + 2, neonH, neonThick), CFrame.new(0, rH + 0.1, rC/2) },
+	-- West edge
+	{ Vector3.new(neonThick, neonH, rC + 2), CFrame.new(-rC/2, rH + 0.1, 0) },
+	-- East edge
+	{ Vector3.new(neonThick, neonH, rC + 2), CFrame.new(rC/2, rH + 0.1, 0) },
+}) do
+	createNeonStrip("RunwayEdge", nd[1], nd[2], C.NeonPink, RunwayFolder)
+end
+
+-- Arm edge neons (both long edges of each arm)
+local armNeons = {
+	-- North arm: left & right edges
+	{ Vector3.new(neonThick, neonH, rL), CFrame.new(-rW/2, rH + 0.1, -(rC/2 + rL/2)) },
+	{ Vector3.new(neonThick, neonH, rL), CFrame.new(rW/2, rH + 0.1, -(rC/2 + rL/2)) },
+	-- North arm: far end
+	{ Vector3.new(rW, neonH, neonThick), CFrame.new(0, rH + 0.1, -(rC/2 + rL)) },
+	-- South arm
+	{ Vector3.new(neonThick, neonH, rL), CFrame.new(-rW/2, rH + 0.1, (rC/2 + rL/2)) },
+	{ Vector3.new(neonThick, neonH, rL), CFrame.new(rW/2, rH + 0.1, (rC/2 + rL/2)) },
+	{ Vector3.new(rW, neonH, neonThick), CFrame.new(0, rH + 0.1, (rC/2 + rL)) },
+	-- West arm
+	{ Vector3.new(rL, neonH, neonThick), CFrame.new(-(rC/2 + rL/2), rH + 0.1, -rW/2) },
+	{ Vector3.new(rL, neonH, neonThick), CFrame.new(-(rC/2 + rL/2), rH + 0.1, rW/2) },
+	{ Vector3.new(neonThick, neonH, rW), CFrame.new(-(rC/2 + rL), rH + 0.1, 0) },
+	-- East arm
+	{ Vector3.new(rL, neonH, neonThick), CFrame.new((rC/2 + rL/2), rH + 0.1, -rW/2) },
+	{ Vector3.new(rL, neonH, neonThick), CFrame.new((rC/2 + rL/2), rH + 0.1, rW/2) },
+	{ Vector3.new(neonThick, neonH, rW), CFrame.new((rC/2 + rL), rH + 0.1, 0) },
+}
+for _, an in ipairs(armNeons) do
+	createNeonStrip("ArmEdge", an[1], an[2], C.NeonPink, RunwayFolder)
+end
+
+-- === CENTER RUNWAY GLOW LINE (thin strip down center of each arm) ===
+for _, gl in ipairs({
+	{ Vector3.new(1, 0.2, rL), CFrame.new(0, rH + 0.05, -(rC/2 + rL/2)) },
+	{ Vector3.new(1, 0.2, rL), CFrame.new(0, rH + 0.05, (rC/2 + rL/2)) },
+	{ Vector3.new(rL, 0.2, 1), CFrame.new(-(rC/2 + rL/2), rH + 0.05, 0) },
+	{ Vector3.new(rL, 0.2, 1), CFrame.new((rC/2 + rL/2), rH + 0.05, 0) },
+}) do
+	createNeonStrip("RunwayCenterLine", gl[1], gl[2], C.RunwayGlow, RunwayFolder)
+end
+
+-- === ENTRY RAMPS (one at each arm end) ===
+local rampLen = 5
+local rampData = {
+	{ "RampNorth", Vector3.new(rW, rH, rampLen), CFrame.new(0, rH/2, -(rC/2 + rL + rampLen/2)), CFrame.Angles(0, 0, 0) },
+	{ "RampSouth", Vector3.new(rW, rH, rampLen), CFrame.new(0, rH/2, (rC/2 + rL + rampLen/2)), CFrame.Angles(0, math.rad(180), 0) },
+	{ "RampWest",  Vector3.new(rampLen, rH, rW), CFrame.new(-(rC/2 + rL + rampLen/2), rH/2, 0), CFrame.Angles(0, math.rad(90), 0) },
+	{ "RampEast",  Vector3.new(rampLen, rH, rW), CFrame.new((rC/2 + rL + rampLen/2), rH/2, 0), CFrame.Angles(0, math.rad(-90), 0) },
+}
+for _, rd in ipairs(rampData) do
+	createWedge({
+		Name = rd[1],
+		Size = Vector3.new(rd[2].X, rd[2].Y, rd[2].Z),
+		CFrame = rd[3] * rd[4],
+		Color = C.StageWhite,
+		Parent = RunwayFolder,
+	})
+end
+
+
+-- ################################################################
+--              PHASE 4: PERFORMANCE STAGE
+-- ################################################################
+
+local stgW = D.STAGE_WIDTH
+local stgD = D.STAGE_DEPTH
+local stgH = D.STAGE_HEIGHT
+local stgZ = -(rC/2 + rL + 2)  -- just beyond north arm
+
+-- Main stage platform
+createPart({
+	Name = "StagePlatform",
+	Size = Vector3.new(stgW, stgH, stgD),
+	CFrame = CFrame.new(0, stgH / 2, stgZ - stgD / 2),
+	Color = C.StageWhite,
+	Parent = StageFolder,
+})
+
+-- Stage front neon edge
+createNeonStrip("StageFrontNeon",
+	Vector3.new(stgW, 0.6, 0.4),
+	CFrame.new(0, stgH + 0.1, stgZ),
+	C.NeonHotPink, StageFolder)
+
+-- Stage side neon edges
+for _, xSign in ipairs({-1, 1}) do
+	createNeonStrip("StageSideNeon",
+		Vector3.new(0.4, 0.6, stgD),
+		CFrame.new(xSign * stgW / 2, stgH + 0.1, stgZ - stgD / 2),
+		C.NeonHotPink, StageFolder)
+end
+
+-- === BACKDROP SCREEN (large, behind stage) ===
+local backdropW = stgW + 10
+local backdropH = 18
+local backdropY = stgH + backdropH / 2
+local backdropZ = stgZ - stgD + 0.5
+
+-- Screen bezel
+createPart({
+	Name = "StageBackdrop_Bezel",
+	Size = Vector3.new(backdropW + 2, backdropH + 2, 1.5),
+	CFrame = CFrame.new(0, backdropY, backdropZ),
+	Color = C.ScreenFrame,
+	Parent = StageFolder,
+})
+
+-- Screen surface
+local backdropScreen = createPart({
+	Name = "StageBackdrop_Screen",
+	Size = Vector3.new(backdropW, backdropH, 0.5),
+	CFrame = CFrame.new(0, backdropY, backdropZ + 1),
+	Color = C.ScreenBlue,
+	Material = Enum.Material.SmoothPlastic,
+	Parent = StageFolder,
+})
+addSurfaceGui(backdropScreen, {
+	Face = Enum.NormalId.Front,
+	BgColor = C.ScreenBlue,
+	Title = "SOCIAL SPOTLIGHT",
+	Subtitle = "Now Performing",
+	ShowSilhouettes = true,
+	TextColor = Color3.new(1, 1, 1),
+})
+
+-- Screen glow
+addLight(backdropScreen, "SurfaceLight", {
+	Color = C.NeonBlue,
+	Brightness = 0.8,
+	Range = 25,
+	Face = Enum.NormalId.Front,
+})
+
+-- === CIRCULAR MEDALLION (above backdrop) ===
+local medalY = backdropY + backdropH / 2 + 6
+local medalRadius = 6
+
+-- Outer ring
+createPart({
+	Name = "Medallion_Outer",
+	Shape = "Cylinder",
+	Size = Vector3.new(1.5, medalRadius * 2, medalRadius * 2),
+	CFrame = CFrame.new(0, medalY, backdropZ) * CFrame.Angles(0, math.rad(90), 0),
+	Color = C.DarkAccent,
+	Parent = StageFolder,
+})
+
+-- Inner disc (neon)
+createPart({
+	Name = "Medallion_Inner",
+	Shape = "Cylinder",
+	Size = Vector3.new(0.5, medalRadius * 1.4, medalRadius * 1.4),
+	CFrame = CFrame.new(0, medalY, backdropZ + 0.8) * CFrame.Angles(0, math.rad(90), 0),
+	Color = C.NeonPurple,
+	Material = Enum.Material.Neon,
+	Parent = StageFolder,
+})
+
+-- Crosshairs inside medallion (4 thin bars)
+for _, rot in ipairs({0, 90, 45, 135}) do
+	createPart({
+		Name = "Medallion_Cross",
+		Size = Vector3.new(medalRadius * 1.2, 0.5, 0.3),
+		CFrame = CFrame.new(0, medalY, backdropZ + 1.2) * CFrame.Angles(0, 0, math.rad(rot)),
+		Color = C.DarkAccent,
+		CanCollide = false,
+		Parent = StageFolder,
+	})
+end
+
+-- Stage spotlights (3 overhead spots)
+for _, xOff in ipairs({-8, 0, 8}) do
+	local spotMount = createPart({
+		Name = "StageSpotMount",
+		Size = Vector3.new(2, 3, 2),
+		CFrame = CFrame.new(xOff, 35, stgZ - stgD / 2),
+		Color = C.MetalDark,
+		Parent = StageFolder,
+	})
+	addLight(spotMount, "SpotLight", {
+		Color = C.NeonSoftPink,
+		Brightness = 2,
+		Range = 50,
+		Angle = 35,
+		Face = Enum.NormalId.Bottom,
+	})
+end
+
+
+-- ################################################################
+--              PHASE 5: SCREEN RING
+-- ################################################################
+
+local scrW = D.SCREEN_W
+local scrH = D.SCREEN_H
+local scrDist = D.SCREEN_DIST
+local scrElev = D.SCREEN_ELEV
+
+-- Screen data: position, rotation, title
+local screenData = {
+	{
+		name = "Screen_NW",
+		pos = CFrame.new(-scrDist, scrElev + scrH/2, -scrDist) * CFrame.Angles(0, math.rad(45), 0),
+		title = "TOP SQUADS",
+		subtitle = "#1 Squad Loading...",
+	},
+	{
+		name = "Screen_NE",
+		pos = CFrame.new(scrDist, scrElev + scrH/2, -scrDist) * CFrame.Angles(0, math.rad(-45), 0),
+		title = "TRENDING NOW",
+		subtitle = "Most Popular Fits",
+	},
+	{
+		name = "Screen_SW",
+		pos = CFrame.new(-scrDist, scrElev + scrH/2, scrDist) * CFrame.Angles(0, math.rad(135), 0),
+		title = "LEADERBOARD",
+		subtitle = "Top REP Earners",
+	},
+	{
+		name = "Screen_SE",
+		pos = CFrame.new(scrDist, scrElev + scrH/2, scrDist) * CFrame.Angles(0, math.rad(-135), 0),
+		title = "NOW ON STAGE",
+		subtitle = "Spotlight Active",
+	},
+}
+
+for _, sd in ipairs(screenData) do
+	-- Bezel
+	createPart({
+		Name = sd.name .. "_Bezel",
+		Size = Vector3.new(scrW + 1.5, scrH + 1.5, 1.2),
+		CFrame = sd.pos,
+		Color = C.ScreenFrame,
+		Parent = ScreensFolder,
+	})
+
+	-- Screen face
+	local screenPart = createPart({
+		Name = sd.name .. "_Face",
+		Size = Vector3.new(scrW, scrH, 0.3),
+		CFrame = sd.pos * CFrame.new(0, 0, -0.5),
+		Color = C.ScreenBlue,
+		Parent = ScreensFolder,
+	})
+	addSurfaceGui(screenPart, {
+		Face = Enum.NormalId.Front,
+		BgColor = C.ScreenBlue,
+		Title = sd.title,
+		Subtitle = sd.subtitle,
+		ShowSilhouettes = true,
+	})
+	addLight(screenPart, "SurfaceLight", {
+		Color = C.NeonBlue,
+		Brightness = 0.5,
+		Range = 18,
+		Face = Enum.NormalId.Front,
+	})
+
+	-- Support column
+	createPillar(sd.name .. "_Pillar",
+		Vector3.new(sd.pos.X, scrElev / 2, sd.pos.Z),
+		scrElev, 1, C.MetalDark, ScreensFolder)
+end
+
+
+-- ################################################################
+--              PHASE 6: INNER SOCIAL RING
+-- ################################################################
+
+-- === SELFIE SPOTS (6, evenly distributed around center) ===
+local selfieR = 55  -- radius from center
+local selfieCount = 6
+
+for i = 1, selfieCount do
+	local angle = (i - 1) * (360 / selfieCount) + 15  -- offset to avoid runway arms
+	local rad = math.rad(angle)
+	local x = math.cos(rad) * selfieR
+	local z = math.sin(rad) * selfieR
+
+	local sfFolder = makeFolder("SelfieSpot_" .. i, SocialRing)
+
+	-- Base pad
+	createPart({
+		Name = "SelfiePad",
+		Size = Vector3.new(D.SELFIE_SIZE, 0.5, D.SELFIE_SIZE),
+		CFrame = CFrame.new(x, 0.25, z),
+		Color = C.Lavender,
+		Parent = sfFolder,
+	})
+
+	-- Neon border
+	for _, edge in ipairs({
+		{ Vector3.new(D.SELFIE_SIZE, 0.3, 0.3), CFrame.new(x, 0.6, z - D.SELFIE_SIZE/2) },
+		{ Vector3.new(D.SELFIE_SIZE, 0.3, 0.3), CFrame.new(x, 0.6, z + D.SELFIE_SIZE/2) },
+		{ Vector3.new(0.3, 0.3, D.SELFIE_SIZE), CFrame.new(x - D.SELFIE_SIZE/2, 0.6, z) },
+		{ Vector3.new(0.3, 0.3, D.SELFIE_SIZE), CFrame.new(x + D.SELFIE_SIZE/2, 0.6, z) },
+	}) do
+		createNeonStrip("SelfieBorder", edge[1], edge[2], C.NeonSoftPink, sfFolder)
+	end
+
+	-- Ring light prop (tall hoop)
+	local rlX = x + math.cos(rad) * 4
+	local rlZ = z + math.sin(rad) * 4
+	-- Pole
+	createPart({
+		Name = "RingLight_Pole",
+		Size = Vector3.new(0.6, 8, 0.6),
+		CFrame = CFrame.new(rlX, 4, rlZ),
+		Color = C.MetalDark,
+		Parent = sfFolder,
+	})
+	-- Ring (cylinder turned sideways)
+	local ring = createPart({
+		Name = "RingLight_Ring",
+		Shape = "Cylinder",
+		Size = Vector3.new(0.5, 5, 5),
+		CFrame = CFrame.new(rlX, 8, rlZ) * CFrame.Angles(0, rad, 0),
+		Color = C.StageWhite,
+		Material = Enum.Material.Neon,
+		Parent = sfFolder,
+	})
+	addLight(ring, "PointLight", {
+		Color = Color3.new(1, 0.95, 0.9),
+		Brightness = 1.5,
+		Range = 15,
+	})
+end
+
+-- === SQUAD FORMATION PADS (6, in a tighter ring) ===
+local squadR = 38  -- closer to runway
+local squadCount = 6
+
+for i = 1, squadCount do
+	local angle = (i - 1) * (360 / squadCount) + 45
+	local rad = math.rad(angle)
+	local x = math.cos(rad) * squadR
+	local z = math.sin(rad) * squadR
+
+	-- Glowing pad (cylinder for circle shape)
+	local pad = createPart({
+		Name = "SquadPad_" .. i,
+		Shape = "Cylinder",
+		Size = Vector3.new(0.3, D.SQUAD_PAD_SIZE, D.SQUAD_PAD_SIZE),
+		CFrame = CFrame.new(x, 0.15, z) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = C.NeonPurple,
+		Material = Enum.Material.Neon,
+		CanCollide = false,
+		CastShadow = false,
+		Parent = SocialRing,
+	})
+	addLight(pad, "PointLight", {
+		Color = C.NeonPurple,
+		Brightness = 0.6,
+		Range = 10,
+	})
+end
+
+-- === SEATING CLUSTERS (4 clusters in the social ring) ===
+local seatPositions = {
+	Vector3.new(-65, 0, 30),
+	Vector3.new(65, 0, 30),
+	Vector3.new(-65, 0, -25),
+	Vector3.new(65, 0, -25),
+}
+
+for idx, seatPos in ipairs(seatPositions) do
+	local cFolder = makeFolder("SeatingCluster_" .. idx, SocialRing)
+
+	-- Curved couch (approximated with 3 parts)
+	for j = -1, 1 do
+		createPart({
+			Name = "Couch_" .. j,
+			Size = Vector3.new(6, 3, 3),
+			CFrame = CFrame.new(seatPos.X + j * 5, 1.5, seatPos.Z),
+			Color = C.SeatPink,
+			Parent = cFolder,
+		})
+		-- Seat cushion top
+		createPart({
+			Name = "CouchCushion_" .. j,
+			Size = Vector3.new(5.5, 0.5, 2.5),
+			CFrame = CFrame.new(seatPos.X + j * 5, 2.8, seatPos.Z),
+			Color = C.NeonSoftPink,
+			Parent = cFolder,
+		})
+	end
+
+	-- Low coffee table
+	createPart({
+		Name = "CoffeeTable",
+		Size = Vector3.new(4, 1.5, 4),
+		CFrame = CFrame.new(seatPos.X, 0.75, seatPos.Z + 5),
+		Color = C.StageWhite,
+		Parent = cFolder,
+	})
+
+	-- Ambient light
+	local ambLight = createPart({
+		Name = "AmbientGlow",
+		Size = Vector3.new(1, 0.3, 1),
+		CFrame = CFrame.new(seatPos.X, 1.6, seatPos.Z + 5),
+		Color = C.NeonSoftPink,
+		Material = Enum.Material.Neon,
+		CanCollide = false,
+		Transparency = 0.3,
+		Parent = cFolder,
+	})
+	addLight(ambLight, "PointLight", {
+		Color = C.NeonSoftPink,
+		Brightness = 0.8,
+		Range = 12,
+	})
+end
+
+
+-- ################################################################
+--            PHASE 7: ACTIVITY ZONES
+-- ################################################################
+
+-- === ARCADE CLUSTER (West side) ===
+local arcadeFolder = makeFolder("ArcadeZone", Activities)
+local arcadeBaseX = -75
+local arcadeBaseZ = 15
+
+-- Arcade signage
+local arcadeSign = createPart({
+	Name = "ArcadeSign",
+	Size = Vector3.new(16, 4, 1),
+	CFrame = CFrame.new(arcadeBaseX, 14, arcadeBaseZ - 8),
+	Color = C.NeonPink,
+	Material = Enum.Material.Neon,
+	Parent = arcadeFolder,
+})
+addSurfaceGui(arcadeSign, {
+	Face = Enum.NormalId.Front,
+	BgColor = C.NeonPink,
+	Title = "ARCADE",
+	TextColor = Color3.new(1, 1, 1),
+})
+
+-- 4 arcade cabinets
+for i = 0, 3 do
+	local cabX = arcadeBaseX - 8 + i * 6
+	local cabZ = arcadeBaseZ
+
+	local cabFolder = makeFolder("ArcadeCab_" .. i, arcadeFolder)
+
+	-- Cabinet body
+	createPart({
+		Name = "CabinetBody",
+		Size = Vector3.new(4, 7, 3),
+		CFrame = CFrame.new(cabX, 3.5, cabZ),
+		Color = C.ArcadeDark,
+		Parent = cabFolder,
+	})
+
+	-- Screen area
+	local cabScreen = createPart({
+		Name = "CabinetScreen",
+		Size = Vector3.new(3, 3, 0.3),
+		CFrame = CFrame.new(cabX, 5.5, cabZ + 1.5),
+		Color = C.ScreenBlue,
+		Parent = cabFolder,
+	})
+	addSurfaceGui(cabScreen, {
+		Face = Enum.NormalId.Front,
+		BgColor = Color3.fromRGB(20, 20, 40),
+		Title = "PLAY",
+		TextColor = C.NeonPink,
+	})
+	addLight(cabScreen, "SurfaceLight", {
+		Color = C.NeonBlue,
+		Brightness = 0.4,
+		Range = 6,
+		Face = Enum.NormalId.Front,
+	})
+
+	-- Control panel (angled)
+	createPart({
+		Name = "ControlPanel",
+		Size = Vector3.new(3.5, 0.5, 2),
+		CFrame = CFrame.new(cabX, 3.2, cabZ + 2) * CFrame.Angles(math.rad(-20), 0, 0),
+		Color = C.MetalDark,
+		Parent = cabFolder,
+	})
+
+	-- Cabinet top (slight overhang)
+	createPart({
+		Name = "CabinetTop",
+		Size = Vector3.new(4.5, 0.5, 3.5),
+		CFrame = CFrame.new(cabX, 7.25, cabZ),
+		Color = C.ArcadeDark,
+		Parent = cabFolder,
+	})
+
+	-- Neon accent strip on top
+	createNeonStrip("CabinetNeon",
+		Vector3.new(3.5, 0.3, 0.3),
+		CFrame.new(cabX, 7.6, cabZ + 1.5),
+		C.NeonPink, cabFolder)
+end
+
+-- === GAMING TABLE (near arcade) ===
+local tableFolder = makeFolder("GamingTable", Activities)
+local tablePos = Vector3.new(arcadeBaseX + 5, 0, arcadeBaseZ + 12)
+
+createPart({
+	Name = "TableTop",
+	Size = Vector3.new(10, 0.5, 6),
+	CFrame = CFrame.new(tablePos.X, 3.25, tablePos.Z),
+	Color = C.SeatDarkPink,
+	Parent = tableFolder,
+})
+-- Table legs
+for _, off in ipairs({{-4, -2}, {4, -2}, {-4, 2}, {4, 2}}) do
+	createPart({
+		Name = "TableLeg",
+		Size = Vector3.new(0.8, 3, 0.8),
+		CFrame = CFrame.new(tablePos.X + off[1], 1.5, tablePos.Z + off[2]),
+		Color = C.MetalDark,
+		Parent = tableFolder,
+	})
+end
+-- Chairs around table
+for _, off in ipairs({{-5.5, 0}, {5.5, 0}, {0, -3.5}, {0, 3.5}}) do
+	createPart({
+		Name = "Chair",
+		Size = Vector3.new(2.5, 2.5, 2.5),
+		CFrame = CFrame.new(tablePos.X + off[1], 1.25, tablePos.Z + off[2]),
+		Color = C.SeatPink,
+		Parent = tableFolder,
+	})
+end
+
+-- === FOOD TRUCK (East side) ===
+local truckFolder = makeFolder("FoodTruck", Activities)
+local truckX = 72
+local truckZ = 25
+
+-- Truck body
+createPart({
+	Name = "TruckBody",
+	Size = Vector3.new(8, 7, 14),
+	CFrame = CFrame.new(truckX, 3.5, truckZ),
+	Color = C.FoodTruckPink,
+	Parent = truckFolder,
+})
+
+-- Truck roof (slightly larger)
+createPart({
+	Name = "TruckRoof",
+	Size = Vector3.new(9, 0.5, 15),
+	CFrame = CFrame.new(truckX, 7.25, truckZ),
+	Color = C.WarmPink,
+	Parent = truckFolder,
+})
+
+-- Serving window
+createPart({
+	Name = "ServingWindow",
+	Size = Vector3.new(0.3, 3.5, 6),
+	CFrame = CFrame.new(truckX - 4, 4.5, truckZ),
+	Color = C.StageWhite,
+	Material = Enum.Material.Glass,
+	Transparency = 0.4,
+	Parent = truckFolder,
+})
+
+-- Counter shelf
+createPart({
+	Name = "Counter",
+	Size = Vector3.new(2, 0.4, 6),
+	CFrame = CFrame.new(truckX - 5, 3, truckZ),
+	Color = C.StageWhite,
+	Parent = truckFolder,
+})
+
+-- Truck wheels (4 cylinders)
+for _, wOff in ipairs({{-3, -5.5}, {-3, 5.5}, {3, -5.5}, {3, 5.5}}) do
+	createPart({
+		Name = "TruckWheel",
+		Shape = "Cylinder",
+		Size = Vector3.new(1.5, 2.5, 2.5),
+		CFrame = CFrame.new(truckX + wOff[1], 1.25, truckZ + wOff[2]) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = C.MetalDark,
+		Parent = truckFolder,
+	})
+end
+
+-- Truck sign
+local truckSign = createPart({
+	Name = "TruckSign",
+	Size = Vector3.new(0.3, 2, 8),
+	CFrame = CFrame.new(truckX - 4.2, 6, truckZ),
+	Color = C.NeonPink,
+	Material = Enum.Material.Neon,
+	Parent = truckFolder,
+})
+addSurfaceGui(truckSign, {
+	Face = Enum.NormalId.Left,
+	BgColor = C.NeonPink,
+	Title = "SNACKS",
+	TextColor = Color3.new(1, 1, 1),
+})
+
+-- === LOUNGE AREA (East side, near truck) ===
+local loungeFolder = makeFolder("LoungeZone", Activities)
+local loungeX = 72
+local loungeZ = -20
+
+-- Circular seating arrangement
+for i = 1, 5 do
+	local angle = math.rad((i - 1) * 72)
+	local bx = loungeX + math.cos(angle) * 6
+	local bz = loungeZ + math.sin(angle) * 6
+
+	createPart({
+		Name = "LoungeChair_" .. i,
+		Size = Vector3.new(4, 2.5, 4),
+		CFrame = CFrame.new(bx, 1.25, bz),
+		Color = C.SeatPink,
+		Parent = loungeFolder,
+	})
+end
+
+-- Center low table
+createPart({
+	Name = "LoungeTable",
+	Shape = "Cylinder",
+	Size = Vector3.new(1.5, 5, 5),
+	CFrame = CFrame.new(loungeX, 0.75, loungeZ) * CFrame.Angles(0, 0, math.rad(90)),
+	Color = C.StageWhite,
+	Parent = loungeFolder,
+})
+
+
+-- ################################################################
+--          PHASE 8: LIGHTING & SPAWNS
+-- ################################################################
+
+-- === OVERHEAD SPOTLIGHTS (ring around runway) ===
+local spotR = 45
+local spotCount = 8
+
+for i = 1, spotCount do
+	local angle = math.rad((i - 1) * (360 / spotCount))
+	local sx = math.cos(angle) * spotR
+	local sz = math.sin(angle) * spotR
+
+	local mount = createPart({
+		Name = "SpotlightMount_" .. i,
+		Size = Vector3.new(2, 2, 2),
+		CFrame = CFrame.new(sx, 40, sz),
+		Color = C.MetalDark,
+		CanCollide = false,
+		Parent = LightingFolder,
+	})
+	addLight(mount, "SpotLight", {
+		Color = (i % 2 == 0) and C.NeonSoftPink or C.StageWhite,
+		Brightness = 1.5,
+		Range = 45,
+		Angle = 40,
+		Face = Enum.NormalId.Bottom,
+	})
+end
+
+-- === AMBIENT POINT LIGHTS (scattered for fill) ===
+local ambientPositions = {
+	Vector3.new(0, 30, 0),     -- center overhead
+	Vector3.new(-50, 25, 0),   -- west
+	Vector3.new(50, 25, 0),    -- east
+	Vector3.new(0, 25, -50),   -- north
+	Vector3.new(0, 25, 50),    -- south
+}
+for idx, apos in ipairs(ambientPositions) do
+	local amb = createPart({
+		Name = "AmbientLight_" .. idx,
+		Size = Vector3.new(1, 1, 1),
+		CFrame = CFrame.new(apos),
+		Transparency = 1,
+		CanCollide = false,
+		Parent = LightingFolder,
+	})
+	addLight(amb, "PointLight", {
+		Color = C.NeonSoftPink,
+		Brightness = 0.4,
+		Range = 60,
+	})
+end
+
+-- === WALL SCONCE LIGHTS ===
+local sconceSpacing = 30
+for z = -90, 90, sconceSpacing do
+	for _, xSign in ipairs({-1, 1}) do
+		local sconce = createPart({
+			Name = "WallSconce",
+			Size = Vector3.new(2, 2, 1),
+			CFrame = CFrame.new(xSign * (half - 1.5), 12, z),
+			Color = C.Metal,
+			Parent = LightingFolder,
+		})
+		addLight(sconce, "PointLight", {
+			Color = C.NeonSoftPink,
+			Brightness = 0.6,
+			Range = 20,
+		})
+		-- Neon backing
+		createPart({
+			Name = "SconceGlow",
+			Size = Vector3.new(0.3, 3, 2),
+			CFrame = CFrame.new(xSign * (half - 0.5), 12, z),
+			Color = C.NeonPink,
+			Material = Enum.Material.Neon,
+			CanCollide = false,
+			Parent = LightingFolder,
+		})
+	end
+end
+
+-- === SPAWN LOCATIONS ===
+for i = 1, D.SPAWN_COUNT do
+	local angle = math.rad((i - 1) * (360 / D.SPAWN_COUNT) + 22.5)
+	local sx = math.cos(angle) * D.SPAWN_RADIUS
+	local sz = math.sin(angle) * D.SPAWN_RADIUS
+
+	local spawn = Instance.new("SpawnLocation")
+	spawn.Name = "SpawnPoint_" .. i
+	spawn.Anchored = true
+	spawn.Size = Vector3.new(6, 1, 6)
+	spawn.CFrame = CFrame.new(sx, 0.5, sz) * CFrame.Angles(0, math.atan2(-sx, -sz), 0)
+	spawn.Color = C.Lavender
+	spawn.Material = Enum.Material.SmoothPlastic
+	spawn.Transparency = 0.5
+	spawn.CanCollide = true
+	spawn.TopSurface = Enum.SurfaceType.Smooth
+	spawn.BottomSurface = Enum.SurfaceType.Smooth
+	spawn.Neutral = true
+	spawn.Parent = SpawnsFolder
+
+	-- Subtle neon ring around spawn
+	createPart({
+		Name = "SpawnGlow_" .. i,
+		Shape = "Cylinder",
+		Size = Vector3.new(0.2, 7, 7),
+		CFrame = CFrame.new(sx, 0.1, sz) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = C.NeonPurple,
+		Material = Enum.Material.Neon,
+		CanCollide = false,
+		CastShadow = false,
+		Transparency = 0.4,
+		Parent = SpawnsFolder,
+	})
+end
+
+
+-- ################################################################
+--          SOCIAL SPOTLIGHT PLAZA SIGN (top, above back wall)
+-- ################################################################
+
+local signFolder = makeFolder("Signage", Structure)
+
+-- Main sign backing
+createPart({
+	Name = "MainSign_Back",
+	Size = Vector3.new(60, 6, 2),
+	CFrame = CFrame.new(0, wH - 3, -half + 1),
+	Color = C.DarkAccent,
+	Parent = signFolder,
+})
+
+-- Sign text (neon)
+local signText = createPart({
+	Name = "MainSign_Text",
+	Size = Vector3.new(58, 5, 0.5),
+	CFrame = CFrame.new(0, wH - 3, -half + 2.3),
+	Color = C.SignGold,
+	Material = Enum.Material.Neon,
+	Parent = signFolder,
+})
+addSurfaceGui(signText, {
+	Face = Enum.NormalId.Front,
+	BgColor = C.DarkAccent,
+	Title = "SOCIAL SPOTLIGHT PLAZA",
+	TextColor = C.SignGold,
+})
+addLight(signText, "SurfaceLight", {
+	Color = C.SignGold,
+	Brightness = 1,
+	Range = 20,
+	Face = Enum.NormalId.Front,
+})
+
+
+-- ################################################################
+--          BUILDING FACADES (outer ring entrances)
+-- ################################################################
+
+local facadeFolder = makeFolder("BuildingFacades", Structure)
+
+local facades = {
+	{
+		name = "FashionStudio",
+		label = "FASHION STUDIO",
+		pos = CFrame.new(0, 0, -D.BUILDING_DIST),
+		rot = 0,
+		accentColor = C.NeonHotPink,
+	},
+	{
+		name = "TalentStage",
+		label = "TALENT STAGE",
+		pos = CFrame.new(D.BUILDING_DIST, 0, 0),
+		rot = -90,
+		accentColor = C.NeonPurple,
+	},
+	{
+		name = "Arcade",
+		label = "ARCADE",
+		pos = CFrame.new(-D.BUILDING_DIST, 0, 0),
+		rot = 90,
+		accentColor = C.NeonBlue,
+	},
+	{
+		name = "ChallengeZone",
+		label = "CHALLENGE LAB",
+		pos = CFrame.new(0, 0, D.BUILDING_DIST),
+		rot = 180,
+		accentColor = C.NeonSoftPink,
+	},
+}
+
+for _, f in ipairs(facades) do
+	local ff = makeFolder(f.name, facadeFolder)
+	local rotCF = CFrame.Angles(0, math.rad(f.rot), 0)
+	local baseCF = f.pos * rotCF
+
+	-- Main facade wall
+	createPart({
+		Name = "FacadeWall",
+		Size = Vector3.new(D.BUILDING_W, D.BUILDING_H, D.BUILDING_D),
+		CFrame = baseCF * CFrame.new(0, D.BUILDING_H / 2, 0),
+		Color = C.WallBase,
+		Parent = ff,
+	})
+
+	-- Entrance opening (dark inset to suggest doorway)
+	createPart({
+		Name = "EntranceDoor",
+		Size = Vector3.new(12, 14, D.BUILDING_D + 1),
+		CFrame = baseCF * CFrame.new(0, 7, 0),
+		Color = C.DarkAccent,
+		Transparency = 0.3,
+		Parent = ff,
+	})
+
+	-- Neon sign above entrance
+	local facadeSign = createPart({
+		Name = "FacadeSign",
+		Size = Vector3.new(20, 4, 0.5),
+		CFrame = baseCF * CFrame.new(0, 18, -D.BUILDING_D / 2 - 0.5),
+		Color = f.accentColor,
+		Material = Enum.Material.Neon,
+		Parent = ff,
+	})
+	addSurfaceGui(facadeSign, {
+		Face = Enum.NormalId.Front,
+		BgColor = f.accentColor,
+		Title = f.label,
+		TextColor = Color3.new(1, 1, 1),
+	})
+	addLight(facadeSign, "SurfaceLight", {
+		Color = f.accentColor,
+		Brightness = 1,
+		Range = 15,
+		Face = Enum.NormalId.Front,
+	})
+
+	-- Neon accent frame around entrance
+	-- Top
+	createNeonStrip("EntranceNeon_Top",
+		Vector3.new(14, 0.4, 0.4),
+		baseCF * CFrame.new(0, 14.5, -D.BUILDING_D / 2 - 0.3),
+		f.accentColor, ff)
+	-- Sides
+	for _, xOff in ipairs({-6.5, 6.5}) do
+		createNeonStrip("EntranceNeon_Side",
+			Vector3.new(0.4, 14, 0.4),
+			baseCF * CFrame.new(xOff, 7, -D.BUILDING_D / 2 - 0.3),
+			f.accentColor, ff)
+	end
+
+	-- Pillar columns flanking entrance
+	for _, xOff in ipairs({-10, 10}) do
+		createPillar("FacadePillar",
+			baseCF * CFrame.new(xOff, D.BUILDING_H / 2, -D.BUILDING_D / 2 - 1).Position,
+			D.BUILDING_H, 1.2, C.Metal, ff)
+	end
+end
+
+
+-- ################################################################
+--                     BUILD COMPLETE
+-- ################################################################
+
+print("═══════════════════════════════════════════")
+print("  ✅ SOCIAL SPOTLIGHT PLAZA BUILD COMPLETE")
+print("  📁 Folder: Workspace > SocialSpotlightPlaza")
+print("  📊 Total zones: 9 sub-folders")
+print("═══════════════════════════════════════════")
+
+return true
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="4">
+        <Properties>
+          <string name="Name">Constants</string>
+          <string name="Source"><![CDATA[local Constants = {}
+
+Constants.HubName = "SocialHub"
+
+Constants.Colors = {
+	Floor = Color3.fromRGB(250, 244, 250),
+	Border = Color3.fromRGB(237, 160, 214),
+	NeonPrimary = Color3.fromRGB(255, 140, 220),
+	NeonSecondary = Color3.fromRGB(180, 90, 255),
+	WallLight = Color3.fromRGB(212, 183, 241),
+	Kiosk = Color3.fromRGB(240, 174, 220),
+	Vehicle = Color3.fromRGB(255, 94, 188),
+	ScreenBackground = Color3.fromRGB(67, 46, 110),
+	ScreenAccent = Color3.fromRGB(102, 196, 255)
+}
+
+Constants.Dimensions = {
+	FloorSize = Vector3.new(220, 1, 220),
+	StagePosition = Vector3.new(0, 2.5, -20),
+	CenterY = 0.5,
+	RunwayArmLength = 40,
+	BalconyHeight = 23
+}
+
+Constants.NPC = {
+	Count = 38,
+	AnimationIds = {
+		"rbxassetid://507771019", -- dance
+		"rbxassetid://507770818", -- wave
+		"rbxassetid://33796059", -- cheer
+		"rbxassetid://180435571", -- applaud
+	}
+}
+
+Constants.ScreenFaces = {
+	Enum.NormalId.Front,
+	Enum.NormalId.Back
+}
+
+return Constants
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="5">
+        <Properties>
           <string name="Name">Hello</string>
           <string name="Source"><![CDATA[return function()
 	print("Hello from shared module")
@@ -32,65 +1684,1550 @@ end
       </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="4">
+  <Item class="ServerScriptService" referent="6">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Script" referent="5">
+    <Item class="Script" referent="7">
       <Properties>
         <string name="Name">Server</string>
         <token name="RunContext">0</token>
-        <string name="Source"><![CDATA[print("Server ready - blank scene")
+        <string name="Source"><![CDATA[print("Server ready - static scene loaded")
 ]]></string>
       </Properties>
+      <Item class="Folder" referent="8">
+        <Properties>
+          <string name="Name">Modules</string>
+        </Properties>
+        <Item class="ModuleScript" referent="9">
+          <Properties>
+            <string name="Name">LightingController</string>
+            <string name="Source"><![CDATA[local Lighting = game:GetService("Lighting")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+
+local LightingController = {}
+
+local function ensureEffect(className, props)
+	local effect = Lighting:FindFirstChild(className)
+	if not effect then
+		effect = Instance.new(className)
+		effect.Name = className
+		effect.Parent = Lighting
+	end
+	for key, value in pairs(props) do
+		effect[key] = value
+	end
+	return effect
+end
+
+function LightingController.apply()
+	Lighting.ClockTime = 14
+	Lighting.Ambient = Color3.fromRGB(40, 10, 60)
+	Lighting.OutdoorAmbient = Color3.fromRGB(50, 20, 60)
+	Lighting.ColorShift_Bottom = Color3.fromRGB(20, 0, 30)
+	Lighting.ColorShift_Top = Color3.fromRGB(120, 0, 100)
+	Lighting.Brightness = 3
+
+	ensureEffect("BloomEffect", {
+		Intensity = 1.8,
+		Size = 24,
+		Threshold = 0.8
+	})
+
+	ensureEffect("ColorCorrectionEffect", {
+		TintColor = Color3.fromRGB(255, 180, 255),
+		Brightness = 0.05,
+		Contrast = 0.12,
+		Saturation = 0.25
+	})
+
+	ensureEffect("DepthOfFieldEffect", {
+		FarIntensity = 0.2,
+		FocusDistance = 80,
+		InFocusRadius = 80,
+		NearIntensity = 0.1
+	})
+
+	local stageLight = workspace:FindFirstChild(Constants.HubName)
+	if stageLight then
+		for _, part in stageLight:GetDescendants() do
+			if part:IsA("BasePart") and part.Material == Enum.Material.Neon and not part:FindFirstChildOfClass("PointLight") then
+				local point = Instance.new("PointLight")
+				point.Brightness = 1.5
+				point.Range = 30
+				point.Color = part.Color
+				point.Parent = part
+			end
+		end
+	end
+end
+
+return LightingController
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="10">
+          <Properties>
+            <string name="Name">MapBuilder</string>
+            <string name="Source"><![CDATA[local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local ScreenGenerator = require(script.Parent.ScreenGenerator)
+
+local MapBuilder = {}
+
+local function clearBaseplate()
+	for _, child in workspace:GetChildren() do
+		if child:IsA("BasePart") and child.Name == "Baseplate" then
+			child:Destroy()
+		end
+	end
+end
+
+local function applySurfaceLight(part, color, brightness, range)
+	local light = Instance.new("SurfaceLight")
+	light.Color = color
+	light.Brightness = brightness or 5
+	light.Range = range or 32
+	light.Face = Enum.NormalId.Top
+	light.Parent = part
+end
+
+local function createPart(props, parent)
+	local partClass = props.ClassName or "Part"
+	local part = Instance.new(partClass)
+	part.Anchored = true
+	part.Name = props.Name or partClass
+	part.Size = props.Size or Vector3.new(4, 1, 4)
+	part.CFrame = props.CFrame or CFrame.new()
+	part.Color = props.Color or Constants.Colors.Floor
+	part.Material = props.Material or Enum.Material.SmoothPlastic
+	part.Transparency = props.Transparency or 0
+	if props.Shape then
+		part.Shape = props.Shape
+	end
+	part.Parent = parent
+	if props.CanCollide ~= nil then
+		part.CanCollide = props.CanCollide
+	else
+		part.CanCollide = true
+	end
+	if props.SurfaceLight then
+		applySurfaceLight(part, props.SurfaceLight.Color, props.SurfaceLight.Brightness, props.SurfaceLight.Range)
+	end
+	if props.PointLight then
+		local point = Instance.new("PointLight")
+		point.Color = props.PointLight.Color
+		point.Range = props.PointLight.Range or 25
+		point.Brightness = props.PointLight.Brightness or 2
+		point.Shadows = true
+		point.Parent = part
+	end
+	return part
+end
+
+local function createCylinder(props, parent)
+	props.ClassName = "Part"
+	props.Shape = Enum.PartType.Cylinder
+	local part = createPart(props, parent)
+	part.Shape = Enum.PartType.Cylinder
+	return part
+end
+
+local function createStep(stairModel, origin, width, height, depth, count)
+	for i = 1, count do
+		local step = createPart({
+			Name = `Step_{i}`,
+			Size = Vector3.new(width, height, depth),
+			CFrame = origin * CFrame.new(0, (i - 1) * height, -(i - 1) * depth),
+			Color = Constants.Colors.Floor,
+		}, stairModel)
+		step.Material = Enum.Material.SmoothPlastic
+	end
+end
+
+local function addNeonTrim(part, thickness, color)
+	local trim = Instance.new("SelectionBox")
+	trim.Name = "NeonTrim"
+	trim.LineThickness = thickness or 0.1
+	trim.Color3 = color or Constants.Colors.NeonPrimary
+	trim.Adornee = part
+	trim.Parent = part
+end
+
+local function createRingLight(parent, position, radius)
+	radius = radius or 10
+	local ring = createPart({
+		Name = "RingLight",
+		Size = Vector3.new(radius, 0.4, radius),
+		CFrame = CFrame.new(position),
+		Color = Constants.Colors.NeonPrimary,
+		Material = Enum.Material.Neon,
+		CanCollide = false
+	}, parent)
+	return ring
+end
+
+local function createVehicle(parent)
+	local model = Instance.new("Model")
+	model.Name = "RefreshTruck"
+	model.Parent = parent
+
+	local body = createPart({
+		Name = "Body",
+		Size = Vector3.new(16, 5, 6),
+		CFrame = CFrame.new(60, 2.5, 25),
+		Color = Constants.Colors.Vehicle
+	}, model)
+
+	createPart({
+		Name = "Cab",
+		Size = Vector3.new(6, 4, 6),
+		CFrame = body.CFrame * CFrame.new(-5, 2, 0),
+		Color = Constants.Colors.Vehicle:Lerp(Color3.new(1, 1, 1), 0.2)
+	}, model)
+
+	createPart({
+		Name = "Roof",
+		Size = Vector3.new(16, 1, 6),
+		CFrame = body.CFrame * CFrame.new(0, 3, 0),
+		Color = Constants.Colors.Floor
+	}, model)
+
+	for _, offset in ipairs({Vector3.new(-6, -2.5, -2.5), Vector3.new(6, -2.5, -2.5), Vector3.new(-6, -2.5, 2.5), Vector3.new(6, -2.5, 2.5)}) do
+		local wheel = createPart({
+			Name = "Wheel",
+			Size = Vector3.new(1.2, 3, 3),
+			CFrame = body.CFrame * CFrame.new(offset),
+			Color = Color3.fromRGB(40, 40, 40),
+		}, model)
+		wheel.Shape = Enum.PartType.Cylinder
+	end
+
+	return model
+end
+
+local function createKiosk(parent, position)
+	local kiosk = Instance.new("Model")
+	kiosk.Name = "Kiosk"
+	kiosk.Parent = parent
+
+	local base = createCylinder({
+		Name = "Base",
+		Size = Vector3.new(3, 16, 16),
+		CFrame = CFrame.new(position),
+		Color = Constants.Colors.Kiosk,
+		Material = Enum.Material.SmoothPlastic,
+		CanCollide = true
+	}, kiosk)
+	base.CFrame = CFrame.new(position) * CFrame.Angles(0, 0, math.rad(90))
+
+	createPart({
+		Name = "Table",
+		Size = Vector3.new(12, 1, 12),
+		CFrame = CFrame.new(position + Vector3.new(0, 4, 0)),
+		Color = Constants.Colors.Floor
+	}, kiosk)
+
+	local screen = createPart({
+		Name = "Console",
+		Size = Vector3.new(6, 4, 0.5),
+		CFrame = CFrame.new(position + Vector3.new(0, 6, -3)),
+		Color = Constants.Colors.ScreenBackground,
+		Material = Enum.Material.SmoothPlastic,
+		CanCollide = false
+	}, kiosk)
+	ScreenGenerator.decorate(screen, math.random())
+
+	return kiosk
+end
+
+function MapBuilder.build()
+	clearBaseplate()
+
+	local existing = workspace:FindFirstChild(Constants.HubName)
+	if existing then
+		existing:Destroy()
+	end
+
+	local hub = Instance.new("Model")
+	hub.Name = Constants.HubName
+	hub.Parent = workspace
+
+	local navPoints: { Vector3 } = {}
+
+	local floor = createPart({
+		Name = "Floor",
+		Size = Constants.Dimensions.FloorSize,
+		CFrame = CFrame.new(0, Constants.Dimensions.CenterY, 0),
+		Color = Constants.Colors.Floor
+	}, hub)
+
+	createPart({
+		Name = "Border",
+		Size = Constants.Dimensions.FloorSize + Vector3.new(6, 0.4, 6),
+		CFrame = floor.CFrame + Vector3.new(0, 0.6, 0),
+		Color = Constants.Colors.Border,
+		Material = Enum.Material.SmoothPlastic
+	}, hub)
+
+	local stem = createPart({
+		Name = "KeyStem",
+		Size = Vector3.new(8, 0.2, 110),
+		CFrame = CFrame.new(0, 1.4, 0),
+		Color = Constants.Colors.NeonPrimary,
+		Material = Enum.Material.Neon,
+		SurfaceLight = { Color = Constants.Colors.NeonPrimary, Brightness = 5, Range = 48 }
+	}, hub)
+
+	local head = createCylinder({
+		Name = "KeyHead",
+		Size = Vector3.new(0.4, 20, 20),
+		CFrame = CFrame.new(0, 1.45, -42) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Constants.Colors.NeonPrimary,
+		Material = Enum.Material.Neon
+	}, hub)
+
+	local stageModel = Instance.new("Model")
+	stageModel.Name = "Stage"
+	stageModel.Parent = hub
+
+	local stageBase = createPart({
+		Name = "StageBase",
+		Size = Vector3.new(40, 5, 20),
+		CFrame = CFrame.new(Constants.Dimensions.StagePosition),
+		Color = Constants.Colors.Kiosk
+	}, stageModel)
+
+	createPart({
+		Name = "StageTier2",
+		Size = Vector3.new(32, 4, 14),
+		CFrame = stageBase.CFrame * CFrame.new(0, 2.2, -2),
+		Color = Constants.Colors.Vehicle:Lerp(Constants.Colors.Floor, 0.3)
+	}, stageModel)
+
+	createPart({
+		Name = "StageTier3",
+		Size = Vector3.new(20, 3, 10),
+		CFrame = stageBase.CFrame * CFrame.new(0, 4.2, -4),
+		Color = Constants.Colors.NeonSecondary:Lerp(Constants.Colors.Floor, 0.5)
+	}, stageModel)
+
+	local podium = createPart({
+		Name = "Podium",
+		Size = Vector3.new(6, 3, 6),
+		CFrame = stageBase.CFrame * CFrame.new(0, 5.3, -4),
+		Color = Constants.Colors.Floor
+	}, stageModel)
+	addNeonTrim(podium, 0.01, Constants.Colors.NeonPrimary)
+
+	local frame = createPart({
+		Name = "BackdropFrame",
+		Size = Vector3.new(34, 16, 1),
+		CFrame = stageBase.CFrame * CFrame.new(0, 12, -15),
+		Color = Constants.Colors.NeonSecondary,
+		Material = Enum.Material.Neon
+	}, stageModel)
+
+	local frameInner = createPart({
+		Name = "BackdropInner",
+		Size = Vector3.new(28, 12, 0.6),
+		CFrame = frame.CFrame * CFrame.new(0, 0, -0.6),
+		Color = Constants.Colors.WallLight
+	}, stageModel)
+
+	local circle = createCylinder({
+		Name = "BackdropCircle",
+		Size = Vector3.new(1, 12, 12),
+		CFrame = frame.CFrame * CFrame.new(0, 0, -1.2) * CFrame.Angles(0, 0, math.rad(90)),
+		Color = Constants.Colors.NeonPrimary,
+		Material = Enum.Material.Neon,
+		CanCollide = false
+	}, stageModel)
+
+	local screenMain = createPart({
+		Name = "MainScreen",
+		Size = Vector3.new(30, 16, 1.2),
+		CFrame = frameInner.CFrame * CFrame.new(0, 0, -1),
+		Color = Constants.Colors.ScreenBackground
+	}, stageModel)
+	ScreenGenerator.decorate(screenMain, 1.23)
+
+	for _, offset in ipairs({Vector3.new(-18, 0, 0), Vector3.new(18, 0, 0)}) do
+		local pillar = createPart({
+			Name = "StagePillar",
+			Size = Vector3.new(3, 12, 3),
+			CFrame = stageBase.CFrame * CFrame.new(offset.X, 6, -8),
+			Color = Constants.Colors.Floor
+		}, stageModel)
+		applySurfaceLight(pillar, Constants.Colors.NeonPrimary, 4, 20)
+	end
+
+	local function createScreen(position, orientation)
+		local panel = createPart({
+			Name = "Billboard",
+			Size = Vector3.new(26, 14, 1),
+			CFrame = CFrame.new(position) * orientation,
+			Color = Constants.Colors.ScreenBackground
+		}, hub)
+		ScreenGenerator.decorate(panel, math.random())
+		return panel
+	end
+
+	createScreen(Vector3.new(-70, 20, -20), CFrame.Angles(0, math.rad(90), 0))
+	createScreen(Vector3.new(70, 20, -20), CFrame.Angles(0, -math.rad(90), 0))
+	createScreen(Vector3.new(-50, 15, 35), CFrame.new())
+	createScreen(Vector3.new(50, 15, 35), CFrame.new())
+
+	local function addRunwayArm(direction)
+		local axis = direction.X ~= 0 and "X" or "Z"
+		local distance = Constants.Dimensions.RunwayArmLength
+		local position = Vector3.new(direction.X * distance, 2.3, direction.Z * distance)
+		local size = Vector3.new(
+			direction.Z == 0 and 40 or 8,
+			4,
+			direction.X == 0 and 40 or 8
+		)
+		createPart({
+			Name = `RunwayArm_{axis}`,
+			Size = size,
+			CFrame = CFrame.new(position),
+			Color = Constants.Colors.Floor,
+			SurfaceLight = { Color = Constants.Colors.NeonPrimary, Brightness = 4, Range = 32 }
+		}, hub)
+	end
+
+	addRunwayArm(Vector3.new(1, 0, 0))
+	addRunwayArm(Vector3.new(-1, 0, 0))
+	addRunwayArm(Vector3.new(0, 0, 1))
+	addRunwayArm(Vector3.new(0, 0, -1))
+
+	local stairs = Instance.new("Model")
+	stairs.Name = "GrandStairs"
+	stairs.Parent = hub
+
+	createStep(stairs, CFrame.new(-35, 0.6, -40), 12, 0.8, 3.2, 12)
+	createStep(stairs, CFrame.new(35, 0.6, -40), 12, 0.8, 3.2, 12)
+
+	local balconys = Instance.new("Model")
+	balconys.Name = "Balconies"
+	balconys.Parent = hub
+
+	createPart({
+		Name = "LeftBalcony",
+		Size = Vector3.new(50, 3, 80),
+		CFrame = CFrame.new(-70, Constants.Dimensions.BalconyHeight, -15),
+		Color = Constants.Colors.Floor
+	}, balconys)
+	createPart({
+		Name = "RightBalcony",
+		Size = Vector3.new(50, 3, 80),
+		CFrame = CFrame.new(70, Constants.Dimensions.BalconyHeight, -15),
+		Color = Constants.Colors.Floor
+	}, balconys)
+
+	local ringFolder = Instance.new("Folder")
+	ringFolder.Name = "RingLights"
+	ringFolder.Parent = hub
+
+	createRingLight(ringFolder, Vector3.new(0, 1.8, 60), 16)
+	createRingLight(ringFolder, Vector3.new(0, 1.8, -70), 18)
+	createRingLight(ringFolder, Vector3.new(60, 1.8, 0), 14)
+	createRingLight(ringFolder, Vector3.new(-60, 1.8, 0), 14)
+
+	local props = Instance.new("Folder")
+	props.Name = "Props"
+	props.Parent = hub
+
+	local kioskLeft = createKiosk(props, Vector3.new(-25, 1.5, 8))
+	local kioskRight = createKiosk(props, Vector3.new(25, 1.5, 8))
+
+	createVehicle(props)
+
+	for _, anchor in ipairs({
+		Vector3.new(0, 0, 0),
+		Vector3.new(0, 0, -30),
+		Vector3.new(18, 0, -5),
+		Vector3.new(-18, 0, -5),
+		Vector3.new(35, 0, 18),
+		Vector3.new(-35, 0, 18),
+		Vector3.new(50, 0, -18),
+		Vector3.new(-50, 0, -18)
+	}) do
+		table.insert(navPoints, anchor + Vector3.new(0, 3, 0))
+	end
+
+	return {
+		hub = hub,
+		navPoints = navPoints,
+		floor = floor,
+		stage = stageBase
+	}
+end
+
+return MapBuilder
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="11">
+          <Properties>
+            <string name="Name">NPCSpawner</string>
+            <string name="Source"><![CDATA[local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local TweenService = game:GetService("TweenService")
+
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+
+local NPCSpawner = {}
+
+local HEIGHT_OFFSET = Vector3.new(0, 3, 0)
+
+local function randomColor()
+	return Color3.fromHSV(math.random(), 0.6 + math.random() * 0.3, 1)
+end
+
+local function createDescription()
+	local desc = Instance.new("HumanoidDescription")
+	local baseColor = randomColor()
+	desc.HeadColor = baseColor
+	desc.LeftArmColor = baseColor
+	desc.RightArmColor = baseColor
+	desc.LeftLegColor = baseColor:Lerp(Color3.fromRGB(255, 255, 255), 0.4)
+	desc.RightLegColor = baseColor:Lerp(Color3.fromRGB(255, 255, 255), 0.4)
+	desc.TorsoColor = baseColor:Lerp(Color3.fromRGB(255, 255, 255), 0.2)
+	desc.HairAccessory = ""
+	desc.Face = 707472834 -- friendly face
+	return desc
+end
+
+local function playAnimation(humanoid)
+	local animation = Instance.new("Animation")
+	animation.AnimationId = Constants.NPC.AnimationIds[math.random(1, #Constants.NPC.AnimationIds)]
+	local track = humanoid:LoadAnimation(animation)
+	track.Looped = true
+	track:Play()
+end
+
+local function wander(model, anchors)
+	task.spawn(function()
+		local humanoid = model:FindFirstChildWhichIsA("Humanoid")
+		local root = model:FindFirstChild("HumanoidRootPart")
+		if not humanoid or not root then
+			return
+		end
+		while model.Parent do
+			local target = anchors[math.random(1, #anchors)]
+			humanoid:MoveTo(target)
+			humanoid.MoveToFinished:Wait()
+			task.wait(math.random(1, 4))
+		end
+	end)
+end
+
+function NPCSpawner.spawn(config)
+	local info = config or { navPoints = { Vector3.new() } }
+	local container = workspace:FindFirstChild("NPCs")
+	if container then
+		container:Destroy()
+	end
+	container = Instance.new("Folder")
+	container.Name = "NPCs"
+	container.Parent = workspace
+
+	for i = 1, Constants.NPC.Count do
+		task.defer(function()
+			local desc = createDescription()
+			local rig = Players:CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
+			rig.Name = "PlazaNPC"
+			rig.Parent = container
+			local anchor = info.navPoints[math.random(1, #info.navPoints)] + Vector3.new(math.random(-6, 6), 0, math.random(-6, 6))
+			rig:MoveTo(anchor)
+			local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
+			if humanoid then
+				humanoid.DisplayName = "Guest"
+				humanoid.WalkSpeed = 8 + math.random() * 4
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+				playAnimation(humanoid)
+			end
+			wander(rig, info.navPoints)
+		end)
+	end
+end
+
+return NPCSpawner
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="12">
+          <Properties>
+            <string name="Name">ScreenGenerator</string>
+            <string name="Source"><![CDATA[local ScreenGenerator = {}
+
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+
+local AVATAR_COLORS = {
+	Color3.fromRGB(255, 217, 227),
+	Color3.fromRGB(255, 195, 113),
+	Color3.fromRGB(177, 197, 255),
+	Color3.fromRGB(255, 243, 173)
+}
+
+local function createSurfaceGui(part, face)
+	local gui = Instance.new("SurfaceGui")
+	gui.SizingMode = Enum.SurfaceGuiSizingMode.PixelsPerStud
+	gui.PixelsPerStud = 50
+	gui.Face = face or Enum.NormalId.Front
+	gui.ClipsDescendants = true
+	gui.AlwaysOnTop = false
+	gui.LightInfluence = 0
+	gui.Parent = part
+	return gui
+end
+
+local function createCircle(parent, size, position, color)
+	local frame = Instance.new("Frame")
+	frame.Size = size
+	frame.Position = position
+	frame.BackgroundColor3 = color
+	frame.BorderSizePixel = 0
+	frame.Parent = parent
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(1, 0)
+	corner.Parent = frame
+	return frame
+end
+
+local function createBar(parent, size, position, color)
+	local frame = Instance.new("Frame")
+	frame.Size = size
+	frame.Position = position
+	frame.BackgroundColor3 = color
+	frame.BorderSizePixel = 0
+	frame.Parent = parent
+	local corner = Instance.new("UICorner")
+	corner.CornerRadius = UDim.new(0, 12)
+	corner.Parent = frame
+	return frame
+end
+
+function ScreenGenerator.decorate(part, seed)
+	seed = seed or os.clock()
+	math.randomseed(math.floor(seed * 1000))
+	for _, face in ipairs(Constants.ScreenFaces) do
+		local gui = createSurfaceGui(part, face)
+		local bg = Instance.new("Frame")
+		bg.Size = UDim2.fromScale(1, 1)
+		bg.BackgroundColor3 = Constants.Colors.ScreenBackground
+		bg.BorderSizePixel = 0
+		bg.Parent = gui
+
+		local accent = Instance.new("Frame")
+		accent.Size = UDim2.new(0.9, 0, 0.12, 0)
+		accent.Position = UDim2.new(0.05, 0, 0.05, 0)
+		accent.BackgroundColor3 = Constants.Colors.ScreenAccent
+		accent.BorderSizePixel = 0
+		accent.Parent = bg
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0.2, 0)
+		corner.Parent = accent
+
+		for i = 1, 4 do
+			local size = math.random(40, 60) / 100
+			local x = 0.1 + (i - 1) * 0.2
+			createCircle(
+				bg,
+				UDim2.new(size, 0, size, 0),
+				UDim2.new(x, 0, 0.35, 0),
+				AVATAR_COLORS[((i + math.random(1, 4)) % #AVATAR_COLORS) + 1]
+			)
+		end
+
+		for i = 1, 3 do
+			local width = math.random(20, 40) / 100
+			createBar(
+				bg,
+				UDim2.new(width, 0, 0.05, 0),
+				UDim2.new(0.05 + (i - 1) * 0.25, 0, 0.8, 0),
+				Constants.Colors.ScreenAccent:Lerp(Constants.Colors.NeonPrimary, i / 3)
+			)
+		end
+	end
+end
+
+return ScreenGenerator
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="6">
+  <Item class="SoundService" referent="13">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="7">
+  <Item class="StarterPlayer" referent="14">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="8">
+    <Item class="StarterPlayerScripts" referent="15">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="9">
+      <Item class="LocalScript" referent="16">
         <Properties>
           <string name="Name">Client</string>
-          <string name="Source"><![CDATA[print("Client ready - baseplate scene loaded")
+          <string name="Source"><![CDATA[print("Client ready")
 ]]></string>
         </Properties>
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="10">
+  <Item class="Workspace" referent="17">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>
       <bool name="NeedsPivotMigration">false</bool>
     </Properties>
-    <Item class="Part" referent="11">
+    <Item class="Model" referent="18">
       <Properties>
-        <string name="Name">Baseplate</string>
-        <bool name="Anchored">true</bool>
-        <Color3uint8 name="Color3uint8">6512483</Color3uint8>
-        <bool name="Locked">true</bool>
-        <Vector3 name="Position">
-          <X>0</X>
-          <Y>-10</Y>
-          <Z>0</Z>
-        </Vector3>
-        <Vector3 name="size">
-          <X>512</X>
-          <Y>20</Y>
-          <Z>512</Z>
-        </Vector3>
+        <string name="Name">SocialPlaza</string>
+        <bool name="NeedsPivotMigration">false</bool>
       </Properties>
+      <Item class="Part" referent="19">
+        <Properties>
+          <string name="Name">BackdropCircle</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16743134</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>17</Y>
+            <Z>-34</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>0.4</X>
+            <Y>12</Y>
+            <Z>12</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="20">
+        <Properties>
+          <string name="Name">BackdropFrame</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">13583012</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>17</Y>
+            <Z>-33</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>34</X>
+            <Y>16</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="21">
+        <Properties>
+          <string name="Name">BackdropPanel</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15847923</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>17</Y>
+            <Z>-33.6</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>28</X>
+            <Y>12</Y>
+            <Z>0.6</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="22">
+        <Properties>
+          <string name="Name">BalconyLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-70</X>
+            <Y>24</Y>
+            <Z>-15</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>50</X>
+            <Y>3</Y>
+            <Z>70</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="23">
+        <Properties>
+          <string name="Name">BalconyRailLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">13355727</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-70</X>
+            <Y>25.8</Y>
+            <Z>-15</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>50</X>
+            <Y>1</Y>
+            <Z>2</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="24">
+        <Properties>
+          <string name="Name">BalconyRailRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">13355727</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>70</X>
+            <Y>25.8</Y>
+            <Z>-15</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>50</X>
+            <Y>1</Y>
+            <Z>2</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="25">
+        <Properties>
+          <string name="Name">BalconyRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>70</X>
+            <Y>24</Y>
+            <Z>-15</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>50</X>
+            <Y>3</Y>
+            <Z>70</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="26">
+        <Properties>
+          <string name="Name">Floor</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>0.5</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>220</X>
+            <Y>1</Y>
+            <Z>220</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="27">
+        <Properties>
+          <string name="Name">FloorBorder</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15508691</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>0.9</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>226</X>
+            <Y>0.4</Y>
+            <Z>226</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="28">
+        <Properties>
+          <string name="Name">FoodTruckBody</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16606139</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>60</X>
+            <Y>2.5</Y>
+            <Z>24</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>16</X>
+            <Y>5</Y>
+            <Z>6</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="29">
+        <Properties>
+          <string name="Name">FoodTruckRoof</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16777215</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>60</X>
+            <Y>5.5</Y>
+            <Z>24</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>16</X>
+            <Y>2</Y>
+            <Z>6</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="30">
+        <Properties>
+          <string name="Name">FoodTruckWheelL</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">2697513</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>54</X>
+            <Y>1.2</Y>
+            <Z>22</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>1</X>
+            <Y>3</Y>
+            <Z>3</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="31">
+        <Properties>
+          <string name="Name">FoodTruckWheelR</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">2697513</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>66</X>
+            <Y>1.2</Y>
+            <Z>22</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>1</X>
+            <Y>3</Y>
+            <Z>3</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="32">
+        <Properties>
+          <string name="Name">GrandStairLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15459060</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-34</X>
+            <Y>6</Y>
+            <Z>-40</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>180</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>16</X>
+            <Y>12</Y>
+            <Z>28</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="33">
+        <Properties>
+          <string name="Name">GrandStairRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15459060</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>34</X>
+            <Y>6</Y>
+            <Z>-40</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>16</X>
+            <Y>12</Y>
+            <Z>28</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="34">
+        <Properties>
+          <string name="Name">KioskLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16493791</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-26</X>
+            <Y>1.5</Y>
+            <Z>6</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>3</X>
+            <Y>18</Y>
+            <Z>18</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="35">
+        <Properties>
+          <string name="Name">KioskLeftTable</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16777215</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-26</X>
+            <Y>5.5</Y>
+            <Z>6</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>12</X>
+            <Y>1</Y>
+            <Z>12</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="36">
+        <Properties>
+          <string name="Name">KioskRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16493791</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>26</X>
+            <Y>1.5</Y>
+            <Z>6</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>3</X>
+            <Y>18</Y>
+            <Z>18</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="37">
+        <Properties>
+          <string name="Name">KioskRightTable</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16777215</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>26</X>
+            <Y>5.5</Y>
+            <Z>6</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>12</X>
+            <Y>1</Y>
+            <Z>12</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="38">
+        <Properties>
+          <string name="Name">MainScreen</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">5749245</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>17</Y>
+            <Z>-36.4</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>28</X>
+            <Y>12</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="39">
+        <Properties>
+          <string name="Name">MainScreenFrame</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">4205927</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>17</Y>
+            <Z>-36</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>30</X>
+            <Y>14</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="40">
+        <Properties>
+          <string name="Name">Podium</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>9</Y>
+            <Z>-24</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>6</X>
+            <Y>2.5</Y>
+            <Z>6</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="41">
+        <Properties>
+          <string name="Name">RearScreenLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">4205927</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-50</X>
+            <Y>12</Y>
+            <Z>35</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>20</X>
+            <Y>12</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="42">
+        <Properties>
+          <string name="Name">RearScreenLeftPanel</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">5749245</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-50</X>
+            <Y>12</Y>
+            <Z>34.4</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>18</X>
+            <Y>10</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="43">
+        <Properties>
+          <string name="Name">RearScreenRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">4205927</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>50</X>
+            <Y>12</Y>
+            <Z>35</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>20</X>
+            <Y>12</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="44">
+        <Properties>
+          <string name="Name">RearScreenRightPanel</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">5749245</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>50</X>
+            <Y>12</Y>
+            <Z>34.4</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>18</X>
+            <Y>10</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="45">
+        <Properties>
+          <string name="Name">RingLightLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16752363</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>-50</X>
+            <Y>3.2</Y>
+            <Z>-6</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>90</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>10</X>
+            <Y>0.4</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="46">
+        <Properties>
+          <string name="Name">RingLightRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16752363</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>50</X>
+            <Y>3.2</Y>
+            <Z>-6</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>90</X>
+            <Y>0</Y>
+            <Z>0</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>10</X>
+            <Y>0.4</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="47">
+        <Properties>
+          <string name="Name">RunwayHead</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16743134</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>1.25</Y>
+            <Z>-42</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>0</Y>
+            <Z>90</Z>
+          </Vector3>
+          <token name="shape">2</token>
+          <Vector3 name="size">
+            <X>0.4</X>
+            <Y>22</Y>
+            <Z>22</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="48">
+        <Properties>
+          <string name="Name">RunwayStem</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16743134</Color3uint8>
+          <token name="Material">288</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>1.2</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>8</X>
+            <Y>0.2</Y>
+            <Z>110</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="49">
+        <Properties>
+          <string name="Name">SelfieBoothLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15848689</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-50</X>
+            <Y>1</Y>
+            <Z>-6</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>12</X>
+            <Y>2</Y>
+            <Z>10</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="50">
+        <Properties>
+          <string name="Name">SelfieBoothRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15848689</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>50</X>
+            <Y>1</Y>
+            <Z>-6</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>12</X>
+            <Y>2</Y>
+            <Z>10</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="51">
+        <Properties>
+          <string name="Name">SideScreenLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">4205927</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-72</X>
+            <Y>18</Y>
+            <Z>-18</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>90</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>26</X>
+            <Y>14</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="52">
+        <Properties>
+          <string name="Name">SideScreenLeftPanel</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">5749245</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-71.4</X>
+            <Y>18</Y>
+            <Z>-18</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>90</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>24</X>
+            <Y>12</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="53">
+        <Properties>
+          <string name="Name">SideScreenRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">4205927</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>72</X>
+            <Y>18</Y>
+            <Z>-18</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>-90</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>26</X>
+            <Y>14</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="54">
+        <Properties>
+          <string name="Name">SideScreenRightPanel</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">5749245</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>71.4</X>
+            <Y>18</Y>
+            <Z>-18</Z>
+          </Vector3>
+          <Vector3 name="Rotation">
+            <X>0</X>
+            <Y>-90</Y>
+            <Z>0</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>24</X>
+            <Y>12</Y>
+            <Z>0.4</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="55">
+        <Properties>
+          <string name="Name">Sign</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16512124</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>32</Y>
+            <Z>-34</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>26</X>
+            <Y>3</Y>
+            <Z>1</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="56">
+        <Properties>
+          <string name="Name">SpeakerLeft</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>-14</X>
+            <Y>3</Y>
+            <Z>-12</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>2</X>
+            <Y>6</Y>
+            <Z>2</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="57">
+        <Properties>
+          <string name="Name">SpeakerRight</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16315642</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>14</X>
+            <Y>3</Y>
+            <Z>-12</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>2</X>
+            <Y>6</Y>
+            <Z>2</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="58">
+        <Properties>
+          <string name="Name">StageBase</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16167395</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>2.5</Y>
+            <Z>-22</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>36</X>
+            <Y>5</Y>
+            <Z>20</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="59">
+        <Properties>
+          <string name="Name">StageTier</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">15104974</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>5.5</Y>
+            <Z>-24</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>28</X>
+            <Y>4</Y>
+            <Z>14</Z>
+          </Vector3>
+        </Properties>
+      </Item>
+      <Item class="Part" referent="60">
+        <Properties>
+          <string name="Name">StageTop</string>
+          <bool name="Anchored">true</bool>
+          <Color3uint8 name="Color3uint8">16777215</Color3uint8>
+          <token name="Material">272</token>
+          <Vector3 name="Position">
+            <X>0</X>
+            <Y>7.5</Y>
+            <Z>-24</Z>
+          </Vector3>
+          <Vector3 name="size">
+            <X>16</X>
+            <Y>3</Y>
+            <Z>8</Z>
+          </Vector3>
+        </Properties>
+      </Item>
     </Item>
   </Item>
 </roblox>

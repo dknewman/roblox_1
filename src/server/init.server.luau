@@ -1,1 +1,1 @@
-print("Server ready - blank scene")
+print("Server ready - static scene loaded")

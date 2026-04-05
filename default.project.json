@@ -27,41 +27,459 @@
       "$properties": {
         "FilteringEnabled": true
       },
-      "Baseplate": {
-        "$className": "Part",
-        "$properties": {
-          "Anchored": true,
-          "Color": [
-            0.38823,
-            0.37254,
-            0.38823
-          ],
-          "Locked": true,
-          "Position": [
-            0,
-            -10,
-            0
-          ],
-          "Size": [
-            512,
-            20,
-            512
-          ]
+      "SocialPlaza": {
+        "$className": "Model",
+        "Floor": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [0, 0.5, 0],
+            "Size": [220, 1, 220]
+          }
+        },
+        "FloorBorder": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.925, 0.643, 0.827],
+            "Material": "SmoothPlastic",
+            "Position": [0, 0.9, 0],
+            "Size": [226, 0.4, 226]
+          }
+        },
+        "RunwayStem": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [1, 0.478, 0.871],
+            "Material": "Neon",
+            "Position": [0, 1.2, 0],
+            "Size": [8, 0.2, 110]
+          }
+        },
+        "RunwayHead": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [1, 0.478, 0.871],
+            "Material": "Neon",
+            "Position": [0, 1.25, -42],
+            "Rotation": [0, 0, 90],
+            "Size": [0.4, 22, 22]
+          }
+        },
+        "StageBase": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.964, 0.694, 0.89],
+            "Material": "SmoothPlastic",
+            "Position": [0, 2.5, -22],
+            "Size": [36, 5, 20]
+          }
+        },
+        "StageTier": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.901, 0.482, 0.807],
+            "Material": "SmoothPlastic",
+            "Position": [0, 5.5, -24],
+            "Size": [28, 4, 14]
+          }
+        },
+        "StageTop": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [1, 1, 1],
+            "Material": "SmoothPlastic",
+            "Position": [0, 7.5, -24],
+            "Size": [16, 3, 8]
+          }
+        },
+        "Podium": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [0, 9, -24],
+            "Size": [6, 2.5, 6]
+          }
+        },
+        "BackdropFrame": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.811, 0.258, 0.643],
+            "Material": "Neon",
+            "Position": [0, 17, -33],
+            "Size": [34, 16, 1]
+          }
+        },
+        "BackdropPanel": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.945, 0.82, 0.953],
+            "Material": "SmoothPlastic",
+            "Position": [0, 17, -33.6],
+            "Size": [28, 12, 0.6]
+          }
+        },
+        "BackdropCircle": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [1, 0.478, 0.871],
+            "Material": "Neon",
+            "Position": [0, 17, -34],
+            "Rotation": [0, 0, 90],
+            "Size": [0.4, 12, 12]
+          }
+        },
+        "MainScreenFrame": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.251, 0.176, 0.403],
+            "Material": "SmoothPlastic",
+            "Position": [0, 17, -36],
+            "Size": [30, 14, 1]
+          }
+        },
+        "MainScreen": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.341, 0.725, 0.992],
+            "Material": "SmoothPlastic",
+            "Position": [0, 17, -36.4],
+            "Size": [28, 12, 0.4]
+          }
+        },
+        "SideScreenLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.251, 0.176, 0.403],
+            "Material": "SmoothPlastic",
+            "Position": [-72, 18, -18],
+            "Rotation": [0, 90, 0],
+            "Size": [26, 14, 1]
+          }
+        },
+        "SideScreenLeftPanel": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.341, 0.725, 0.992],
+            "Material": "SmoothPlastic",
+            "Position": [-71.4, 18, -18],
+            "Rotation": [0, 90, 0],
+            "Size": [24, 12, 0.4]
+          }
+        },
+        "SideScreenRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.251, 0.176, 0.403],
+            "Material": "SmoothPlastic",
+            "Position": [72, 18, -18],
+            "Rotation": [0, -90, 0],
+            "Size": [26, 14, 1]
+          }
+        },
+        "SideScreenRightPanel": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.341, 0.725, 0.992],
+            "Material": "SmoothPlastic",
+            "Position": [71.4, 18, -18],
+            "Rotation": [0, -90, 0],
+            "Size": [24, 12, 0.4]
+          }
+        },
+        "RearScreenLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.251, 0.176, 0.403],
+            "Material": "SmoothPlastic",
+            "Position": [-50, 12, 35],
+            "Size": [20, 12, 1]
+          }
+        },
+        "RearScreenLeftPanel": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.341, 0.725, 0.992],
+            "Material": "SmoothPlastic",
+            "Position": [-50, 12, 34.4],
+            "Size": [18, 10, 0.4]
+          }
+        },
+        "RearScreenRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.251, 0.176, 0.403],
+            "Material": "SmoothPlastic",
+            "Position": [50, 12, 35],
+            "Size": [20, 12, 1]
+          }
+        },
+        "RearScreenRightPanel": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.341, 0.725, 0.992],
+            "Material": "SmoothPlastic",
+            "Position": [50, 12, 34.4],
+            "Size": [18, 10, 0.4]
+          }
+        },
+        "GrandStairLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.921, 0.886, 0.956],
+            "Material": "SmoothPlastic",
+            "Position": [-34, 6, -40],
+            "Rotation": [0, 180, 0],
+            "Size": [16, 12, 28]
+          }
+        },
+        "GrandStairRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.921, 0.886, 0.956],
+            "Material": "SmoothPlastic",
+            "Position": [34, 6, -40],
+            "Size": [16, 12, 28]
+          }
+        },
+        "BalconyLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [-70, 24, -15],
+            "Size": [50, 3, 70]
+          }
+        },
+        "BalconyRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [70, 24, -15],
+            "Size": [50, 3, 70]
+          }
+        },
+        "BalconyRailLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.796, 0.792, 0.811],
+            "Material": "SmoothPlastic",
+            "Position": [-70, 25.8, -15],
+            "Size": [50, 1, 2]
+          }
+        },
+        "BalconyRailRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.796, 0.792, 0.811],
+            "Material": "SmoothPlastic",
+            "Position": [70, 25.8, -15],
+            "Size": [50, 1, 2]
+          }
+        },
+        "Sign": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.984, 0.956, 0.486],
+            "Material": "SmoothPlastic",
+            "Position": [0, 32, -34],
+            "Size": [26, 3, 1]
+          }
+        },
+        "KioskLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [0.984, 0.674, 0.875],
+            "Material": "SmoothPlastic",
+            "Position": [-26, 1.5, 6],
+            "Rotation": [0, 0, 90],
+            "Size": [3, 18, 18]
+          }
+        },
+        "KioskLeftTable": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [1, 1, 1],
+            "Material": "SmoothPlastic",
+            "Position": [-26, 5.5, 6],
+            "Size": [12, 1, 12]
+          }
+        },
+        "KioskRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [0.984, 0.674, 0.875],
+            "Material": "SmoothPlastic",
+            "Position": [26, 1.5, 6],
+            "Rotation": [0, 0, 90],
+            "Size": [3, 18, 18]
+          }
+        },
+        "KioskRightTable": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [1, 1, 1],
+            "Material": "SmoothPlastic",
+            "Position": [26, 5.5, 6],
+            "Size": [12, 1, 12]
+          }
+        },
+        "SelfieBoothLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.945, 0.831, 0.945],
+            "Material": "SmoothPlastic",
+            "Position": [-50, 1, -6],
+            "Size": [12, 2, 10]
+          }
+        },
+        "RingLightLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [1, 0.62, 0.92],
+            "Material": "Neon",
+            "Position": [-50, 3.2, -6],
+            "Rotation": [90, 0, 0],
+            "Size": [10, 0.4, 0.4]
+          }
+        },
+        "SelfieBoothRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.945, 0.831, 0.945],
+            "Material": "SmoothPlastic",
+            "Position": [50, 1, -6],
+            "Size": [12, 2, 10]
+          }
+        },
+        "RingLightRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [1, 0.62, 0.92],
+            "Material": "Neon",
+            "Position": [50, 3.2, -6],
+            "Rotation": [90, 0, 0],
+            "Size": [10, 0.4, 0.4]
+          }
+        },
+        "FoodTruckBody": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.992, 0.388, 0.733],
+            "Material": "SmoothPlastic",
+            "Position": [60, 2.5, 24],
+            "Size": [16, 5, 6]
+          }
+        },
+        "FoodTruckRoof": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [1, 1, 1],
+            "Material": "SmoothPlastic",
+            "Position": [60, 5.5, 24],
+            "Size": [16, 2, 6]
+          }
+        },
+        "FoodTruckWheelL": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [0.16, 0.16, 0.16],
+            "Material": "SmoothPlastic",
+            "Position": [54, 1.2, 22],
+            "Rotation": [0, 0, 90],
+            "Size": [1, 3, 3]
+          }
+        },
+        "FoodTruckWheelR": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Shape": "Cylinder",
+            "Color": [0.16, 0.16, 0.16],
+            "Material": "SmoothPlastic",
+            "Position": [66, 1.2, 22],
+            "Rotation": [0, 0, 90],
+            "Size": [1, 3, 3]
+          }
+        },
+        "SpeakerLeft": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [-14, 3, -12],
+            "Size": [2, 6, 2]
+          }
+        },
+        "SpeakerRight": {
+          "$className": "Part",
+          "$properties": {
+            "Anchored": true,
+            "Color": [0.972, 0.956, 0.98],
+            "Material": "SmoothPlastic",
+            "Position": [14, 3, -12],
+            "Size": [2, 6, 2]
+          }
         }
       }
     },
 
     "Lighting": {
       "$properties": {
-        "Ambient": [
-          0,
-          0,
-          0
-        ],
-        "Brightness": 2,
-        "GlobalShadows": true,
-        "Outlines": false,
-        "Technology": "Voxel"
+        "Ambient": [0.15, 0.05, 0.16],
+        "OutdoorAmbient": [0.18, 0.06, 0.18],
+        "Brightness": 3,
+        "ColorShift_Top": [0.45, 0.0, 0.35],
+        "Technology": "Future"
       }
     },
 
