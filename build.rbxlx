@@ -1712,6 +1712,15 @@ Constants.Music = {
 	Volume = 0.4,
 }
 
+-- Feature flags: defaults used when Firebase is unreachable.
+-- Remote overrides are fetched from Firebase at /config/featureFlags.json
+Constants.FeatureFlags = {
+	NPCsEnabled = true,
+	MusicEnabled = true,
+	IntroScreenEnabled = true,
+	NewPlayer = true, -- show new-player onboarding / welcome flow
+}
+
 Constants.Firebase = {
 	-- Set to your Firebase Realtime Database URL to enable logging.
 	-- Example: "https://my-project-default-rtdb.firebaseio.com"
@@ -1777,6 +1786,7 @@ local MapBuilder = require(Modules:WaitForChild("MapBuilder"))
 local LightingController = require(Modules:WaitForChild("LightingController"))
 local NPCSpawner = require(Modules:WaitForChild("NPCSpawner"))
 local FirebaseLogger = require(Modules:WaitForChild("FirebaseLogger"))
+local FeatureFlags = require(Modules:WaitForChild("FeatureFlags"))
 
 -- Global error logging — captures all unhandled script errors
 ScriptContext.Error:Connect(function(message, stackTrace, script)
@@ -1795,8 +1805,12 @@ local result = MapBuilder.build()
 -- Phase 2: Apply atmospheric lighting
 LightingController.apply()
 
--- Phase 3: Spawn NPC crowd
-NPCSpawner.spawn({ navPoints = result.navPoints })
+-- Phase 3: Spawn NPC crowd (if enabled)
+if FeatureFlags.get("NPCsEnabled") ~= false then
+	NPCSpawner.spawn({ navPoints = result.navPoints })
+else
+	print("[Server] NPCs disabled via feature flag")
+end
 
 FirebaseLogger.log("server", "startup_complete")
 print("Social Spotlight Plaza is live!")
@@ -1862,6 +1876,104 @@ end)
           <string name="Name">Modules</string>
         </Properties>
         <Item class="ModuleScript" referent="10">
+          <Properties>
+            <string name="Name">FeatureFlags</string>
+            <string name="Source"><![CDATA[--[[
+	FeatureFlags - Remote feature flags via Firebase Realtime Database.
+	Fetches from /config/featureFlags.json on startup, falls back to
+	Constants.FeatureFlags defaults if Firebase is unreachable.
+
+	Usage:
+	  local FeatureFlags = require(...)
+	  if FeatureFlags.get("NewPlayer") then ... end
+]]
+
+local HttpService = game:GetService("HttpService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+
+local FeatureFlags = {}
+
+-- Start with defaults from Constants
+local flags: { [string]: any } = {}
+for k, v in Constants.FeatureFlags do
+	flags[k] = v
+end
+
+-- Fetch remote overrides from Firebase
+local function fetchRemote()
+	local cfg = Constants.Firebase or {}
+	if cfg.Enabled == false or not cfg.DatabaseUrl or cfg.DatabaseUrl == "" then
+		return
+	end
+
+	local url = cfg.DatabaseUrl:gsub("/$", "") .. "/config/featureFlags.json"
+	local ok, result = pcall(function()
+		return HttpService:GetAsync(url)
+	end)
+
+	if ok and result and result ~= "null" then
+		local decoded = HttpService:JSONDecode(result)
+		if type(decoded) == "table" then
+			local overrideCount = 0
+			for k, v in decoded do
+				flags[k] = v
+				overrideCount += 1
+			end
+			print(`[FeatureFlags] Loaded {overrideCount} remote flag(s)`)
+		end
+	else
+		warn(`[FeatureFlags] Could not fetch remote flags, using defaults: {result or "no response"}`)
+	end
+end
+
+-- Get a flag value
+function FeatureFlags.get(name: string): any
+	return flags[name]
+end
+
+-- Get all flags (read-only copy)
+function FeatureFlags.getAll(): { [string]: any }
+	local copy = {}
+	for k, v in flags do
+		copy[k] = v
+	end
+	return copy
+end
+
+-- Sync flags to clients via a StringValue in ReplicatedStorage
+-- (clients can read this without needing HttpService)
+local function syncToClients()
+	local store = ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if not store then
+		store = Instance.new("Folder")
+		store.Name = "FeatureFlags"
+		store.Parent = ReplicatedStorage
+	end
+
+	for k, v in flags do
+		local existing = store:FindFirstChild(k)
+		if existing then
+			existing.Value = tostring(v)
+		else
+			local val = Instance.new("StringValue")
+			val.Name = k
+			val.Value = tostring(v)
+			val.Parent = store
+		end
+	end
+end
+
+-- Initialize: fetch remote, then sync to clients
+fetchRemote()
+syncToClients()
+
+return FeatureFlags
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">FirebaseLogger</string>
             <string name="Source"><![CDATA[--[[
@@ -1930,7 +2042,7 @@ return FirebaseLogger
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="12">
           <Properties>
             <string name="Name">LightingController</string>
             <string name="Source"><![CDATA[--[[
@@ -2034,7 +2146,7 @@ return LightingController
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="12">
+        <Item class="ModuleScript" referent="13">
           <Properties>
             <string name="Name">MapBuilder</string>
             <string name="Source"><![CDATA[--[[
@@ -2790,7 +2902,7 @@ return MapBuilder
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="13">
+        <Item class="ModuleScript" referent="14">
           <Properties>
             <string name="Name">NPCSpawner</string>
             <string name="Source"><![CDATA[--[[
@@ -3095,7 +3207,7 @@ return NPCSpawner
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="14">
+        <Item class="ModuleScript" referent="15">
           <Properties>
             <string name="Name">ScreenGenerator</string>
             <string name="Source"><![CDATA[--[[
@@ -3313,21 +3425,21 @@ return ScreenGenerator
       </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="15">
+  <Item class="SoundService" referent="16">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="16">
+  <Item class="StarterPlayer" referent="17">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="17">
+    <Item class="StarterPlayerScripts" referent="18">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="18">
+      <Item class="LocalScript" referent="19">
         <Properties>
           <string name="Name">Client</string>
           <string name="Source"><![CDATA[--[[
@@ -3342,6 +3454,20 @@ local RunService = game:GetService("RunService")
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 
 local player = Players.LocalPlayer
+
+-- Read feature flags synced from server (StringValues in ReplicatedStorage/FeatureFlags)
+local function getFlag(name: string): boolean
+	local folder = ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if folder then
+		local val = folder:FindFirstChild(name)
+		if val then
+			return val.Value == "true"
+		end
+	end
+	-- Fall back to Constants defaults
+	local default = Constants.FeatureFlags and Constants.FeatureFlags[name]
+	return default ~= false
+end
 local playerGui = player:WaitForChild("PlayerGui")
 local camera = workspace.CurrentCamera
 
@@ -3587,7 +3713,9 @@ music.SoundId = Constants.Music.SoundId
 music.Volume = Constants.Music.Volume
 music.Looped = true
 music.Parent = playerGui
-music:Play()
+if getFlag("MusicEnabled") then
+	music:Play()
+end
 
 --------------------------------------------------------------------------------
 -- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)
@@ -3789,15 +3917,23 @@ end)
 -- INTRO SCREEN + SPAWN
 --------------------------------------------------------------------------------
 
--- Show intro screen and wait for it to be dismissed (Play clicked)
-local introGui = createIntroScreen()
-logToServer("intro_shown")
+-- Show intro screen (if enabled) and wait for Play
+if getFlag("IntroScreenEnabled") then
+	local introGui = createIntroScreen()
+	logToServer("intro_shown")
 
--- Wait until the intro screen is destroyed (Play was pressed)
-introGui.Destroying:Wait()
+	-- Wait until the intro screen is destroyed (Play was pressed)
+	introGui.Destroying:Wait()
 
--- Run camera intro while character loads
-cameraIntro()
+	-- Run camera intro while character loads
+	cameraIntro()
+else
+	-- Skip intro — spawn character immediately
+	local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
+	if readyEvent then
+		readyEvent:FireServer()
+	end
+end
 
 logToServer("ready")
 print("Social Spotlight Plaza client ready!")
@@ -3806,7 +3942,7 @@ print("Social Spotlight Plaza client ready!")
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="19">
+  <Item class="Workspace" referent="20">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>

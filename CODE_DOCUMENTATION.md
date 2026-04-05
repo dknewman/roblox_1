@@ -61,6 +61,30 @@ Spawns crowd NPCs from a cloned R6 rig template (no network dependency):
 - **Behavior**: Wanders between navigation points with random pauses (2-6 seconds), cleanup via `model.Destroying`
 - **Safety**: Wrapped in pcall for graceful failure
 
+### FeatureFlags (`src/server/Modules/FeatureFlags.luau`)
+
+Remote feature flag system backed by Firebase Realtime Database.
+
+- **Startup**: Copies defaults from `Constants.FeatureFlags`, then fetches overrides from Firebase at `/config/featureFlags.json` via `HttpService:GetAsync`
+- **Fallback**: If Firebase is unreachable or disabled, defaults are used silently
+- **Client sync**: Writes each flag as a `StringValue` in a `ReplicatedStorage/FeatureFlags` folder so clients can read flags without HttpService
+
+**API**:
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `get` | `(name: string) → any` | Get a single flag value |
+| `getAll` | `() → { [string]: any }` | Get a read-only copy of all flags |
+
+**Current flags**:
+
+| Flag | Default | Controls |
+|------|---------|----------|
+| `NPCsEnabled` | `true` | NPC crowd spawning (server) |
+| `MusicEnabled` | `true` | Background music (client) |
+| `IntroScreenEnabled` | `true` | Intro screen + camera intro (client) |
+| `NewPlayer` | `true` | New-player onboarding flow (reserved for future use) |
+
 ### FirebaseLogger (`src/server/Modules/FirebaseLogger.luau`)
 
 Sends structured log events to Firebase Realtime Database via the REST API (`POST /logs/<category>.json`).
@@ -105,22 +129,25 @@ Central configuration:
 - **ScreenFaces**: Front and Back
 - **IntroScreen**: `ImageId` for the intro background image asset
 - **Music**: `SoundId` and `Volume` for looping background music
-- **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging configuration
+- **FeatureFlags**: Default values for `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer` — overridable via Firebase
+- **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging and feature flag configuration
 
 ## Client (`src/client/init.client.luau`)
 
 Manages the full player experience flow:
 
-1. **Background music** — starts immediately, loops for entire session (volume configurable in Constants)
+1. **Feature flags** — reads flags from `ReplicatedStorage/FeatureFlags` (synced by server), falls back to Constants defaults
+2. **Background music** — starts if `MusicEnabled` flag is true, loops for entire session (volume configurable in Constants)
 2. **Settings menu** — persistent gear icon (top-right) with volume and brightness sliders, visible on both intro screen and in-game
-3. **Intro screen** — full-screen image with animated purple-to-pink galaxy sparkle fill behind it, `UIAspectRatioConstraint` for cross-device scaling. Invisible button hitboxes over the graphic's PLAY/CUSTOMIZE/SHOP buttons. PLAY fires `PlayerReady` to spawn the character; CUSTOMIZE and SHOP show a "Coming Soon!" popup.
-4. **Camera intro** — elevated overview (Y=80) sweeping down over 2.5 seconds with cubic ease-out after PLAY is pressed
-5. **Character spawn** — `CharacterAutoLoads` is disabled server-side; character loads only after clicking PLAY via the `PlayerReady` RemoteEvent
+4. **Intro screen** — shown if `IntroScreenEnabled` flag is true. Full-screen image with animated purple-to-pink galaxy sparkle fill behind it, `UIAspectRatioConstraint` for cross-device scaling. Invisible button hitboxes over the graphic's PLAY/CUSTOMIZE/SHOP buttons. PLAY fires `PlayerReady` to spawn the character; CUSTOMIZE and SHOP show a "Coming Soon!" popup. If disabled, character spawns immediately.
+5. **Camera intro** — elevated overview (Y=80) sweeping down over 2.5 seconds with cubic ease-out after PLAY is pressed
+6. **Character spawn** — `CharacterAutoLoads` is disabled server-side; character loads only after clicking PLAY via the `PlayerReady` RemoteEvent
 
 ## Data Flow
 
 ```
 init.server.luau
+  ├─ FeatureFlags: fetch remote overrides from Firebase, sync to ReplicatedStorage
   ├─ FirebaseLogger.log("server", "startup_begin")
   ├─ ScriptContext.Error → FirebaseLogger (error/script_error)
   ├─ MapBuilder.build()
@@ -131,7 +158,7 @@ init.server.luau
   ├─ LightingController.apply()
   │    ├─ Configures Lighting service + adds PointLights to hub
   │    └─ FirebaseLogger (lighting/applied)
-  ├─ NPCSpawner.spawn({ navPoints })
+  ├─ if NPCsEnabled: NPCSpawner.spawn({ navPoints })
   │    ├─ Creates NPC folder, clones R6 template rigs
   │    ├─ Caches screen + seat parts for NPC interactions
   │    └─ FirebaseLogger (spawn_start / spawn_failed / spawn_summary)
@@ -142,11 +169,13 @@ init.server.luau
   └─ Players.PlayerRemoving → FirebaseLogger (player/left + sessionSeconds)
 
 init.client.luau
-  ├─ Background music starts (looped)
+  ├─ Read feature flags from ReplicatedStorage/FeatureFlags
+  ├─ if MusicEnabled: Background music starts (looped)
   ├─ Settings GUI created (gear icon + sliders)
-  ├─ Intro screen shown → FirebaseLogEvent:FireServer("intro_shown")
-  ├─ PLAY clicked → PlayerReady:FireServer()
-  ├─ Camera intro → FirebaseLogEvent:FireServer("camera_intro_complete")
+  ├─ if IntroScreenEnabled: Intro screen shown → FirebaseLogEvent:FireServer("intro_shown")
+  │    ├─ PLAY clicked → PlayerReady:FireServer()
+  │    └─ Camera intro → FirebaseLogEvent:FireServer("camera_intro_complete")
+  ├─ else: PlayerReady:FireServer() immediately
   └─ FirebaseLogEvent:FireServer("ready")
        └─ Server receives via RemoteEvent → FirebaseLogger.log("client", ...)
 ```

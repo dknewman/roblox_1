@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-04-05 (rev 5)
+### Added
+- `FeatureFlags.luau` server module: fetches remote flag overrides from Firebase Realtime Database (`/config/featureFlags.json`), falls back to `Constants.FeatureFlags` defaults, syncs flag values to clients via StringValue instances in `ReplicatedStorage/FeatureFlags`.
+- `Constants.FeatureFlags` defaults: `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer`.
+- Server gates NPC spawning behind `NPCsEnabled` flag.
+- Client gates background music behind `MusicEnabled` flag and intro screen behind `IntroScreenEnabled` flag. When intro is disabled, character spawns immediately.
+
 ## 2026-04-05 (rev 4)
 ### Added
 - Intro screen with full-screen background image (`Constants.IntroScreen.ImageId`), animated purple-to-pink galaxy sparkle fill, and `UIAspectRatioConstraint` for cross-device scaling. Invisible hitboxes over graphic's PLAY/CUSTOMIZE/SHOP buttons.

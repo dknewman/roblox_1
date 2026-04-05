@@ -79,6 +79,15 @@ Constants.Music = {
 	Volume = 0.4,
 }
 
+-- Feature flags: defaults used when Firebase is unreachable.
+-- Remote overrides are fetched from Firebase at /config/featureFlags.json
+Constants.FeatureFlags = {
+	NPCsEnabled = true,
+	MusicEnabled = true,
+	IntroScreenEnabled = true,
+	NewPlayer = true, -- show new-player onboarding / welcome flow
+}
+
 Constants.Firebase = {
 	-- Set to your Firebase Realtime Database URL to enable logging.
 	-- Example: "https://my-project-default-rtdb.firebaseio.com"

@@ -10,6 +10,20 @@ local RunService = game:GetService("RunService")
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 
 local player = Players.LocalPlayer
+
+-- Read feature flags synced from server (StringValues in ReplicatedStorage/FeatureFlags)
+local function getFlag(name: string): boolean
+	local folder = ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if folder then
+		local val = folder:FindFirstChild(name)
+		if val then
+			return val.Value == "true"
+		end
+	end
+	-- Fall back to Constants defaults
+	local default = Constants.FeatureFlags and Constants.FeatureFlags[name]
+	return default ~= false
+end
 local playerGui = player:WaitForChild("PlayerGui")
 local camera = workspace.CurrentCamera
 
@@ -255,7 +269,9 @@ music.SoundId = Constants.Music.SoundId
 music.Volume = Constants.Music.Volume
 music.Looped = true
 music.Parent = playerGui
-music:Play()
+if getFlag("MusicEnabled") then
+	music:Play()
+end
 
 --------------------------------------------------------------------------------
 -- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)
@@ -457,15 +473,23 @@ end)
 -- INTRO SCREEN + SPAWN
 --------------------------------------------------------------------------------
 
--- Show intro screen and wait for it to be dismissed (Play clicked)
-local introGui = createIntroScreen()
-logToServer("intro_shown")
+-- Show intro screen (if enabled) and wait for Play
+if getFlag("IntroScreenEnabled") then
+	local introGui = createIntroScreen()
+	logToServer("intro_shown")
 
--- Wait until the intro screen is destroyed (Play was pressed)
-introGui.Destroying:Wait()
+	-- Wait until the intro screen is destroyed (Play was pressed)
+	introGui.Destroying:Wait()
 
--- Run camera intro while character loads
-cameraIntro()
+	-- Run camera intro while character loads
+	cameraIntro()
+else
+	-- Skip intro — spawn character immediately
+	local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
+	if readyEvent then
+		readyEvent:FireServer()
+	end
+end
 
 logToServer("ready")
 print("Social Spotlight Plaza client ready!")

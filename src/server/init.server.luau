@@ -12,6 +12,7 @@ local MapBuilder = require(Modules:WaitForChild("MapBuilder"))
 local LightingController = require(Modules:WaitForChild("LightingController"))
 local NPCSpawner = require(Modules:WaitForChild("NPCSpawner"))
 local FirebaseLogger = require(Modules:WaitForChild("FirebaseLogger"))
+local FeatureFlags = require(Modules:WaitForChild("FeatureFlags"))
 
 -- Global error logging — captures all unhandled script errors
 ScriptContext.Error:Connect(function(message, stackTrace, script)
@@ -30,8 +31,12 @@ local result = MapBuilder.build()
 -- Phase 2: Apply atmospheric lighting
 LightingController.apply()
 
--- Phase 3: Spawn NPC crowd
-NPCSpawner.spawn({ navPoints = result.navPoints })
+-- Phase 3: Spawn NPC crowd (if enabled)
+if FeatureFlags.get("NPCsEnabled") ~= false then
+	NPCSpawner.spawn({ navPoints = result.navPoints })
+else
+	print("[Server] NPCs disabled via feature flag")
+end
 
 FirebaseLogger.log("server", "startup_complete")
 print("Social Spotlight Plaza is live!")
