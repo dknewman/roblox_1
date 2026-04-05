@@ -1764,6 +1764,7 @@ end
 ]]
 
 local Players = game:GetService("Players")
+local ScriptContext = game:GetService("ScriptContext")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Modules = script:WaitForChild("Modules")
@@ -1771,6 +1772,15 @@ local MapBuilder = require(Modules:WaitForChild("MapBuilder"))
 local LightingController = require(Modules:WaitForChild("LightingController"))
 local NPCSpawner = require(Modules:WaitForChild("NPCSpawner"))
 local FirebaseLogger = require(Modules:WaitForChild("FirebaseLogger"))
+
+-- Global error logging — captures all unhandled script errors
+ScriptContext.Error:Connect(function(message, stackTrace, script)
+	FirebaseLogger.log("error", "script_error", {
+		message = message,
+		stack = stackTrace,
+		script = script and script:GetFullName() or "unknown",
+	})
+end)
 
 FirebaseLogger.log("server", "startup_begin")
 
@@ -1965,7 +1975,7 @@ function LightingController.apply()
 	Lighting.Brightness = 0.6
 	Lighting.EnvironmentDiffuseScale = 0.3
 	Lighting.EnvironmentSpecularScale = 0.15
-	Lighting.Technology = Enum.Technology.Future
+	-- Technology is set in default.project.json (can't be written from scripts)
 
 	-- Bloom — only the hottest neon parts bloom, and gently
 	ensureEffect("BloomEffect", {
@@ -2492,9 +2502,9 @@ local function buildScreens(hub)
 	screens.Parent = hub
 
 	local screenConfigs = {
-		-- Flush on front face of stage towers (facing audience)
-		{pos = Vector3.new(-40, 17, -85), rot = CFrame.Angles(0, 0, 0), sz = Vector3.new(20, 14, 1)},
-		{pos = Vector3.new(40, 17, -85), rot = CFrame.Angles(0, 0, 0), sz = Vector3.new(20, 14, 1)},
+		-- Flush on front face of stage towers (rotated 180° to face audience)
+		{pos = Vector3.new(-40, 17, -85), rot = CFrame.Angles(0, math.rad(180), 0), sz = Vector3.new(20, 14, 1)},
+		{pos = Vector3.new(40, 17, -85), rot = CFrame.Angles(0, math.rad(180), 0), sz = Vector3.new(20, 14, 1)},
 		-- Upper back wall (flanking sign)
 		{pos = Vector3.new(-38, 33, -107), rot = CFrame.new(), sz = Vector3.new(16, 10, 1)},
 		{pos = Vector3.new(38, 33, -107), rot = CFrame.new(), sz = Vector3.new(16, 10, 1)},
@@ -2754,10 +2764,9 @@ return MapBuilder
             <string name="Name">NPCSpawner</string>
             <string name="Source"><![CDATA[--[[
 	NPCSpawner - Spawns crowd NPCs throughout the Social Spotlight Plaza
-	Creates R15 humanoid rigs with random colors and idle animations.
+	Builds R6 humanoid rigs from basic Parts (no network dependency).
 ]]
 
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
@@ -2768,48 +2777,148 @@ local NPCSpawner = {}
 local DISPLAY_NAMES = {
 	"Guest", "Visitor", "Explorer", "Fan", "Creator",
 	"Dancer", "Gamer", "Chatter", "Viewer", "Star",
+	"Patron", "Regular", "VIP", "Streamer", "DJ",
 }
 
 local function randomColor()
 	return Color3.fromHSV(math.random(), 0.5 + math.random() * 0.4, 0.85 + math.random() * 0.15)
 end
 
-local function createDescription()
-	local desc = Instance.new("HumanoidDescription")
-	local baseColor = randomColor()
-	desc.HeadColor = baseColor:Lerp(Color3.new(1, 1, 1), 0.3)
-	desc.LeftArmColor = baseColor:Lerp(Color3.new(1, 1, 1), 0.3)
-	desc.RightArmColor = baseColor:Lerp(Color3.new(1, 1, 1), 0.3)
-	desc.TorsoColor = baseColor
-	desc.LeftLegColor = baseColor:Lerp(Color3.new(0, 0, 0), 0.3)
-	desc.RightLegColor = baseColor:Lerp(Color3.new(0, 0, 0), 0.3)
-	desc.HairAccessory = ""
-	desc.Face = 0
-	return desc
+local function makeJoint(name, parent, part0, part1, c0, c1)
+	local motor = Instance.new("Motor6D")
+	motor.Name = name
+	motor.Part0 = part0
+	motor.Part1 = part1
+	motor.C0 = c0
+	motor.C1 = c1
+	motor.Parent = parent
+	return motor
 end
 
-local function playAnimation(humanoid)
-	local animId = Constants.NPC.AnimationIds[math.random(1, #Constants.NPC.AnimationIds)]
-	local animation = Instance.new("Animation")
-	animation.AnimationId = animId
-	local ok, track = pcall(function()
-		return humanoid:LoadAnimation(animation)
-	end)
-	if ok and track then
-		track.Looped = true
-		track:Play()
-	end
+local function buildRig(spawnPos)
+	local model = Instance.new("Model")
+
+	local skinColor = randomColor()
+	local shirtColor = randomColor()
+	local pantsColor = shirtColor:Lerp(Color3.new(0, 0, 0), 0.4)
+
+	-- HumanoidRootPart (invisible physics root)
+	local rootPart = Instance.new("Part")
+	rootPart.Name = "HumanoidRootPart"
+	rootPart.Size = Vector3.new(2, 2, 1)
+	rootPart.Transparency = 1
+	rootPart.CanCollide = false
+	rootPart.Anchored = false
+	rootPart.Parent = model
+
+	-- Torso
+	local torso = Instance.new("Part")
+	torso.Name = "Torso"
+	torso.Size = Vector3.new(2, 2, 1)
+	torso.Color = shirtColor
+	torso.Material = Enum.Material.SmoothPlastic
+	torso.CanCollide = false
+	torso.Parent = model
+
+	-- Head
+	local head = Instance.new("Part")
+	head.Name = "Head"
+	head.Size = Vector3.new(1.2, 1.2, 1.2)
+	head.Color = skinColor
+	head.Material = Enum.Material.SmoothPlastic
+	head.TopSurface = Enum.SurfaceType.Smooth
+	head.CanCollide = false
+	head.Parent = model
+
+	-- Add a simple face
+	local face = Instance.new("Decal")
+	face.Name = "face"
+	face.Texture = "rbxasset://textures/face.png"
+	face.Face = Enum.NormalId.Front
+	face.Parent = head
+
+	-- Arms
+	local leftArm = Instance.new("Part")
+	leftArm.Name = "Left Arm"
+	leftArm.Size = Vector3.new(1, 2, 1)
+	leftArm.Color = skinColor
+	leftArm.Material = Enum.Material.SmoothPlastic
+	leftArm.CanCollide = false
+	leftArm.Parent = model
+
+	local rightArm = Instance.new("Part")
+	rightArm.Name = "Right Arm"
+	rightArm.Size = Vector3.new(1, 2, 1)
+	rightArm.Color = skinColor
+	rightArm.Material = Enum.Material.SmoothPlastic
+	rightArm.CanCollide = false
+	rightArm.Parent = model
+
+	-- Legs
+	local leftLeg = Instance.new("Part")
+	leftLeg.Name = "Left Leg"
+	leftLeg.Size = Vector3.new(1, 2, 1)
+	leftLeg.Color = pantsColor
+	leftLeg.Material = Enum.Material.SmoothPlastic
+	leftLeg.CanCollide = false
+	leftLeg.Parent = model
+
+	local rightLeg = Instance.new("Part")
+	rightLeg.Name = "Right Leg"
+	rightLeg.Size = Vector3.new(1, 2, 1)
+	rightLeg.Color = pantsColor
+	rightLeg.Material = Enum.Material.SmoothPlastic
+	rightLeg.CanCollide = false
+	rightLeg.Parent = model
+
+	-- Joints (standard R6 Motor6D layout)
+	makeJoint("RootJoint", rootPart, rootPart, torso,
+		CFrame.new(0, 0, 0) * CFrame.Angles(-math.pi / 2, 0, math.pi),
+		CFrame.new(0, 0, 0) * CFrame.Angles(-math.pi / 2, 0, math.pi))
+
+	makeJoint("Neck", torso, torso, head,
+		CFrame.new(0, 1, 0) * CFrame.Angles(-math.pi / 2, 0, math.pi),
+		CFrame.new(0, -0.5, 0) * CFrame.Angles(-math.pi / 2, 0, math.pi))
+
+	makeJoint("Left Shoulder", torso, torso, leftArm,
+		CFrame.new(-1, 0.5, 0) * CFrame.Angles(0, -math.pi / 2, 0),
+		CFrame.new(0.5, 0.5, 0) * CFrame.Angles(0, -math.pi / 2, 0))
+
+	makeJoint("Right Shoulder", torso, torso, rightArm,
+		CFrame.new(1, 0.5, 0) * CFrame.Angles(0, math.pi / 2, 0),
+		CFrame.new(-0.5, 0.5, 0) * CFrame.Angles(0, math.pi / 2, 0))
+
+	makeJoint("Left Hip", torso, torso, leftLeg,
+		CFrame.new(-1, -1, 0) * CFrame.Angles(0, -math.pi / 2, 0),
+		CFrame.new(-0.5, 1, 0) * CFrame.Angles(0, -math.pi / 2, 0))
+
+	makeJoint("Right Hip", torso, torso, rightLeg,
+		CFrame.new(1, -1, 0) * CFrame.Angles(0, math.pi / 2, 0),
+		CFrame.new(0.5, 1, 0) * CFrame.Angles(0, math.pi / 2, 0))
+
+	-- Humanoid
+	local humanoid = Instance.new("Humanoid")
+	humanoid.DisplayName = DISPLAY_NAMES[math.random(1, #DISPLAY_NAMES)]
+	humanoid.WalkSpeed = 7 + math.random() * 5
+	humanoid.RigType = Enum.HumanoidRigType.R6
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+	humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+	humanoid.Parent = model
+
+	model.PrimaryPart = rootPart
+	model:SetPrimaryPartCFrame(CFrame.new(spawnPos + Vector3.new(0, 3, 0)))
+
+	return model
 end
 
 local function wander(model, anchors)
 	task.spawn(function()
 		local humanoid = model:FindFirstChildWhichIsA("Humanoid")
-		local root = model:FindFirstChild("HumanoidRootPart")
-		if not humanoid or not root then return end
+		if not humanoid then return end
 
 		while model.Parent do
 			local target = anchors[math.random(1, #anchors)]
-			-- Add some random offset so NPCs don't all cluster on the exact same point
 			local offset = Vector3.new(math.random(-8, 8), 0, math.random(-8, 8))
 			humanoid:MoveTo(target + offset)
 			humanoid.MoveToFinished:Wait()
@@ -2832,23 +2941,11 @@ function NPCSpawner.spawn(config)
 	for i = 1, Constants.NPC.Count do
 		task.defer(function()
 			local ok, err = pcall(function()
-				local desc = createDescription()
-				local rig = Players:CreateHumanoidModelFromDescription(desc, Enum.HumanoidRigType.R15)
-				rig.Name = "PlazaNPC"
-				rig.Parent = container
-
-				-- Spawn at a random nav point with offset
 				local anchor = info.navPoints[math.random(1, #info.navPoints)]
 				local offset = Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
-				rig:MoveTo(anchor + offset)
-
-				local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
-				if humanoid then
-					humanoid.DisplayName = DISPLAY_NAMES[math.random(1, #DISPLAY_NAMES)]
-					humanoid.WalkSpeed = 7 + math.random() * 5
-					humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-					playAnimation(humanoid)
-				end
+				local rig = buildRig(anchor + offset)
+				rig.Name = `PlazaNPC_{i}`
+				rig.Parent = container
 
 				wander(rig, info.navPoints)
 			end)
@@ -2860,7 +2957,6 @@ function NPCSpawner.spawn(config)
 		end)
 	end
 
-	-- Log summary after all deferred spawns have had time to start
 	task.delay(5, function()
 		FirebaseLogger.log("npc", "spawn_summary", {
 			targetCount = Constants.NPC.Count,

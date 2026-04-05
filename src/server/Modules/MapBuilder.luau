@@ -459,9 +459,9 @@ local function buildScreens(hub)
 	screens.Parent = hub
 
 	local screenConfigs = {
-		-- Flush on front face of stage towers (facing audience)
-		{pos = Vector3.new(-40, 17, -85), rot = CFrame.Angles(0, 0, 0), sz = Vector3.new(20, 14, 1)},
-		{pos = Vector3.new(40, 17, -85), rot = CFrame.Angles(0, 0, 0), sz = Vector3.new(20, 14, 1)},
+		-- Flush on front face of stage towers (rotated 180° to face audience)
+		{pos = Vector3.new(-40, 17, -85), rot = CFrame.Angles(0, math.rad(180), 0), sz = Vector3.new(20, 14, 1)},
+		{pos = Vector3.new(40, 17, -85), rot = CFrame.Angles(0, math.rad(180), 0), sz = Vector3.new(20, 14, 1)},
 		-- Upper back wall (flanking sign)
 		{pos = Vector3.new(-38, 33, -107), rot = CFrame.new(), sz = Vector3.new(16, 10, 1)},
 		{pos = Vector3.new(38, 33, -107), rot = CFrame.new(), sz = Vector3.new(16, 10, 1)},
