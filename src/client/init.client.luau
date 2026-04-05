@@ -119,9 +119,9 @@ local function createIntroScreen()
 	-- Invisible buttons aligned over the image's built-in buttons
 	-- Positions are relative to the image (not the screen), so they stay accurate
 	local buttonDefs = {
-		{ name = "Play",      pos = UDim2.new(0.53, 0, 0.49, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "play" },
-		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.61, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
-		{ name = "Shop",      pos = UDim2.new(0.53, 0, 0.73, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
+		{ name = "Play",      pos = UDim2.new(0.53, 0, 0.44, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "play" },
+		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.56, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
+		{ name = "Shop",      pos = UDim2.new(0.53, 0, 0.68, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
 	}
 
 	-- "Coming Soon!" popup
@@ -247,6 +247,15 @@ end
 --------------------------------------------------------------------------------
 -- MAIN FLOW
 --------------------------------------------------------------------------------
+
+-- Start background music (loops forever, parented to PlayerGui so it persists)
+local music = Instance.new("Sound")
+music.Name = "BackgroundMusic"
+music.SoundId = Constants.Music.SoundId
+music.Volume = Constants.Music.Volume
+music.Looped = true
+music.Parent = playerGui
+music:Play()
 
 -- Show intro screen and wait for it to be dismissed (Play clicked)
 local introGui = createIntroScreen()

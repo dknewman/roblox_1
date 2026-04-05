@@ -70,7 +70,13 @@ Constants.ScreenFaces = {
 
 -- Intro screen: upload pts_intro.png to Roblox and paste the asset ID here
 Constants.IntroScreen = {
-	ImageId = "rbxassetid://87062994599591", -- Decal ID from Creator Dashboard
+	ImageId = "rbxassetid://87062994599591",
+}
+
+-- Background music: upload eliveta-motivation-474064.mp3 and paste the asset ID
+Constants.Music = {
+	SoundId = "rbxassetid://101441438144535", -- Replace 0 with your uploaded audio asset ID
+	Volume = 0.4,
 }
 
 Constants.Firebase = {
