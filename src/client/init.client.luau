@@ -621,6 +621,11 @@ else
 end
 local needsCreation = not (createdVal and createdVal.Value)
 
+-- NewPlayer flag = true: always show gender selection (even for returning players)
+if not needsCreation and getFlag("NewPlayer") then
+	needsCreation = true
+end
+
 if needsCreation then
 	print("[Client] Showing gender selection...")
 	local gender = createGenderSelectScreen()

@@ -11,6 +11,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
 local FirebaseLogger = require(script.Parent:WaitForChild("FirebaseLogger"))
+local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
 
 local CharacterCreator = {}
 
@@ -143,7 +144,8 @@ function CharacterCreator.init(spawnedPlayers: { [number]: true })
 			player:LoadCharacter()
 			return
 		end
-		if data.Character.Created then return end
+		-- Block re-selection unless NewPlayer flag is on
+		if data.Character.Created and not FeatureFlags.get("NewPlayer") then return end
 		if spawnedPlayers[player.UserId] then return end
 		spawnedPlayers[player.UserId] = true
 

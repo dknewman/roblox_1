@@ -16,6 +16,10 @@ local FeatureFlags = require(Modules:WaitForChild("FeatureFlags"))
 local PlayerData = require(Modules:WaitForChild("PlayerData"))
 local CharacterCreator = require(Modules:WaitForChild("CharacterCreator"))
 
+-- Disable auto-spawn IMMEDIATELY so players never see their default avatar
+-- This must run before any async work (map build, lighting, NPCs)
+Players.CharacterAutoLoads = false
+
 -- Global error logging — captures all unhandled script errors
 ScriptContext.Error:Connect(function(message, stackTrace, script)
 	FirebaseLogger.log("error", "script_error", {
@@ -57,9 +61,6 @@ if FeatureFlags.get("Maintenance") then
 end
 
 print("Social Spotlight Plaza is live!")
-
--- Hold players at intro screen until they click Play
-Players.CharacterAutoLoads = false
 
 local playerReady = Instance.new("RemoteEvent")
 playerReady.Name = "PlayerReady"
