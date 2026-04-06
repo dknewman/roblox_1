@@ -13,6 +13,8 @@ local LightingController = require(Modules:WaitForChild("LightingController"))
 local NPCSpawner = require(Modules:WaitForChild("NPCSpawner"))
 local FirebaseLogger = require(Modules:WaitForChild("FirebaseLogger"))
 local FeatureFlags = require(Modules:WaitForChild("FeatureFlags"))
+local PlayerData = require(Modules:WaitForChild("PlayerData"))
+local CharacterCreator = require(Modules:WaitForChild("CharacterCreator"))
 
 -- Global error logging — captures all unhandled script errors
 ScriptContext.Error:Connect(function(message, stackTrace, script)
@@ -64,10 +66,22 @@ playerReady.Name = "PlayerReady"
 playerReady.Parent = ReplicatedStorage
 
 local spawnedPlayers: { [number]: true } = {}
+
+-- Initialize character creator (shares spawnedPlayers to prevent double-spawn)
+CharacterCreator.init(spawnedPlayers)
+
 playerReady.OnServerEvent:Connect(function(player)
 	if spawnedPlayers[player.UserId] then return end -- prevent double-spawn
 	spawnedPlayers[player.UserId] = true
-	player:LoadCharacter()
+
+	-- Returning players spawn with their saved outfit; new players get default
+	local data = PlayerData.get(player)
+	if data and data.Character.Gender ~= "" then
+		CharacterCreator.spawnWithOutfit(player, data.Character.Gender)
+	else
+		player:LoadCharacter()
+	end
+
 	FirebaseLogger.log("player", "play_pressed", {
 		userId = player.UserId,
 		displayName = player.DisplayName,
@@ -77,19 +91,51 @@ end)
 -- Player join / leave logging
 local playerSessions: { [number]: number } = {}
 
-Players.PlayerAdded:Connect(function(player)
+local function onPlayerAdded(player: Player)
 	playerSessions[player.UserId] = os.time()
+	PlayerData.loadProfile(player)
+	print(`[Server] Profile loaded for {player.Name}`)
 	FirebaseLogger.log("player", "joined", {
 		userId = player.UserId,
 		displayName = player.DisplayName,
 		playerCount = #Players:GetPlayers(),
 	})
-end)
+
+	-- Handle respawn after death (CharacterAutoLoads is false, so we must do it)
+	player.CharacterAdded:Connect(function(character)
+		local humanoid = character:WaitForChild("Humanoid")
+		humanoid.Died:Connect(function()
+			task.wait(3)
+			if not player:IsDescendantOf(Players) then return end
+			local data = PlayerData.get(player)
+			if data and data.Character.Gender ~= "" then
+				CharacterCreator.spawnWithOutfit(player, data.Character.Gender)
+			else
+				player:LoadCharacter()
+			end
+		end)
+	end)
+end
+
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Handle players already in game (Studio race condition)
+for _, player in Players:GetPlayers() do
+	task.spawn(onPlayerAdded, player)
+end
 
 Players.PlayerRemoving:Connect(function(player)
 	local joinTime = playerSessions[player.UserId]
 	local sessionSeconds = joinTime and (os.time() - joinTime) or 0
 	playerSessions[player.UserId] = nil
+
+	-- Update total play time before releasing profile
+	local data = PlayerData.get(player)
+	if data then
+		data.Stats.TotalPlayTime += sessionSeconds
+	end
+	PlayerData.releaseProfile(player)
+
 	FirebaseLogger.log("player", "left", {
 		userId = player.UserId,
 		displayName = player.DisplayName,
@@ -109,4 +155,17 @@ logEvent.OnServerEvent:Connect(function(player, event: string, data: { [string]:
 	payload.userId = player.UserId
 	payload.displayName = player.DisplayName
 	FirebaseLogger.log("client", event, payload)
+end)
+
+-- React to live flag changes (polled every 30s)
+FeatureFlags.onChanged(function(name, newValue, oldValue)
+	FirebaseLogger.log("server", "flag_changed", { flag = name, from = oldValue, to = newValue })
+
+	if name == "Maintenance" and newValue == true then
+		local MESSAGE = "Server is going down for maintenance. Please try again later!"
+		warn("[Server] Maintenance flag toggled ON — kicking all players")
+		for _, p in Players:GetPlayers() do
+			p:Kick(MESSAGE)
+		end
+	end
 end)

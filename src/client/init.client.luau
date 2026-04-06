@@ -205,11 +205,6 @@ local function createIntroScreen()
 			btn.MouseButton1Click:Connect(function()
 				logToServer("play_pressed")
 				gui:Destroy()
-				-- Tell server to spawn our character
-				local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
-				if readyEvent then
-					readyEvent:FireServer()
-				end
 			end)
 		else
 			btn.MouseButton1Click:Connect(function()
@@ -222,40 +217,170 @@ local function createIntroScreen()
 end
 
 --------------------------------------------------------------------------------
+-- GENDER SELECTION SCREEN
+--------------------------------------------------------------------------------
+
+local function createGenderSelectScreen(): string
+	local chosen: string? = nil
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "GenderSelectScreen"
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 100
+	gui.ResetOnSpawn = false
+	gui.Parent = playerGui
+
+	-- Galaxy background (same as intro)
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new(1, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.new(1, 1, 1)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = 0
+	fill.Parent = gui
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 15, 100)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 25, 130)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(140, 40, 160)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 80, 170)),
+	})
+	gradient.Parent = fill
+
+	-- Sparkle dots
+	local sparkles = {}
+	for i = 1, 30 do
+		local dot = Instance.new("Frame")
+		dot.BackgroundColor3 = Color3.fromHSV(0.75 + math.random() * 0.2, 0.2 + math.random() * 0.3, 0.9 + math.random() * 0.1)
+		local sz = math.random(2, 5)
+		dot.Size = UDim2.new(0, sz, 0, sz)
+		dot.Position = UDim2.new(math.random() * 0.98, 0, math.random() * 0.98, 0)
+		dot.BackgroundTransparency = math.random() * 0.5
+		dot.BorderSizePixel = 0
+		dot.ZIndex = 1
+		dot.Parent = fill
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = dot
+		sparkles[i] = { dot = dot, speed = 0.5 + math.random() * 2, phase = math.random() * math.pi * 2 }
+	end
+
+	task.spawn(function()
+		while fill.Parent do
+			local t = tick()
+			gradient.Rotation = (t * 8) % 360
+			for _, s in sparkles do
+				s.dot.BackgroundTransparency = 0.3 + 0.6 * math.abs(math.sin(t * s.speed + s.phase))
+			end
+			RunService.RenderStepped:Wait()
+		end
+	end)
+
+	-- Center panel
+	local panel = Instance.new("Frame")
+	panel.Size = UDim2.new(0, 400, 0, 300)
+	panel.AnchorPoint = Vector2.new(0.5, 0.5)
+	panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+	panel.BackgroundColor3 = Color3.fromRGB(50, 20, 60)
+	panel.BackgroundTransparency = 0.15
+	panel.BorderSizePixel = 0
+	panel.ZIndex = 5
+	panel.Parent = gui
+
+	local panelCorner = Instance.new("UICorner")
+	panelCorner.CornerRadius = UDim.new(0, 16)
+	panelCorner.Parent = panel
+
+	local panelStroke = Instance.new("UIStroke")
+	panelStroke.Color = Color3.fromRGB(255, 100, 200)
+	panelStroke.Thickness = 2
+	panelStroke.Parent = panel
+
+	-- Title
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 50)
+	title.Position = UDim2.new(0, 0, 0, 20)
+	title.BackgroundTransparency = 1
+	title.Text = "Choose Your Look"
+	title.TextColor3 = Color3.fromRGB(255, 200, 240)
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+	title.ZIndex = 6
+	title.Parent = panel
+
+	-- Subtitle
+	local subtitle = Instance.new("TextLabel")
+	subtitle.Size = UDim2.new(1, -40, 0, 30)
+	subtitle.Position = UDim2.new(0, 20, 0, 75)
+	subtitle.BackgroundTransparency = 1
+	subtitle.Text = "You can change this later!"
+	subtitle.TextColor3 = Color3.fromRGB(200, 170, 220)
+	subtitle.TextScaled = true
+	subtitle.Font = Enum.Font.GothamMedium
+	subtitle.ZIndex = 6
+	subtitle.Parent = panel
+
+	-- Button helper
+	local function makeGenderButton(text: string, xPos: number, color: Color3): TextButton
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(0, 150, 0, 120)
+		btn.AnchorPoint = Vector2.new(0.5, 0)
+		btn.Position = UDim2.new(xPos, 0, 0, 130)
+		btn.BackgroundColor3 = color
+		btn.Text = text
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.TextSize = 24
+		btn.Font = Enum.Font.GothamBold
+		btn.ZIndex = 6
+		btn.Parent = panel
+
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 12)
+		corner.Parent = btn
+
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = color
+		stroke.Thickness = 0
+		stroke.Parent = btn
+
+		btn.MouseEnter:Connect(function()
+			stroke.Thickness = 2
+			stroke.Color = Color3.new(1, 1, 1)
+		end)
+		btn.MouseLeave:Connect(function()
+			stroke.Thickness = 0
+		end)
+
+		return btn
+	end
+
+	local femaleBtn = makeGenderButton("Female", 0.3, Color3.fromRGB(255, 80, 180))
+	local maleBtn = makeGenderButton("Male", 0.7, Color3.fromRGB(180, 80, 255))
+
+	femaleBtn.MouseButton1Click:Connect(function()
+		chosen = "Female"
+	end)
+	maleBtn.MouseButton1Click:Connect(function()
+		chosen = "Male"
+	end)
+
+	-- Yield until a choice is made
+	while chosen == nil do
+		task.wait(0.1)
+	end
+
+	gui:Destroy()
+	return chosen
+end
+
+--------------------------------------------------------------------------------
 -- CAMERA INTRO (runs after Play is pressed)
 --------------------------------------------------------------------------------
 
 local function cameraIntro()
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
-
-	local startCF = camera.CFrame
-	local targetCF = CFrame.new(0, 25, 50) * CFrame.Angles(math.rad(-15), 0, 0)
-	local elapsed = 0
-	local duration = 2.5
-
-	local conn
-	conn = RunService.RenderStepped:Connect(function(dt)
-		elapsed += dt
-		if elapsed >= duration then
-			conn:Disconnect()
-			camera.CameraType = Enum.CameraType.Custom
-			return
-		end
-		local alpha = 1 - (1 - elapsed / duration) ^ 3
-		camera.CFrame = startCF:Lerp(targetCF, alpha)
-	end)
-
-	-- Safety: hand back camera after character loads
-	task.spawn(function()
-		player.CharacterAdded:Wait()
-		task.wait(0.5)
-		if conn and conn.Connected then
-			conn:Disconnect()
-		end
-		camera.CameraType = Enum.CameraType.Custom
-		logToServer("camera_intro_complete")
-	end)
+	-- Immediately hand camera to the player — no slow pan
+	camera.CameraType = Enum.CameraType.Custom
+	logToServer("camera_intro_complete")
 end
 
 --------------------------------------------------------------------------------
@@ -470,8 +595,12 @@ gearBtn.MouseButton1Click:Connect(function()
 end)
 
 --------------------------------------------------------------------------------
--- INTRO SCREEN + SPAWN
+-- INTRO SCREEN + CHARACTER CREATION + SPAWN
 --------------------------------------------------------------------------------
+
+-- Keep camera locked during entire flow
+camera.CameraType = Enum.CameraType.Scriptable
+camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
 
 -- Show intro screen (if enabled) and wait for Play
 if getFlag("IntroScreenEnabled") then
@@ -480,16 +609,51 @@ if getFlag("IntroScreenEnabled") then
 
 	-- Wait until the intro screen is destroyed (Play was pressed)
 	introGui.Destroying:Wait()
+end
 
-	-- Run camera intro while character loads
-	cameraIntro()
+-- Check if player needs character creation
+print("[Client] Waiting for CharacterCreated BoolValue...")
+local createdVal = player:WaitForChild("CharacterCreated", 10)
+if createdVal then
+	print(`[Client] CharacterCreated found, value = {createdVal.Value}`)
 else
-	-- Skip intro — spawn character immediately
+	print("[Client] CharacterCreated NOT FOUND (timeout)")
+end
+local needsCreation = not (createdVal and createdVal.Value)
+
+if needsCreation then
+	print("[Client] Showing gender selection...")
+	local gender = createGenderSelectScreen()
+	print(`[Client] Gender chosen: {gender}`)
+	logToServer("gender_selected", { gender = gender })
+
+	-- Tell server to save gender and spawn character
+	local genderEvent = ReplicatedStorage:WaitForChild("GenderSelected", 10)
+	if genderEvent then
+		print("[Client] Firing GenderSelected to server...")
+		genderEvent:FireServer(gender)
+	else
+		warn("[Client] GenderSelected RemoteEvent not found!")
+	end
+
+	-- Wait for character to actually spawn before camera intro
+	print("[Client] Waiting for character to spawn...")
+	player.CharacterAdded:Wait()
+	task.wait(0.5)
+else
+	-- Returning player — just spawn
+	print("[Client] Returning player, firing PlayerReady...")
 	local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
 	if readyEvent then
 		readyEvent:FireServer()
 	end
+	player.CharacterAdded:Wait()
+	task.wait(0.5)
 end
+
+-- Run camera intro after character exists
+print("[Client] Running camera intro...")
+cameraIntro()
 
 logToServer("ready")
 print("Social Spotlight Plaza client ready!")

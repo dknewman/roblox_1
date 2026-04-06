@@ -79,6 +79,23 @@ Constants.Music = {
 	Volume = 0.4,
 }
 
+-- Default outfits for character creation
+-- All IDs verified via economy.roblox.com/v2/assets/{id}/details
+Constants.Outfits = {
+	Female = {
+		BundleId = 239,              -- "Woman" body bundle (free, official)
+		UseDefaultHead = true,       -- skip the bald Woman head, use normal head
+		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
+		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
+		HairAccessory = "62724852",  -- Chestnut Bun (from Woman bundle)
+	},
+	Male = {
+		BundleId = 238,              -- "Man" body bundle (free, official)
+		ClassicShirt = 607785314,    -- ROBLOX Jacket (AssetTypeId 11, free)
+		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
+	},
+}
+
 -- Feature flags: defaults used when Firebase is unreachable.
 -- Remote overrides are fetched from Firebase at /config/featureFlags.json
 Constants.FeatureFlags = {
