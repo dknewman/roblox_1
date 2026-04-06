@@ -36,7 +36,7 @@ function LightingController.apply()
 	Lighting.Brightness = 0.6
 	Lighting.EnvironmentDiffuseScale = 0.3
 	Lighting.EnvironmentSpecularScale = 0.15
-	Lighting.Technology = Enum.Technology.Future
+	-- Technology is set in default.project.json (can't be written from scripts)
 
 	-- Bloom — only the hottest neon parts bloom, and gently
 	ensureEffect("BloomEffect", {

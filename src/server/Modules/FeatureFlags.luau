@@ -85,8 +85,48 @@ local function syncToClients()
 	end
 end
 
--- Initialize: fetch remote, then sync to clients
+-- Poll interval (seconds) — how often to check Firebase for flag changes
+local POLL_INTERVAL = 30
+
+-- Track previous flag state to detect changes
+local function snapshotFlags(): { [string]: any }
+	local snap = {}
+	for k, v in flags do
+		snap[k] = v
+	end
+	return snap
+end
+
+-- Callbacks for flag changes
+local changeCallbacks: { (name: string, newValue: any, oldValue: any) -> () } = {}
+
+function FeatureFlags.onChanged(callback: (name: string, newValue: any, oldValue: any) -> ())
+	table.insert(changeCallbacks, callback)
+end
+
+-- Poll loop: fetch remote flags periodically and fire change callbacks
+local function startPolling()
+	task.spawn(function()
+		while true do
+			task.wait(POLL_INTERVAL)
+			local before = snapshotFlags()
+			fetchRemote()
+			-- Detect changes and notify
+			for k, v in flags do
+				if before[k] ~= v then
+					for _, cb in changeCallbacks do
+						task.spawn(cb, k, v, before[k])
+					end
+				end
+			end
+			syncToClients()
+		end
+	end)
+end
+
+-- Initialize: fetch remote, sync to clients, start polling
 fetchRemote()
 syncToClients()
+startPolling()
 
 return FeatureFlags

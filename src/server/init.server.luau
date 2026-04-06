@@ -7,6 +7,10 @@ local Players = game:GetService("Players")
 local ScriptContext = game:GetService("ScriptContext")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- MUST be set before any require/WaitForChild calls — those block,
+-- and the player can connect during that time and get auto-spawned
+Players.CharacterAutoLoads = false
+
 local Modules = script:WaitForChild("Modules")
 local MapBuilder = require(Modules:WaitForChild("MapBuilder"))
 local LightingController = require(Modules:WaitForChild("LightingController"))
@@ -15,10 +19,6 @@ local FirebaseLogger = require(Modules:WaitForChild("FirebaseLogger"))
 local FeatureFlags = require(Modules:WaitForChild("FeatureFlags"))
 local PlayerData = require(Modules:WaitForChild("PlayerData"))
 local CharacterCreator = require(Modules:WaitForChild("CharacterCreator"))
-
--- Disable auto-spawn IMMEDIATELY so players never see their default avatar
--- This must run before any async work (map build, lighting, NPCs)
-Players.CharacterAutoLoads = false
 
 -- Global error logging — captures all unhandled script errors
 ScriptContext.Error:Connect(function(message, stackTrace, script)

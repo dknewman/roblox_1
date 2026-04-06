@@ -1713,22 +1713,25 @@ Constants.Music = {
 }
 
 -- Default outfits for character creation
--- ClassicShirt/ClassicPants = classic 2D clothing (catalog IDs)
--- LayeredClothing = list of layered 3D accessory IDs
+-- All IDs verified via economy.roblox.com/v2/assets/{id}/details
 Constants.Outfits = {
 	Female = {
-		BundleId = 239,        -- "Woman" body bundle (free, official Roblox)
-		SkipBundleHead = false,
-		LayeredClothing = {
-			{ AssetId = 16438934852, Type = "Shirt" },  -- starter top
-			{ AssetId = 16439116620, Type = "Pants" },   -- starter bottom
-		},
+		DTIModelId = 90731674309295, -- Creator Store DTI body model
+		DTIRig = "WomanRig",        -- rig name inside the model
+		UseDefaultHead = true,       -- skip DTI head, use default R15 head
+		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
+		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
+		HairAccessory = "62724852",  -- Chestnut Bun
+		Face = 86487766,             -- Woman Face (feminine, eyelashes)
+		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
+		BodyTypeScale = 1,           -- fully proportioned R15 body
+		ProportionScale = 0,         -- wider proportions
+		HeadScale = 0.8,             -- smaller head to match DTI body proportions
 	},
 	Male = {
-		BundleId = 238,        -- "Man" body bundle (free, official Roblox)
-		SkipBundleHead = false,
-		ClassicShirt = 1804747,     -- white shirt
-		ClassicPants = 7464852131,  -- grey sweatpants
+		BundleId = 238,              -- "Man" body bundle (free, official)
+		ClassicShirt = 607785314,    -- ROBLOX Jacket (AssetTypeId 11, free)
+		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
 	},
 }
 
@@ -1738,7 +1741,7 @@ Constants.FeatureFlags = {
 	NPCsEnabled = true,
 	MusicEnabled = true,
 	IntroScreenEnabled = true,
-	NewPlayer = true, -- show new-player onboarding / welcome flow
+	NewPlayer = false, -- show new-player onboarding / welcome flow
 	Maintenance = false, -- kick players and block joins when true
 }
 
@@ -1802,6 +1805,10 @@ local Players = game:GetService("Players")
 local ScriptContext = game:GetService("ScriptContext")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
+-- MUST be set before any require/WaitForChild calls — those block,
+-- and the player can connect during that time and get auto-spawned
+Players.CharacterAutoLoads = false
+
 local Modules = script:WaitForChild("Modules")
 local MapBuilder = require(Modules:WaitForChild("MapBuilder"))
 local LightingController = require(Modules:WaitForChild("LightingController"))
@@ -1853,9 +1860,6 @@ end
 
 print("Social Spotlight Plaza is live!")
 
--- Hold players at intro screen until they click Play
-Players.CharacterAutoLoads = false
-
 local playerReady = Instance.new("RemoteEvent")
 playerReady.Name = "PlayerReady"
 playerReady.Parent = ReplicatedStorage
@@ -1868,7 +1872,15 @@ CharacterCreator.init(spawnedPlayers)
 playerReady.OnServerEvent:Connect(function(player)
 	if spawnedPlayers[player.UserId] then return end -- prevent double-spawn
 	spawnedPlayers[player.UserId] = true
-	player:LoadCharacter()
+
+	-- Returning players spawn with their saved outfit; new players get default
+	local data = PlayerData.get(player)
+	if data and data.Character.Gender ~= "" then
+		CharacterCreator.spawnWithOutfit(player, data.Character.Gender)
+	else
+		player:LoadCharacter()
+	end
+
 	FirebaseLogger.log("player", "play_pressed", {
 		userId = player.UserId,
 		displayName = player.DisplayName,
@@ -1888,14 +1900,19 @@ local function onPlayerAdded(player: Player)
 		playerCount = #Players:GetPlayers(),
 	})
 
-	-- Re-apply outfit on every respawn (death, reset, etc.)
+	-- Handle respawn after death (CharacterAutoLoads is false, so we must do it)
 	player.CharacterAdded:Connect(function(character)
-		character:WaitForChild("Humanoid")
-		task.wait(0.1)
-		local data = PlayerData.get(player)
-		if data and data.Character.Gender ~= "" then
-			CharacterCreator.applyOutfit(player, data.Character.Gender)
-		end
+		local humanoid = character:WaitForChild("Humanoid")
+		humanoid.Died:Connect(function()
+			task.wait(3)
+			if not player:IsDescendantOf(Players) then return end
+			local data = PlayerData.get(player)
+			if data and data.Character.Gender ~= "" then
+				CharacterCreator.spawnWithOutfit(player, data.Character.Gender)
+			else
+				player:LoadCharacter()
+			end
+		end)
 	end)
 end
 
@@ -1962,52 +1979,273 @@ end)
             <string name="Name">CharacterCreator</string>
             <string name="Source"><![CDATA[--[[
 	CharacterCreator - Applies outfits based on gender selection.
-	Creates GenderSelected RemoteEvent for client communication.
+	Uses LoadCharacterWithHumanoidDescription for face/hair/colors,
+	then replaces body parts with cloned DTI MeshParts and welds
+	DTI clothing meshes onto the character.
 ]]
 
 local AssetService = game:GetService("AssetService")
+local InsertService = game:GetService("InsertService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
 local FirebaseLogger = require(script.Parent:WaitForChild("FirebaseLogger"))
+local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
 
 local CharacterCreator = {}
 
--- AccessoryType name to enum mapping
-local ACCESSORY_TYPE_MAP = {
-	Shirt = Enum.AccessoryType.Shirt,
-	TShirt = Enum.AccessoryType.TShirt,
-	Pants = Enum.AccessoryType.Pants,
-	Jacket = Enum.AccessoryType.Jacket,
-	Sweater = Enum.AccessoryType.Sweater,
-	Shorts = Enum.AccessoryType.Shorts,
-	DressSkirt = Enum.AccessoryType.DressSkirt,
+-- Cache built descriptions so API calls only happen once per gender
+local descriptionCache: { [string]: HumanoidDescription } = {}
+
+-- DTI rig cache
+local dtiRigs: { [string]: {
+	parts: { [string]: MeshPart },
+	joints: { [string]: { [string]: { C0: CFrame, C1: CFrame } } },
+	clothing: { { template: MeshPart, offset: CFrame, bodyPart: string } },
+} } = {}
+
+-- R15 body part names (Head kept as default R15, scaled to match DTI body)
+local R15_BODY_PARTS = {
+	"UpperTorso", "LowerTorso",
+	"LeftUpperArm", "LeftLowerArm", "LeftHand",
+	"RightUpperArm", "RightLowerArm", "RightHand",
+	"LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
+	"RightUpperLeg", "RightLowerLeg", "RightFoot",
 }
 
--- Apply body bundle to a HumanoidDescription
-local function applyBundle(desc: HumanoidDescription, bundleId: number, skipHead: boolean?)
-	print(`[CharacterCreator] Loading bundle {bundleId}...`)
+---------------------------------------------------------------------------
+-- DTI Model Loading
+---------------------------------------------------------------------------
 
+local function loadDTIModel()
+	local outfitDef = Constants.Outfits.Female
+	if not outfitDef or not outfitDef.DTIModelId then return end
+
+	local ok, model = pcall(function()
+		return InsertService:LoadAsset(outfitDef.DTIModelId)
+	end)
+	if not ok or not model then
+		warn(`[CharacterCreator] Failed to load DTI model: {model}`)
+		return
+	end
+
+	for _, rig in model:GetDescendants() do
+		if rig:IsA("Model") and rig.Name:match("Rig$") then
+			local partCache = {}
+			local jointCache = {}
+
+			for _, part in rig:GetChildren() do
+				if part:IsA("MeshPart") then
+					-- Template strips all children; skin color set via Color3 at spawn time
+					local template = part:Clone()
+					for _, child in template:GetChildren() do
+						child:Destroy()
+					end
+					partCache[part.Name] = template
+
+					-- Cache Motor6D C0/C1 for joint alignment
+					local partJoints = {}
+					for _, child in part:GetChildren() do
+						if child:IsA("Motor6D") then
+							partJoints[child.Name] = {
+								C0 = child.C0,
+								C1 = child.C1,
+							}
+						end
+					end
+					if next(partJoints) then
+						jointCache[part.Name] = partJoints
+					end
+				end
+			end
+
+			-- Cache clothing meshes from EquippedAccessories
+			local clothingCache = {}
+			local accessories = rig:FindFirstChild("EquippedAccessories")
+			if accessories then
+				for _, meshPart in accessories:GetDescendants() do
+					if meshPart:IsA("MeshPart") then
+						-- Determine which body part this attaches to
+						local folder = meshPart.Parent
+						local bodyPartName = "UpperTorso"
+						if folder:IsA("Folder") and rig:FindFirstChild(folder.Name) then
+							bodyPartName = folder.Name
+						end
+
+						-- Calculate CFrame offset relative to the body part
+						local bodyPart = rig:FindFirstChild(bodyPartName)
+						local offset = CFrame.new()
+						if bodyPart then
+							offset = bodyPart.CFrame:Inverse() * meshPart.CFrame
+						end
+
+						-- Clone template, strip welds
+						local template = meshPart:Clone()
+						for _, child in template:GetChildren() do
+							if child:IsA("WeldConstraint") or child:IsA("Weld") then
+								child:Destroy()
+							end
+						end
+
+						table.insert(clothingCache, {
+							template = template,
+							offset = offset,
+							bodyPart = bodyPartName,
+						})
+					end
+				end
+			end
+
+			dtiRigs[rig.Name] = {
+				parts = partCache,
+				joints = jointCache,
+				clothing = clothingCache,
+			}
+			print(`[CharacterCreator] Cached DTI rig: {rig.Name} ({#clothingCache} clothing pieces)`)
+		end
+	end
+
+	model:Destroy()
+	print("[CharacterCreator] DTI model loaded and cached")
+end
+
+---------------------------------------------------------------------------
+-- DTI Body Application
+---------------------------------------------------------------------------
+
+local function applyDTIBody(character: Model, rigName: string, skinColor: Color3?)
+	local rigData = dtiRigs[rigName]
+	if not rigData then
+		warn(`[CharacterCreator] No cached DTI rig: {rigName}`)
+		return
+	end
+
+	local parts = rigData.parts
+	local joints = rigData.joints
+
+	-- Phase 1: Replace each body part with a DTI clone
+	local replaced = {}
+	for _, partName in R15_BODY_PARTS do
+		local dtiTemplate = parts[partName]
+		local oldPart = character:FindFirstChild(partName)
+		if not dtiTemplate or not oldPart or not oldPart:IsA("MeshPart") then continue end
+
+		-- Clone DTI body part (MeshId baked in, no SurfaceAppearance)
+		local newPart = dtiTemplate:Clone()
+		newPart.Name = partName
+		newPart.CFrame = oldPart.CFrame
+		newPart.Transparency = oldPart.Transparency
+		newPart.Anchored = false
+		newPart.CanCollide = oldPart.CanCollide
+		newPart.Color = skinColor or Color3.fromRGB(204, 142, 105)
+
+		-- Move children from old part (skip SurfaceAppearance)
+		for _, child in oldPart:GetChildren() do
+			if not child:IsA("SurfaceAppearance") then
+				child.Parent = newPart
+			end
+		end
+
+		-- Fix Motor6D self-references in the new part
+		for _, child in newPart:GetChildren() do
+			if child:IsA("Motor6D") then
+				if child.Part0 == oldPart then child.Part0 = newPart end
+				if child.Part1 == oldPart then child.Part1 = newPart end
+			end
+		end
+
+		-- Fix Motor6D references in other character parts
+		for _, desc in character:GetDescendants() do
+			if desc:IsA("Motor6D") then
+				if desc.Part0 == oldPart then desc.Part0 = newPart end
+				if desc.Part1 == oldPart then desc.Part1 = newPart end
+			end
+		end
+
+		oldPart:Destroy()
+		newPart.Parent = character
+		replaced[partName] = true
+	end
+
+	-- Phase 2: Update Motor6D C0/C1 to match DTI proportions
+	for _, motor in character:GetDescendants() do
+		if not motor:IsA("Motor6D") then continue end
+
+		local hostName = motor.Parent and motor.Parent.Name
+		local jointData = joints[hostName] and joints[hostName][motor.Name]
+		if not jointData then continue end
+
+		local p0Name = motor.Part0 and motor.Part0.Name
+		if p0Name and (replaced[p0Name] or p0Name == "HumanoidRootPart") then
+			motor.C0 = jointData.C0
+		end
+
+		if hostName and replaced[hostName] then
+			motor.C1 = jointData.C1
+		end
+	end
+
+	-- Phase 3: Weld DTI clothing meshes onto the character
+	local clothing = rigData.clothing
+	if clothing then
+		for _, item in clothing do
+			local attachPart = character:FindFirstChild(item.bodyPart)
+			if not attachPart then continue end
+
+			local clone = item.template:Clone()
+			clone.CFrame = attachPart.CFrame * item.offset
+			clone.Anchored = false
+			clone.CanCollide = false
+			clone.Massless = true
+
+			local weld = Instance.new("WeldConstraint")
+			weld.Part0 = clone
+			weld.Part1 = attachPart
+			weld.Parent = clone
+
+			clone.Parent = character
+		end
+	end
+
+	-- Match head color to DTI body skin tone
+	if skinColor then
+		local head = character:FindFirstChild("Head")
+		if head then
+			head.Color = skinColor
+		end
+	end
+
+	-- Remove classic Shirt/Pants instances (they don't render on DTI meshes)
+	local shirt = character:FindFirstChildOfClass("Shirt")
+	if shirt then shirt:Destroy() end
+	local pants = character:FindFirstChildOfClass("Pants")
+	if pants then pants:Destroy() end
+
+	print(`[CharacterCreator] Applied DTI body: {rigName}`)
+end
+
+---------------------------------------------------------------------------
+-- Bundle Loading (Male)
+---------------------------------------------------------------------------
+
+local function applyBundle(desc: HumanoidDescription, bundleId: number): boolean
 	local ok, info = pcall(function()
 		return AssetService:GetBundleDetailsAsync(bundleId)
 	end)
 	if not ok or not info then
 		warn(`[CharacterCreator] Failed to load bundle {bundleId}: {info}`)
-		return
+		return false
 	end
 
-	print(`[CharacterCreator] Bundle has {#info.Items} items`)
-
 	for _, item in info.Items do
-		print(`[CharacterCreator] Bundle item: {item.Name} (Type={item.Type}, Id={item.Id})`)
 		if item.Type == "UserOutfit" then
 			local bundleOk, bundleDesc = pcall(function()
 				return Players:GetHumanoidDescriptionFromOutfitId(item.Id)
 			end)
 			if bundleOk and bundleDesc then
-				print("[CharacterCreator] Applying body parts from bundle")
+				desc.Head = bundleDesc.Head
 				desc.Torso = bundleDesc.Torso
 				desc.LeftArm = bundleDesc.LeftArm
 				desc.RightArm = bundleDesc.RightArm
@@ -2018,129 +2256,114 @@ local function applyBundle(desc: HumanoidDescription, bundleId: number, skipHead
 				desc.WidthScale = bundleDesc.WidthScale
 				desc.HeightScale = bundleDesc.HeightScale
 				desc.DepthScale = bundleDesc.DepthScale
-				if not skipHead then
-					desc.Head = bundleDesc.Head
-					desc.HeadScale = bundleDesc.HeadScale
-				end
-				return
-			else
-				warn(`[CharacterCreator] GetHumanoidDescriptionFromOutfitId failed: {bundleDesc}`)
+				desc.HeadColor = bundleDesc.HeadColor
+				desc.TorsoColor = bundleDesc.TorsoColor
+				desc.LeftArmColor = bundleDesc.LeftArmColor
+				desc.RightArmColor = bundleDesc.RightArmColor
+				desc.LeftLegColor = bundleDesc.LeftLegColor
+				desc.RightLegColor = bundleDesc.RightLegColor
+				desc.Face = bundleDesc.Face
+				return true
 			end
 		end
 	end
+	return false
 end
 
--- Apply the outfit for a given gender to a player's character
-function CharacterCreator.applyOutfit(player: Player, gender: string)
-	local character = player.Character
-	if not character then
-		warn("[CharacterCreator] No character found")
-		return
-	end
+---------------------------------------------------------------------------
+-- Description Builder
+---------------------------------------------------------------------------
 
-	local humanoid = character:FindFirstChildOfClass("Humanoid")
-	if not humanoid then
-		warn("[CharacterCreator] No humanoid found")
-		return
-	end
-
+function CharacterCreator.buildDescription(gender: string): HumanoidDescription?
 	local outfitDef = Constants.Outfits[gender]
-	if not outfitDef then
-		warn(`[CharacterCreator] No outfit defined for {gender}`)
-		return
-	end
+	if not outfitDef then return nil end
 
-	print(`[CharacterCreator] Applying {gender} outfit to {player.Name}`)
+	if not descriptionCache[gender] then
+		local desc = Instance.new("HumanoidDescription")
 
-	-- Get current description
-	local ok, desc = pcall(function()
-		return humanoid:GetAppliedDescription()
-	end)
-	if not ok or not desc then
-		warn(`[CharacterCreator] GetAppliedDescription failed: {desc}`)
-		desc = Instance.new("HumanoidDescription")
-	end
-
-	-- Apply body bundle
-	if outfitDef.BundleId then
-		applyBundle(desc, outfitDef.BundleId, outfitDef.SkipBundleHead)
-	end
-
-	-- Apply classic clothing (2D wraps) — only if specified
-	if outfitDef.ClassicShirt then
-		desc.Shirt = outfitDef.ClassicShirt
-		print(`[CharacterCreator] Classic shirt = {outfitDef.ClassicShirt}`)
-	else
-		desc.Shirt = 0
-	end
-	if outfitDef.ClassicPants then
-		desc.Pants = outfitDef.ClassicPants
-		print(`[CharacterCreator] Classic pants = {outfitDef.ClassicPants}`)
-	else
-		desc.Pants = 0
-	end
-	desc.GraphicTShirt = 0
-
-	-- Remove existing accessories for a clean look
-	desc.HatAccessory = ""
-	desc.HairAccessory = ""
-	desc.FaceAccessory = ""
-	desc.NeckAccessory = ""
-	desc.ShouldersAccessory = ""
-	desc.FrontAccessory = ""
-	desc.BackAccessory = ""
-	desc.WaistAccessory = ""
-
-	-- Also set layered clothing as accessories (belt and suspenders)
-	if outfitDef.LayeredClothing then
-		local accessories = {}
-		for _, lc in outfitDef.LayeredClothing do
-			local accType = ACCESSORY_TYPE_MAP[lc.Type]
-			if accType then
-				table.insert(accessories, {
-					AssetId = lc.AssetId,
-					AccessoryType = accType,
-					IsLayered = true,
-					Order = #accessories + 1,
-				})
-				print(`[CharacterCreator] Layered accessory: {lc.Type} = {lc.AssetId}`)
-			end
+		-- Male uses bundle; Female skips bundles (DTI body applied post-spawn)
+		if outfitDef.BundleId then
+			applyBundle(desc, outfitDef.BundleId)
 		end
-		if #accessories > 0 then
-			local setOk, setErr = pcall(function()
-				desc:SetAccessories(accessories, false)
-			end)
-			if not setOk then
-				warn(`[CharacterCreator] SetAccessories failed: {setErr}`)
-			end
+
+		-- Classic clothing (only for non-DTI outfits; DTI uses 3D clothing meshes)
+		if not outfitDef.DTIRig then
+			desc.Shirt = outfitDef.ClassicShirt or 0
+			desc.Pants = outfitDef.ClassicPants or 0
 		end
+		desc.GraphicTShirt = 0
+
+		-- Face
+		if outfitDef.Face then
+			desc.Face = outfitDef.Face
+		end
+
+		-- Skin color (all body parts for consistency)
+		if outfitDef.SkinColor then
+			desc.HeadColor = outfitDef.SkinColor
+			desc.TorsoColor = outfitDef.SkinColor
+			desc.LeftArmColor = outfitDef.SkinColor
+			desc.RightArmColor = outfitDef.SkinColor
+			desc.LeftLegColor = outfitDef.SkinColor
+			desc.RightLegColor = outfitDef.SkinColor
+		end
+
+		-- Body proportions
+		if outfitDef.BodyTypeScale ~= nil then
+			desc.BodyTypeScale = outfitDef.BodyTypeScale
+		end
+		if outfitDef.ProportionScale ~= nil then
+			desc.ProportionScale = outfitDef.ProportionScale
+		end
+		if outfitDef.HeadScale ~= nil then
+			desc.HeadScale = outfitDef.HeadScale
+		end
+
+		-- Accessories — clear all, then set hair
+		desc.HatAccessory = ""
+		desc.FaceAccessory = ""
+		desc.NeckAccessory = ""
+		desc.ShouldersAccessory = ""
+		desc.FrontAccessory = ""
+		desc.BackAccessory = ""
+		desc.WaistAccessory = ""
+		desc.HairAccessory = outfitDef.HairAccessory or ""
+
+		descriptionCache[gender] = desc
 	end
 
-	-- Apply the full description
-	local applyOk, applyErr = pcall(function()
-		humanoid:ApplyDescription(desc)
-	end)
-	if not applyOk then
-		warn(`[CharacterCreator] ApplyDescription failed: {applyErr}`)
+	return descriptionCache[gender]:Clone()
+end
+
+---------------------------------------------------------------------------
+-- Spawn
+---------------------------------------------------------------------------
+
+function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
+	local desc = CharacterCreator.buildDescription(gender)
+	if desc then
+		local ok, err = pcall(function()
+			player:LoadCharacterWithHumanoidDescription(desc)
+		end)
+		if not ok then
+			warn(`[CharacterCreator] LoadCharacterWithHumanoidDescription failed: {err}`)
+			player:LoadCharacter()
+		end
 	else
-		print(`[CharacterCreator] ApplyDescription succeeded for {player.Name}`)
+		player:LoadCharacter()
 	end
 
-	-- Log what the character actually has after apply
-	task.wait(0.5)
-	local char = player.Character
-	if char then
-		local hasShirt = char:FindFirstChildOfClass("Shirt")
-		local hasPants = char:FindFirstChildOfClass("Pants")
-		local accCount = 0
-		for _, child in char:GetChildren() do
-			if child:IsA("Accessory") then accCount += 1 end
-		end
-		print(`[CharacterCreator] Post-apply check: Shirt={hasShirt and "YES" or "NO"}, Pants={hasPants and "YES" or "NO"}, Accessories={accCount}`)
+	-- Replace body parts with DTI clones + weld clothing
+	local outfitDef = Constants.Outfits[gender]
+	if outfitDef and outfitDef.DTIRig and player.Character then
+		applyDTIBody(player.Character, outfitDef.DTIRig, outfitDef.SkinColor)
 	end
 end
 
--- Save the gender choice to the player's profile
+---------------------------------------------------------------------------
+-- Persistence
+---------------------------------------------------------------------------
+
 function CharacterCreator.saveGender(player: Player, gender: string): boolean
 	local data = PlayerData.get(player)
 	if not data then return false end
@@ -2148,7 +2371,6 @@ function CharacterCreator.saveGender(player: Player, gender: string): boolean
 	data.Character.Gender = gender
 	data.Character.Created = true
 
-	-- Update the synced BoolValue so client knows
 	local createdVal = player:FindFirstChild("CharacterCreated")
 	if createdVal then
 		createdVal.Value = true
@@ -2157,51 +2379,32 @@ function CharacterCreator.saveGender(player: Player, gender: string): boolean
 	return true
 end
 
--- Initialize: create RemoteEvent and handle gender selection
+---------------------------------------------------------------------------
+-- Init
+---------------------------------------------------------------------------
+
 function CharacterCreator.init(spawnedPlayers: { [number]: true })
+	-- Load DTI model in background (will be ready before any player clicks gender)
+	task.spawn(loadDTIModel)
+
 	local genderEvent = Instance.new("RemoteEvent")
 	genderEvent.Name = "GenderSelected"
 	genderEvent.Parent = ReplicatedStorage
 
 	genderEvent.OnServerEvent:Connect(function(player, gender)
-		print(`[CharacterCreator] === GenderSelected received from {player.Name}: {gender} ===`)
-
-		if gender ~= "Male" and gender ~= "Female" then
-			warn(`[CharacterCreator] Invalid gender from {player.Name}: {gender}`)
-			return
-		end
+		if gender ~= "Male" and gender ~= "Female" then return end
 
 		local data = PlayerData.get(player)
-		print(`[CharacterCreator] PlayerData.get = {data and "loaded" or "NIL"}`)
-
 		if not data then
-			warn("[CharacterCreator] Profile not loaded — spawning without outfit")
 			player:LoadCharacter()
 			return
 		end
-
-		if data.Character.Created then
-			warn("[CharacterCreator] Already created — skipping")
-			return
-		end
-
-		if spawnedPlayers[player.UserId] then
-			warn("[CharacterCreator] Already spawned — skipping")
-			return
-		end
+		if data.Character.Created and not FeatureFlags.get("NewPlayer") then return end
+		if spawnedPlayers[player.UserId] then return end
 		spawnedPlayers[player.UserId] = true
 
 		CharacterCreator.saveGender(player, gender)
-		print("[CharacterCreator] Calling LoadCharacter...")
-		player:LoadCharacter()
-
-		task.spawn(function()
-			print("[CharacterCreator] Waiting for CharacterAdded...")
-			local character = player.CharacterAdded:Wait()
-			character:WaitForChild("Humanoid")
-			task.wait(1)
-			CharacterCreator.applyOutfit(player, gender)
-		end)
+		CharacterCreator.spawnWithOutfit(player, gender)
 
 		FirebaseLogger.log("character", "created", {
 			userId = player.UserId,
@@ -3637,7 +3840,7 @@ local ProfileTemplate = {
 	},
 }
 
-local GameProfileStore = ProfileService.GetProfileStore("PlayerData_v3", ProfileTemplate)
+local GameProfileStore = ProfileService.GetProfileStore("PlayerData_v4", ProfileTemplate)
 
 local PlayerData = {}
 
@@ -6748,36 +6951,9 @@ end
 --------------------------------------------------------------------------------
 
 local function cameraIntro()
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
-
-	local startCF = camera.CFrame
-	local targetCF = CFrame.new(0, 25, 50) * CFrame.Angles(math.rad(-15), 0, 0)
-	local elapsed = 0
-	local duration = 2.5
-
-	local conn
-	conn = RunService.RenderStepped:Connect(function(dt)
-		elapsed += dt
-		if elapsed >= duration then
-			conn:Disconnect()
-			camera.CameraType = Enum.CameraType.Custom
-			return
-		end
-		local alpha = 1 - (1 - elapsed / duration) ^ 3
-		camera.CFrame = startCF:Lerp(targetCF, alpha)
-	end)
-
-	-- Safety: hand back camera after character loads
-	task.spawn(function()
-		player.CharacterAdded:Wait()
-		task.wait(0.5)
-		if conn and conn.Connected then
-			conn:Disconnect()
-		end
-		camera.CameraType = Enum.CameraType.Custom
-		logToServer("camera_intro_complete")
-	end)
+	-- Immediately hand camera to the player — no slow pan
+	camera.CameraType = Enum.CameraType.Custom
+	logToServer("camera_intro_complete")
 end
 
 --------------------------------------------------------------------------------
@@ -7017,6 +7193,11 @@ else
 	print("[Client] CharacterCreated NOT FOUND (timeout)")
 end
 local needsCreation = not (createdVal and createdVal.Value)
+
+-- NewPlayer flag = true: always show gender selection (even for returning players)
+if not needsCreation and getFlag("NewPlayer") then
+	needsCreation = true
+end
 
 if needsCreation then
 	print("[Client] Showing gender selection...")

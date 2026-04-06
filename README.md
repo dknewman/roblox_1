@@ -1,6 +1,6 @@
-# Social Spotlight Plaza
+# Baddies: Play to Slay!
 
-A fully procedural, neon-lit futuristic social hub built in Roblox using Lua and Rojo. The entire environment — geometry, lighting, screens, NPCs — is constructed at runtime from Roblox primitives with no external assets.
+A neon-lit social hub built in Roblox using Luau and Rojo. The environment is constructed procedurally at runtime. Players choose a gender at first join and spawn with a custom outfit — the female body uses DTI (Dress to Impress) mesh parts loaded from the Creator Store.
 
 ## Quick Start
 
@@ -21,28 +21,34 @@ The server scripts construct the plaza when the game starts. You must **press Pl
 ```
 src/
   client/
-    init.client.luau          -- Camera intro + client log forwarding
+    init.client.luau           -- Intro screen, gender select, settings, music, log forwarding
   server/
-    init.server.luau           -- Orchestrator: build → light → spawn → logging
+    init.server.luau           -- Orchestrator: build → light → spawn → characters → logging
     Modules/
       MapBuilder.luau          -- Procedural geometry (10 build phases)
       LightingController.luau  -- Atmosphere, bloom, color correction
       ScreenGenerator.luau     -- Cyan billboard SurfaceGui content
-      NPCSpawner.luau          -- R15 crowd with idle animations
-      FirebaseLogger.luau      -- Firebase Realtime Database logging
+      NPCSpawner.luau          -- R6 crowd with idle animations
+      CharacterCreator.luau    -- Gender-based outfits with DTI body mesh replacement
+      PlayerData.luau           -- Persistent profiles via ProfileService
+      ProfileService.luau       -- Third-party DataStore wrapper (madwork)
+      FeatureFlags.luau         -- Firebase-backed remote flag system
+      FirebaseLogger.luau       -- Firebase Realtime Database logging
   shared/
-    Constants.luau             -- Colors, dimensions, NPC config, Firebase config
+    Constants.luau             -- Colors, dimensions, outfits, flags, Firebase config
 ```
 
 ## Architecture
 
-The environment is built in three sequential phases on the server:
+The server builds the environment in three phases, then handles player characters:
 
-1. **MapBuilder.build()** — Constructs all geometry: enclosed walls/ceiling, keyhole floor design, tiered stage with portal circle, grand staircases with individual steps, balconies, billboard screens, side props (arcade, food truck, seating, selfie booths), neon lighting strips, and the "SOCIAL SPOTLIGHT PLAZA" sign.
+1. **MapBuilder.build()** — Constructs all geometry: enclosed walls/ceiling, keyhole floor design, tiered stage with portal circle, grand staircases, balconies, billboard screens, side props, neon lighting strips, and the "SOCIAL SPOTLIGHT PLAZA" sign.
 
 2. **LightingController.apply()** — Sets the pink/purple neon atmosphere: ambient lighting, Bloom, ColorCorrection, Atmosphere haze, and auto-attaches PointLights to Neon material parts.
 
-3. **NPCSpawner.spawn()** — Creates 40 R15 humanoid NPCs with random colors and idle animations (dance, wave, cheer, applaud) that wander between navigation points.
+3. **NPCSpawner.spawn()** — Creates 20 R6 humanoid NPCs with random colors that wander between navigation points.
+
+4. **Character Creation** — `CharacterAutoLoads` is disabled. New players see a gender selection screen (Male/Female). The server spawns characters via `LoadCharacterWithHumanoidDescription` with the configured outfit. Female characters get DTI body meshes swapped in post-spawn by cloning MeshParts from a Creator Store model. Returning players respawn with their saved gender automatically.
 
 ## Visual Style
 
@@ -72,9 +78,12 @@ Set `DatabaseUrl = ""` or `Enabled = false` to disable logging entirely (no HTTP
 ## Editing
 
 - **Colors & dimensions**: Edit `src/shared/Constants.luau`
+- **Outfits & character config**: Edit `Constants.Outfits` in `src/shared/Constants.luau`
 - **Geometry layout**: Edit `src/server/Modules/MapBuilder.luau` (organized by build phase)
 - **Screen content**: Edit `src/server/Modules/ScreenGenerator.luau`
 - **Atmosphere**: Edit `src/server/Modules/LightingController.luau`
 - **NPC behavior**: Edit `src/server/Modules/NPCSpawner.luau`
+- **Character creation**: Edit `src/server/Modules/CharacterCreator.luau`
+- **Player data template**: Edit `src/server/Modules/PlayerData.luau`
 - **Logging**: Edit `src/server/Modules/FirebaseLogger.luau`
 - **Lighting defaults**: `default.project.json` under the `Lighting` block

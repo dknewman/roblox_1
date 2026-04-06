@@ -83,11 +83,17 @@ Constants.Music = {
 -- All IDs verified via economy.roblox.com/v2/assets/{id}/details
 Constants.Outfits = {
 	Female = {
-		BundleId = 239,              -- "Woman" body bundle (free, official)
-		UseDefaultHead = true,       -- skip the bald Woman head, use normal head
+		DTIModelId = 90731674309295, -- Creator Store DTI body model
+		DTIRig = "WomanRig",        -- rig name inside the model
+		UseDefaultHead = true,       -- skip DTI head, use default R15 head
 		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
 		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
-		HairAccessory = "62724852",  -- Chestnut Bun (from Woman bundle)
+		HairAccessory = "62724852",  -- Chestnut Bun
+		Face = 86487766,             -- Woman Face (feminine, eyelashes)
+		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
+		BodyTypeScale = 1,           -- fully proportioned R15 body
+		ProportionScale = 10,         -- wider proportions
+		HeadScale = 0.65,             -- smaller head to match DTI body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)

@@ -61,6 +61,51 @@ Spawns crowd NPCs from a cloned R6 rig template (no network dependency):
 - **Behavior**: Wanders between navigation points with random pauses (2-6 seconds), cleanup via `model.Destroying`
 - **Safety**: Wrapped in pcall for graceful failure
 
+### CharacterCreator (`src/server/Modules/CharacterCreator.luau`)
+
+Manages character appearance based on gender selection. Uses two approaches depending on gender:
+
+- **Female**: Spawns with `LoadCharacterWithHumanoidDescription` (face, skin color, hair, head scale), then **replaces all R15 body parts (except Head)** with cloned DTI (Dress to Impress) MeshParts loaded from a Creator Store model (`InsertService:LoadAsset`). MeshId is read-only in Roblox, so entire MeshParts are cloned and swapped — Motor6D joints are reconnected and C0/C1 offsets updated to DTI proportions. SurfaceAppearance is stripped from DTI parts; skin color applied via solid `Color3`. Head is kept as default R15 with `HeadScale = 0.65` and head color matched to body. DTI clothing meshes from `EquippedAccessories` are welded onto the character. Classic `Shirt`/`Pants` instances are removed (incompatible UV mapping with DTI meshes).
+- **Male**: Uses the standard Roblox "Man" body bundle (238) via `GetBundleDetailsAsync` + `GetHumanoidDescriptionFromOutfitId`.
+
+**Startup**: Loads the DTI model (asset 90731674309295) in a background `task.spawn` during `init()`. Caches clonable MeshPart templates (all children stripped including SurfaceAppearance), Motor6D C0/C1 joint data, and clothing mesh templates with CFrame offsets from `EquippedAccessories`.
+
+**Spawn flow**:
+1. `buildDescription(gender)` — creates a `HumanoidDescription` with face, skin color, hair, body scales, head scale (cached per gender). Skips classic clothing for DTI outfits.
+2. `spawnWithOutfit(player, gender)` — calls `LoadCharacterWithHumanoidDescription`, then runs `applyDTIBody` for female characters
+3. `applyDTIBody(character, rigName, skinColor)` — Phase 1: clones DTI MeshParts with solid skin Color3, moves children (Motor6D, Attachments) from old parts, fixes Part0/Part1 references. Phase 2: updates Motor6D C0/C1 to DTI proportions. Phase 3: clones and welds DTI clothing meshes onto body parts. Also sets head color to match body and removes classic Shirt/Pants.
+
+**API**:
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `buildDescription` | `(gender: string) → HumanoidDescription?` | Build outfit description (cached) |
+| `spawnWithOutfit` | `(player, gender)` | Spawn character with full outfit + DTI body |
+| `saveGender` | `(player, gender) → boolean` | Persist gender choice to profile |
+| `init` | `(spawnedPlayers)` | Load DTI model, create GenderSelected RemoteEvent |
+
+### PlayerData (`src/server/Modules/PlayerData.luau`)
+
+Persistent player data via ProfileService (DataStore wrapper). Profiles are loaded on join and released on leave.
+
+**Profile template** (`PlayerData_v4`):
+```
+Character: { Created, Gender, BodyType, SkinColor, HairStyle, HairColor, FaceId, OutfitTop, OutfitBottom, ... }
+Stats: { Coins, TotalPlayTime, SessionCount }
+Settings: { MusicVolume, Brightness }
+```
+
+**Client sync**: Creates a `BoolValue` named `CharacterCreated` on the player so the client knows whether to show the gender selection screen.
+
+**API**:
+
+| Method | Signature | Description |
+|--------|-----------|-------------|
+| `loadProfile` | `(player)` | Load profile from DataStore, kick on failure |
+| `releaseProfile` | `(player)` | Release profile lock |
+| `get` | `(player) → data?` | Get profile data table (nil if not loaded) |
+| `isLoaded` | `(player) → boolean` | Check if profile is loaded |
+
 ### FeatureFlags (`src/server/Modules/FeatureFlags.luau`)
 
 Remote feature flag system backed by Firebase Realtime Database.
@@ -83,7 +128,7 @@ Remote feature flag system backed by Firebase Realtime Database.
 | `NPCsEnabled` | `true` | NPC crowd spawning (server) |
 | `MusicEnabled` | `true` | Background music (client) |
 | `IntroScreenEnabled` | `true` | Intro screen + camera intro (client) |
-| `NewPlayer` | `true` | New-player onboarding flow (reserved for future use) |
+| `NewPlayer` | `false` | When true, always shows gender selection even for returning players |
 | `Maintenance` | `false` | Kicks all players and blocks joins when true; halts server init |
 
 ### FirebaseLogger (`src/server/Modules/FirebaseLogger.luau`)
@@ -115,6 +160,10 @@ Sends structured log events to Firebase Realtime Database via the REST API (`POS
 | NPCSpawner | `npc` | `spawn_start` | targetCount |
 | NPCSpawner | `npc` | `spawn_failed` | index, error |
 | NPCSpawner | `npc` | `spawn_summary` | targetCount, failCount |
+| CharacterCreator | `character` | `created` | userId, displayName, gender |
+| init.server | `player` | `play_pressed` | userId, displayName |
+| PlayerData | `player_data` | `loaded` | userId, displayName, characterCreated, sessionCount |
+| PlayerData | `player_data` | `load_failed` | userId |
 | init.client | `client` | `ready` | userId, displayName |
 | init.client | `client` | `camera_intro_complete` | userId, displayName |
 
@@ -130,7 +179,10 @@ Central configuration:
 - **ScreenFaces**: Front and Back
 - **IntroScreen**: `ImageId` for the intro background image asset
 - **Music**: `SoundId` and `Volume` for looping background music
-- **FeatureFlags**: Default values for `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer` — overridable via Firebase
+- **Outfits**: Gender-based outfit definitions:
+  - `Female`: DTI body model (asset 90731674309295, WomanRig), UseDefaultHead, hair accessory, face (86487766), skin color (warm caramel), BodyTypeScale=1, ProportionScale=10, HeadScale=0.65
+  - `Male`: Man body bundle (238), classic shirt/pants IDs
+- **FeatureFlags**: Default values for `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer`, `Maintenance` — overridable via Firebase
 - **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging and feature flag configuration
 
 ## Client (`src/client/init.client.luau`)
@@ -139,10 +191,11 @@ Manages the full player experience flow:
 
 1. **Feature flags** — reads flags from `ReplicatedStorage/FeatureFlags` (synced by server), falls back to Constants defaults
 2. **Background music** — starts if `MusicEnabled` flag is true, loops for entire session (volume configurable in Constants)
-2. **Settings menu** — persistent gear icon (top-right) with volume and brightness sliders, visible on both intro screen and in-game
+3. **Settings menu** — persistent gear icon (top-right) with volume and brightness sliders, visible on both intro screen and in-game
 4. **Intro screen** — shown if `IntroScreenEnabled` flag is true. Full-screen image with animated purple-to-pink galaxy sparkle fill behind it, `UIAspectRatioConstraint` for cross-device scaling. Invisible button hitboxes over the graphic's PLAY/CUSTOMIZE/SHOP buttons. PLAY fires `PlayerReady` to spawn the character; CUSTOMIZE and SHOP show a "Coming Soon!" popup. If disabled, character spawns immediately.
-5. **Camera intro** — elevated overview (Y=80) sweeping down over 2.5 seconds with cubic ease-out after PLAY is pressed
-6. **Character spawn** — `CharacterAutoLoads` is disabled server-side; character loads only after clicking PLAY via the `PlayerReady` RemoteEvent
+5. **Gender selection** — shown for new players (or when `NewPlayer` flag is true). Dual-button modal (Female pink / Male purple). Fires `GenderSelected` RemoteEvent to server. Checks `CharacterCreated` BoolValue on the player to determine if selection is needed.
+6. **Camera intro** — instant handoff (`camera.CameraType = Enum.CameraType.Custom`) after character spawn
+7. **Character spawn** — `CharacterAutoLoads` is disabled server-side (set before any `require` calls to prevent race conditions); character loads after gender selection (new players) or PLAY button (returning players)
 
 ## Data Flow
 
@@ -165,10 +218,14 @@ init.server.luau
   │    ├─ Caches screen + seat parts for NPC interactions
   │    └─ FirebaseLogger (spawn_start / spawn_failed / spawn_summary)
   ├─ FirebaseLogger.log("server", "startup_complete")
-  ├─ Players.CharacterAutoLoads = false
-  ├─ PlayerReady RemoteEvent → player:LoadCharacter()
-  ├─ Players.PlayerAdded → FirebaseLogger (player/joined)
-  └─ Players.PlayerRemoving → FirebaseLogger (player/left + sessionSeconds)
+  ├─ Players.CharacterAutoLoads = false (set BEFORE all requires)
+  ├─ CharacterCreator.init(spawnedPlayers)
+  │    ├─ task.spawn(loadDTIModel) — loads Creator Store model, caches MeshParts + joints
+  │    └─ GenderSelected RemoteEvent → saveGender + spawnWithOutfit
+  ├─ PlayerReady RemoteEvent → spawnWithOutfit (returning) or LoadCharacter (new)
+  ├─ Players.PlayerAdded → PlayerData.loadProfile + FirebaseLogger (player/joined)
+  │    └─ CharacterAdded → Died → respawn with saved outfit after 3s
+  └─ Players.PlayerRemoving → update TotalPlayTime, release profile, FirebaseLogger (player/left)
 
 init.client.luau
   ├─ Read feature flags from ReplicatedStorage/FeatureFlags
@@ -176,8 +233,10 @@ init.client.luau
   ├─ Settings GUI created (gear icon + sliders)
   ├─ if IntroScreenEnabled: Intro screen shown → FirebaseLogEvent:FireServer("intro_shown")
   │    ├─ PLAY clicked → PlayerReady:FireServer()
-  │    └─ Camera intro → FirebaseLogEvent:FireServer("camera_intro_complete")
+  │    └─ Camera intro (instant handoff)
   ├─ else: PlayerReady:FireServer() immediately
+  ├─ Gender selection (if new player or NewPlayer flag)
+  │    └─ GenderSelected:FireServer(gender) → server spawns with outfit
   └─ FirebaseLogEvent:FireServer("ready")
        └─ Server receives via RemoteEvent → FirebaseLogger.log("client", ...)
 ```

@@ -1,5 +1,32 @@
 # Changelog
 
+## 2026-04-06 (rev 8)
+### Changed
+- DTI body parts now use solid `Color3` skin tone instead of `SurfaceAppearance` textures. SurfaceAppearance from the DTI model caused blue/purple skin tint because the baked textures didn't render correctly outside the DTI game context.
+- Head kept as default R15 (not replaced by DTI head) with `HeadScale = 0.65` to match DTI body proportions. Head color explicitly set to match DTI body skin tone.
+- DTI clothing meshes from `EquippedAccessories` folder are now cached during model load and welded onto the character post-spawn (Phase 3 of `applyDTIBody`).
+- Classic `Shirt`/`Pants` instances removed from DTI characters post-spawn (incompatible UV mapping).
+- `buildDescription` skips classic clothing assignment for DTI outfits.
+- Female `ProportionScale` changed to 10 (wider proportions for DTI body).
+
+## 2026-04-06 (rev 7)
+### Added
+- `CharacterCreator.luau` server module: gender-based character spawning with DTI (Dress to Impress) body mesh support. Female characters use MeshParts loaded from Creator Store model (asset 90731674309295) via `InsertService:LoadAsset`. Body parts are cloned and swapped post-spawn with Motor6D joint reconnection and C0/C1 offset correction. Male characters use the standard "Man" body bundle (238).
+- `PlayerData.luau` server module: persistent player profiles via ProfileService (`PlayerData_v4` DataStore). Tracks character creation state, gender, stats (coins, play time, session count), and settings. Syncs `CharacterCreated` BoolValue to client for UI gating.
+- `ProfileService.luau`: third-party DataStore wrapper by loleris/madwork.
+- Gender selection UI on client: dual-button modal (Female pink / Male purple) shown for new players or when `NewPlayer` flag is true.
+- Death respawn handler: re-spawns with saved outfit after 3-second delay.
+- Session duration tracking: `TotalPlayTime` updated on player leave.
+
+### Changed
+- `CharacterAutoLoads = false` moved to before all `require`/`WaitForChild` calls to prevent default avatar flash from race conditions.
+- Camera intro simplified from 2.5s elevated pan to instant `CameraType.Custom` handoff.
+- `NewPlayer` feature flag default changed to `false` (was `true`). When false, returning players keep their saved gender choice.
+- Character spawning uses `LoadCharacterWithHumanoidDescription` instead of `LoadCharacter` + `ApplyDescription` to eliminate the double-load flash.
+- Female outfit config changed from bundle-based (`BundleIds`) to DTI model-based (`DTIModelId`, `DTIRig`). DTI bundles (1594017, 387180) failed with HTTP 400; replaced with Creator Store model approach.
+- Clothing IDs verified and corrected: Roblox Pink Shirt (855773575), Black Jeans (398633812), ROBLOX Jacket (607785314). Previous IDs were SolidModel assets, not clothing.
+- Body colors (HeadColor, TorsoColor, etc.) now copied from bundle descriptions to prevent all-black avatar.
+
 ## 2026-04-05 (rev 6)
 ### Added
 - `Maintenance` feature flag (default `false`). When enabled via Firebase, the server kicks all connected players, blocks new joins with a maintenance message, and halts further server initialization.
