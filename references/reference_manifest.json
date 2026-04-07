@@ -1,0 +1,32 @@
+{
+  "references": [
+    {
+      "id": "pts_intro",
+      "path": "/Users/ghost/REPOS/Roblox/Storyboards/concept/intro_screen/pts_intro.png",
+      "width": 1024,
+      "height": 1024,
+      "status": "ok"
+    },
+    {
+      "id": "pts_intro_v2",
+      "path": "/Users/ghost/REPOS/Roblox/Storyboards/concept/intro_screen/pts_intro_v2.png",
+      "width": 1024,
+      "height": 1024,
+      "status": "ok"
+    },
+    {
+      "id": "pts_intro_v3",
+      "path": "/Users/ghost/REPOS/Roblox/Storyboards/concept/intro_screen/pts_intro_v3.png",
+      "width": 1024,
+      "height": 1024,
+      "status": "ok"
+    },
+    {
+      "id": "pts_intro_v4",
+      "path": "/Users/ghost/REPOS/Roblox/Storyboards/concept/intro_screen/pts_intro_v4.png",
+      "width": 1024,
+      "height": 1024,
+      "status": "ok"
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "Blonde": {
+    "skin_rgb": [
+      177,
+      104,
+      175
+    ],
+    "skin_hex": "#b168af"
+  },
+  "BrunetteBlack": {
+    "skin_rgb": [
+      79,
+      19,
+      29
+    ],
+    "skin_hex": "#4f131d"
+  },
+  "LeaderPink": {
+    "skin_rgb": [
+      244,
+      201,
+      224
+    ],
+    "skin_hex": "#f4c9e0"
+  },
+  "LilacBucket": {
+    "skin_rgb": [
+      233,
+      163,
+      204
+    ],
+    "skin_hex": "#e9a3cc"
+  }
+}

@@ -92,7 +92,7 @@ Constants.Outfits = {
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
-		ProportionScale = 10,         -- wider proportions
+		ProportionScale = 0,         -- wider proportions
 		HeadScale = 0.65,             -- smaller head to match DTI body proportions
 	},
 	Male = {
@@ -112,12 +112,7 @@ Constants.FeatureFlags = {
 	Maintenance = false, -- kick players and block joins when true
 }
 
-Constants.Firebase = {
-	-- Set to your Firebase Realtime Database URL to enable logging.
-	-- Example: "https://my-project-default-rtdb.firebaseio.com"
-	-- Leave empty string to disable.
-	DatabaseUrl = "https://roblox-baddies-default-rtdb.firebaseio.com/",
-	Enabled = true,
-}
+-- Firebase config has moved to src/server/Modules/FirebaseConfig.luau
+-- (server-only — never replicated to clients)
 
 return Constants

@@ -1,48 +1,64 @@
 --[[
 	FirebaseLogger - Sends structured log events to Firebase Realtime Database
-	via the REST API. All calls are fire-and-forget (async, pcall-wrapped).
+	via a Cloud Function proxy. All calls are fire-and-forget (async, pcall-wrapped).
 
 	Usage:
 	  FirebaseLogger.log("category", "event_name", { key = value })
 
-	Configure your database URL in src/shared/Constants.luau:
-	  Constants.Firebase.DatabaseUrl = "https://<project-id>-default-rtdb.firebaseio.com"
+	Config lives in src/server/Modules/FirebaseConfig.luau (server-only, never
+	replicated to clients). Set FunctionsBaseUrl, RobloxSecret, and Enabled there.
 
 	HttpService.HttpEnabled must be true in Studio (Game Settings → Security).
 ]]
 
 local HttpService = game:GetService("HttpService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local FirebaseConfig = require(script.Parent.FirebaseConfig)
 
 local FirebaseLogger = {}
 
--- Cache config at startup so we don't re-read Constants on every log call
-local cfg = Constants.Firebase or {}
-local enabled = cfg.Enabled ~= false and cfg.DatabaseUrl ~= nil and cfg.DatabaseUrl ~= ""
-local baseUrl = enabled and cfg.DatabaseUrl:gsub("/$", "") or "" -- strip trailing slash
+-- Cache config at startup
+local function isConfigured()
+	return FirebaseConfig.Enabled ~= false
+		and FirebaseConfig.FunctionsBaseUrl ~= nil
+		and FirebaseConfig.FunctionsBaseUrl ~= ""
+		and FirebaseConfig.RobloxSecret ~= nil
+		and FirebaseConfig.RobloxSecret ~= ""
+		and FirebaseConfig.RobloxSecret ~= "PASTE_YOUR_SECRET_HERE"
+end
+
+local enabled  = isConfigured()
+local logUrl   = enabled and (FirebaseConfig.FunctionsBaseUrl:gsub("/$", "") .. "/rbxLog") or ""
+local secret   = enabled and FirebaseConfig.RobloxSecret or ""
 local serverId = game.JobId ~= "" and game.JobId or "studio"
 
 function FirebaseLogger.log(category: string, event: string, data: { [string]: any }?)
 	if not enabled then return end
 
 	local now = os.time()
-	local entry = {
-		timestamp = now,
-		isoTime = os.date("!%Y-%m-%dT%H:%M:%SZ", now),
+	local body = HttpService:JSONEncode({
 		category = category,
-		event = event,
-		data = data or {},
-		serverId = serverId,
-		placeId = game.PlaceId,
-		placeVersion = game.PlaceVersion,
-	}
+		entry    = {
+			timestamp   = now,
+			isoTime     = os.date("!%Y-%m-%dT%H:%M:%SZ", now),
+			category    = category,
+			event       = event,
+			data        = data or {},
+			serverId    = serverId,
+			placeId     = game.PlaceId,
+			placeVersion = game.PlaceVersion,
+		},
+	})
 
 	task.spawn(function()
 		local ok, err = pcall(function()
-			local url = baseUrl .. "/logs/" .. category .. ".json"
-			HttpService:PostAsync(url, HttpService:JSONEncode(entry), Enum.HttpContentType.ApplicationJson)
+			HttpService:PostAsync(
+				logUrl,
+				body,
+				Enum.HttpContentType.ApplicationJson,
+				false,
+				{ ["x-roblox-secret"] = secret }
+			)
 		end)
 		if not ok then
 			warn(`[FirebaseLogger] {category}/{event} failed: {err}`)

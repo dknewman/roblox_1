@@ -1,7 +1,9 @@
 --[[
 	FeatureFlags - Remote feature flags via Firebase Realtime Database.
-	Fetches from /config/featureFlags.json on startup, falls back to
-	Constants.FeatureFlags defaults if Firebase is unreachable.
+	Fetches flags from the rbxFlags Cloud Function on startup, falls back
+	to Constants.FeatureFlags defaults if the function is unreachable.
+
+	Config lives in src/server/Modules/FirebaseConfig.luau (server-only).
 
 	Usage:
 	  local FeatureFlags = require(...)
@@ -12,6 +14,7 @@ local HttpService = game:GetService("HttpService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local FirebaseConfig = require(script.Parent.FirebaseConfig)
 
 local FeatureFlags = {}
 
@@ -21,16 +24,25 @@ for k, v in Constants.FeatureFlags do
 	flags[k] = v
 end
 
--- Fetch remote overrides from Firebase
+-- Fetch remote overrides via the rbxFlags Cloud Function
 local function fetchRemote()
-	local cfg = Constants.Firebase or {}
-	if cfg.Enabled == false or not cfg.DatabaseUrl or cfg.DatabaseUrl == "" then
+	if FirebaseConfig.Enabled == false
+		or not FirebaseConfig.FunctionsBaseUrl
+		or FirebaseConfig.FunctionsBaseUrl == ""
+		or not FirebaseConfig.RobloxSecret
+		or FirebaseConfig.RobloxSecret == ""
+		or FirebaseConfig.RobloxSecret == "PASTE_YOUR_SECRET_HERE"
+	then
 		return
 	end
 
-	local url = cfg.DatabaseUrl:gsub("/$", "") .. "/config/featureFlags.json"
+	local url = FirebaseConfig.FunctionsBaseUrl:gsub("/$", "") .. "/rbxFlags"
 	local ok, result = pcall(function()
-		return HttpService:GetAsync(url)
+		return HttpService:GetAsync(
+			url,
+			false,
+			{ ["x-roblox-secret"] = FirebaseConfig.RobloxSecret }
+		)
 	end)
 
 	if ok and result and result ~= "null" then
