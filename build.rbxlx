@@ -1725,8 +1725,8 @@ Constants.Outfits = {
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
-		ProportionScale = 0,         -- wider proportions
-		HeadScale = 0.8,             -- smaller head to match DTI body proportions
+		ProportionScale = 10,         -- wider proportions
+		HeadScale = 0.65,             -- smaller head to match DTI body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)
@@ -1766,33 +1766,13 @@ end
 ]]></string>
         </Properties>
       </Item>
-      <Item class="ModuleScript" referent="6">
-        <Properties>
-          <string name="Name">baddies</string>
-          <string name="Source">return {
-	logs = {
-		errors = {
-		},
-		players = {
-		},
-		system = {
-			startup = {
-				level = "info",
-				message = "Server started",
-				timestamp = 1710000000,
-			},
-		},
-	},
-}</string>
-        </Properties>
-      </Item>
     </Item>
   </Item>
-  <Item class="ServerScriptService" referent="7">
+  <Item class="ServerScriptService" referent="6">
     <Properties>
       <string name="Name">ServerScriptService</string>
     </Properties>
-    <Item class="Script" referent="8">
+    <Item class="Script" referent="7">
       <Properties>
         <string name="Name">Server</string>
         <token name="RunContext">0</token>
@@ -1970,11 +1950,11 @@ FeatureFlags.onChanged(function(name, newValue, oldValue)
 end)
 ]]></string>
       </Properties>
-      <Item class="Folder" referent="9">
+      <Item class="Folder" referent="8">
         <Properties>
           <string name="Name">Modules</string>
         </Properties>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="9">
           <Properties>
             <string name="Name">CharacterCreator</string>
             <string name="Source"><![CDATA[--[[
@@ -2418,7 +2398,7 @@ return CharacterCreator
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="10">
           <Properties>
             <string name="Name">FeatureFlags</string>
             <string name="Source"><![CDATA[--[[
@@ -2556,7 +2536,7 @@ return FeatureFlags
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="12">
+        <Item class="ModuleScript" referent="11">
           <Properties>
             <string name="Name">FirebaseLogger</string>
             <string name="Source"><![CDATA[--[[
@@ -2625,7 +2605,7 @@ return FirebaseLogger
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="13">
+        <Item class="ModuleScript" referent="12">
           <Properties>
             <string name="Name">LightingController</string>
             <string name="Source"><![CDATA[--[[
@@ -2729,7 +2709,7 @@ return LightingController
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="14">
+        <Item class="ModuleScript" referent="13">
           <Properties>
             <string name="Name">MapBuilder</string>
             <string name="Source"><![CDATA[--[[
@@ -3485,7 +3465,7 @@ return MapBuilder
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="15">
+        <Item class="ModuleScript" referent="14">
           <Properties>
             <string name="Name">NPCSpawner</string>
             <string name="Source"><![CDATA[--[[
@@ -3790,7 +3770,7 @@ return NPCSpawner
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="16">
+        <Item class="ModuleScript" referent="15">
           <Properties>
             <string name="Name">PlayerData</string>
             <string name="Source"><![CDATA[--[[
@@ -3917,7 +3897,7 @@ return PlayerData
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="17">
+        <Item class="ModuleScript" referent="16">
           <Properties>
             <string name="Name">ProfileService</string>
             <string name="Source">-- local Madwork = _G.Madwork
@@ -6336,7 +6316,7 @@ end)
 return ProfileService</string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="18">
+        <Item class="ModuleScript" referent="17">
           <Properties>
             <string name="Name">ScreenGenerator</string>
             <string name="Source"><![CDATA[--[[
@@ -6554,21 +6534,21 @@ return ScreenGenerator
       </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="19">
+  <Item class="SoundService" referent="18">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="20">
+  <Item class="StarterPlayer" referent="19">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="21">
+    <Item class="StarterPlayerScripts" referent="20">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="22">
+      <Item class="LocalScript" referent="21">
         <Properties>
           <string name="Name">Client</string>
           <string name="Source"><![CDATA[--[[
@@ -7240,7 +7220,7 @@ print("Social Spotlight Plaza client ready!")
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="23">
+  <Item class="Workspace" referent="22">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>
