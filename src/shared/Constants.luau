@@ -75,7 +75,7 @@ Constants.IntroScreen = {
 
 -- Background music: upload eliveta-motivation-474064.mp3 and paste the asset ID
 Constants.Music = {
-	SoundId = "rbxassetid://101441438144535", -- Replace 0 with your uploaded audio asset ID
+	SoundId = "rbxassetid://84449759831841", -- Replace 0 with your uploaded audio asset ID
 	Volume = 0.4,
 }
 

@@ -3420,7 +3420,7 @@ Constants.Outfits = {
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
-		ProportionScale = 100,         -- wider proportions
+		ProportionScale = 0,         -- wider proportions
 		HeadScale = 0.65,             -- smaller head to match DTI body proportions
 	},
 	Male = {
