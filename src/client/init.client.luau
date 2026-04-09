@@ -12,8 +12,13 @@ local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild(
 local player = Players.LocalPlayer
 
 -- Read feature flags synced from server (StringValues in ReplicatedStorage/FeatureFlags)
+local featureFlagFolder: Folder? = nil
+task.spawn(function()
+	featureFlagFolder = ReplicatedStorage:WaitForChild("FeatureFlags", 30)
+end)
+
 local function getFlag(name: string): boolean
-	local folder = ReplicatedStorage:FindFirstChild("FeatureFlags")
+	local folder = featureFlagFolder or ReplicatedStorage:FindFirstChild("FeatureFlags")
 	if folder then
 		local val = folder:FindFirstChild(name)
 		if val then
@@ -23,6 +28,34 @@ local function getFlag(name: string): boolean
 	-- Fall back to Constants defaults
 	local default = Constants.FeatureFlags and Constants.FeatureFlags[name]
 	return default ~= false
+end
+
+local function observeFlag(name: string, callback: (boolean) -> ())
+	local function hookValue(valueObj: StringValue)
+		callback(valueObj.Value == "true")
+		valueObj:GetPropertyChangedSignal("Value"):Connect(function()
+			callback(valueObj.Value == "true")
+		end)
+	end
+
+	local folder = featureFlagFolder or ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if folder then
+		local existing = folder:FindFirstChild(name)
+		if existing and existing:IsA("StringValue") then
+			hookValue(existing)
+		end
+		folder.ChildAdded:Connect(function(child)
+			if child.Name == name and child:IsA("StringValue") then
+				hookValue(child)
+			end
+		end)
+	else
+		task.spawn(function()
+			local newFolder = ReplicatedStorage:WaitForChild("FeatureFlags")
+			featureFlagFolder = newFolder
+			observeFlag(name, callback)
+		end)
+	end
 end
 local playerGui = player:WaitForChild("PlayerGui")
 local camera = workspace.CurrentCamera
@@ -394,9 +427,20 @@ music.SoundId = Constants.Music.SoundId
 music.Volume = Constants.Music.Volume
 music.Looped = true
 music.Parent = playerGui
-if getFlag("MusicEnabled") then
-	music:Play()
+local function updateMusic(enabled: boolean)
+	if enabled then
+		if not music.IsPlaying then
+			music:Play()
+		end
+	else
+		if music.IsPlaying then
+			music:Stop()
+		end
+	end
 end
+
+updateMusic(getFlag("MusicEnabled"))
+observeFlag("MusicEnabled", updateMusic)
 
 --------------------------------------------------------------------------------
 -- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)

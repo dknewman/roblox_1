@@ -83,17 +83,15 @@ Constants.Music = {
 -- All IDs verified via economy.roblox.com/v2/assets/{id}/details
 Constants.Outfits = {
 	Female = {
-		DTIModelId = 90731674309295, -- Creator Store DTI body model
-		DTIRig = "WomanRig",        -- rig name inside the model
-		UseDefaultHead = true,       -- skip DTI head, use default R15 head
-		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
-		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
+		DTIRig = "BaddieFemale",     -- R15 rig from ServerStorage (Avatar Auto-Setup)
+		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
+		UseDefaultHead = false,      -- use the model's own head
 		HairAccessory = "62724852",  -- Chestnut Bun
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
 		ProportionScale = 0,         -- wider proportions
-		HeadScale = 0.65,             -- smaller head to match DTI body proportions
+		HeadScale = 0.65,            -- smaller head to match body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)

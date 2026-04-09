@@ -9,6 +9,7 @@ local AssetService = game:GetService("AssetService")
 local InsertService = game:GetService("InsertService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
@@ -29,107 +30,107 @@ local dtiRigs: { [string]: {
 
 -- R15 body part names (Head kept as default R15, scaled to match DTI body)
 local R15_BODY_PARTS = {
-	"UpperTorso", "LowerTorso",
-	"LeftUpperArm", "LeftLowerArm", "LeftHand",
-	"RightUpperArm", "RightLowerArm", "RightHand",
-	"LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
-	"RightUpperLeg", "RightLowerLeg", "RightFoot",
+	"UpperTorso",
+	"LowerTorso",
+	"LeftUpperArm",
+	"LeftLowerArm",
+	"LeftHand",
+	"RightUpperArm",
+	"RightLowerArm",
+	"RightHand",
+	"LeftUpperLeg",
+	"LeftLowerLeg",
+	"LeftFoot",
+	"RightUpperLeg",
+	"RightLowerLeg",
+	"RightFoot",
 }
+
+local function mapDTIPartName(partName: string): string
+	local lower = string.lower(partName)
+	if lower == "leftupleg" or lower == "leftupperleg" then
+		return "LeftUpperLeg"
+	elseif lower == "leftleg" or lower == "leftlowerleg" then
+		return "LeftLowerLeg"
+	elseif lower == "leftfoot" then
+		return "LeftFoot"
+	elseif lower == "rightupleg" or lower == "rightupperleg" then
+		return "RightUpperLeg"
+	elseif lower == "rightleg" or lower == "rightlowerleg" then
+		return "RightLowerLeg"
+	elseif lower == "rightfoot" then
+		return "RightFoot"
+	elseif lower == "hips" or lower == "pelvis" or lower == "lower" then
+		return "LowerTorso"
+	elseif lower == "spine02" or lower == "upper" then
+		return "UpperTorso"
+	elseif lower == "leftuparm" or lower == "leftupperarm" then
+		return "LeftUpperArm"
+	elseif lower == "leftarm" or lower == "leftlowerarm" then
+		return "LeftLowerArm"
+	elseif lower == "lefthand" or lower == "lefthand" then
+		return "LeftHand"
+	elseif lower == "rightuparm" or lower == "rightupperarm" then
+		return "RightUpperArm"
+	elseif lower == "rightarm" or lower == "rightlowerarm" then
+		return "RightLowerArm"
+	elseif lower == "righthand" or lower == "righthand" then
+		return "RightHand"
+	end
+	return partName
+end
 
 ---------------------------------------------------------------------------
 -- DTI Model Loading
 ---------------------------------------------------------------------------
 
 local function loadDTIModel()
-	local outfitDef = Constants.Outfits.Female
-	if not outfitDef or not outfitDef.DTIModelId then return end
-
-	local ok, model = pcall(function()
-		return InsertService:LoadAsset(outfitDef.DTIModelId)
-	end)
-	if not ok or not model then
-		warn(`[CharacterCreator] Failed to load DTI model: {model}`)
+	-- Load from ServerStorage instead of InsertService
+	local model = ServerStorage:FindFirstChild("BaddieFemale")
+	if not model then
+		warn("[CharacterCreator] BaddieFemale model not found in ServerStorage!")
 		return
 	end
 
-	for _, rig in model:GetDescendants() do
-		if rig:IsA("Model") and rig.Name:match("Rig$") then
-			local partCache = {}
-			local jointCache = {}
+	-- Cache the R15 body parts and Motor6D joints from the model
+	local partCache = {}
+	local jointCache = {}
 
-			for _, part in rig:GetChildren() do
-				if part:IsA("MeshPart") then
-					-- Template strips all children; skin color set via Color3 at spawn time
-					local template = part:Clone()
-					for _, child in template:GetChildren() do
-						child:Destroy()
-					end
-					partCache[part.Name] = template
-
-					-- Cache Motor6D C0/C1 for joint alignment
-					local partJoints = {}
-					for _, child in part:GetChildren() do
-						if child:IsA("Motor6D") then
-							partJoints[child.Name] = {
-								C0 = child.C0,
-								C1 = child.C1,
-							}
-						end
-					end
-					if next(partJoints) then
-						jointCache[part.Name] = partJoints
-					end
+	for _, part in model:GetDescendants() do
+		if part:IsA("MeshPart") and part.Name ~= "HumanoidRootPart" then
+			local template = part:Clone()
+			for _, child in template:GetChildren() do
+				if not child:IsA("Motor6D") then
+					child:Destroy()
 				end
 			end
+			template.Name = part.Name
+			partCache[part.Name] = template
 
-			-- Cache clothing meshes from EquippedAccessories
-			local clothingCache = {}
-			local accessories = rig:FindFirstChild("EquippedAccessories")
-			if accessories then
-				for _, meshPart in accessories:GetDescendants() do
-					if meshPart:IsA("MeshPart") then
-						-- Determine which body part this attaches to
-						local folder = meshPart.Parent
-						local bodyPartName = "UpperTorso"
-						if folder:IsA("Folder") and rig:FindFirstChild(folder.Name) then
-							bodyPartName = folder.Name
-						end
-
-						-- Calculate CFrame offset relative to the body part
-						local bodyPart = rig:FindFirstChild(bodyPartName)
-						local offset = CFrame.new()
-						if bodyPart then
-							offset = bodyPart.CFrame:Inverse() * meshPart.CFrame
-						end
-
-						-- Clone template, strip welds
-						local template = meshPart:Clone()
-						for _, child in template:GetChildren() do
-							if child:IsA("WeldConstraint") or child:IsA("Weld") then
-								child:Destroy()
-							end
-						end
-
-						table.insert(clothingCache, {
-							template = template,
-							offset = offset,
-							bodyPart = bodyPartName,
-						})
-					end
+			-- Cache Motor6D C0/C1 for joint alignment
+			local partJoints = {}
+			for _, child in part:GetChildren() do
+				if child:IsA("Motor6D") then
+					partJoints[child.Name] = {
+						C0 = child.C0,
+						C1 = child.C1,
+					}
 				end
 			end
-
-			dtiRigs[rig.Name] = {
-				parts = partCache,
-				joints = jointCache,
-				clothing = clothingCache,
-			}
-			print(`[CharacterCreator] Cached DTI rig: {rig.Name} ({#clothingCache} clothing pieces)`)
+			if next(partJoints) then
+				jointCache[part.Name] = partJoints
+			end
 		end
 	end
 
-	model:Destroy()
-	print("[CharacterCreator] DTI model loaded and cached")
+	local rigName = Constants.Outfits.Female.DTIRig or "BaddieFemale"
+	dtiRigs[rigName] = {
+		parts = partCache,
+		joints = jointCache,
+		clothing = {},
+	}
+
+	print(`[CharacterCreator] Cached BaddieFemale rig from ServerStorage ({#partCache} parts)`)
 end
 
 ---------------------------------------------------------------------------

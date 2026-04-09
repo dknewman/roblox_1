@@ -1,11 +1,12 @@
 --[[
 	NPCSpawner - Spawns crowd NPCs throughout the Social Spotlight Plaza
-	Builds one R6 rig template at startup, then clones it for each NPC.
+	Clones the BaddieFemale R15 rig from ServerStorage for each NPC.
 ]]
 
 local PhysicsService = game:GetService("PhysicsService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local FirebaseLogger = require(script.Parent.FirebaseLogger)
@@ -43,99 +44,19 @@ local DISPLAY_NAMES = {
 	"Patron", "Regular", "VIP", "Streamer", "DJ",
 }
 
-local function randomColor()
-	return Color3.fromHSV(math.random(), 0.5 + math.random() * 0.4, 0.85 + math.random() * 0.15)
+-- Get the R15 character template from ServerStorage
+local rigTemplate = ServerStorage:WaitForChild("BaddieFemale", 10)
+if not rigTemplate then
+	warn("[NPCSpawner] BaddieFemale model not found in ServerStorage! Place your Avatar Setup model there.")
 end
 
--- Build the R6 rig template once (never parented to workspace)
-local function buildTemplate()
-	local model = Instance.new("Model")
-
-	local function makePart(name, size, canCollide)
-		local p = Instance.new("Part")
-		p.Name = name
-		p.Size = size
-		p.Material = Enum.Material.SmoothPlastic
-		p.CanCollide = canCollide or false
-		p.CollisionGroup = NPC_GROUP
-		p.Parent = model
-		return p
+-- Apply NPC collision group to all BaseParts in a cloned rig
+local function applyCollisionGroup(model)
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.CollisionGroup = NPC_GROUP
+		end
 	end
-
-	local function makeJoint(name, parent, part0, part1, c0, c1)
-		local motor = Instance.new("Motor6D")
-		motor.Name = name
-		motor.Part0 = part0
-		motor.Part1 = part1
-		motor.C0 = c0
-		motor.C1 = c1
-		motor.Parent = parent
-	end
-
-	local rootPart = makePart("HumanoidRootPart", Vector3.new(2, 2, 1))
-	rootPart.Transparency = 1
-
-	local torso = makePart("Torso", Vector3.new(2, 2, 1))
-
-	local head = makePart("Head", Vector3.new(1.2, 1.2, 1.2))
-	head.TopSurface = Enum.SurfaceType.Smooth
-
-	local face = Instance.new("Decal")
-	face.Name = "face"
-	face.Texture = "rbxasset://textures/face.png"
-	face.Face = Enum.NormalId.Front
-	face.Parent = head
-
-	makePart("Left Arm", Vector3.new(1, 2, 1))
-	makePart("Right Arm", Vector3.new(1, 2, 1))
-	makePart("Left Leg", Vector3.new(1, 2, 1))
-	makePart("Right Leg", Vector3.new(1, 2, 1))
-
-	local HP = math.pi / 2
-
-	makeJoint("RootJoint", rootPart, rootPart, torso,
-		CFrame.Angles(-HP, 0, math.pi), CFrame.Angles(-HP, 0, math.pi))
-	makeJoint("Neck", torso, torso, head,
-		CFrame.new(0, 1, 0) * CFrame.Angles(-HP, 0, math.pi),
-		CFrame.new(0, -0.5, 0) * CFrame.Angles(-HP, 0, math.pi))
-	makeJoint("Left Shoulder", torso, torso, model["Left Arm"],
-		CFrame.new(-1, 0.5, 0) * CFrame.Angles(0, -HP, 0),
-		CFrame.new(0.5, 0.5, 0) * CFrame.Angles(0, -HP, 0))
-	makeJoint("Right Shoulder", torso, torso, model["Right Arm"],
-		CFrame.new(1, 0.5, 0) * CFrame.Angles(0, HP, 0),
-		CFrame.new(-0.5, 0.5, 0) * CFrame.Angles(0, HP, 0))
-	makeJoint("Left Hip", torso, torso, model["Left Leg"],
-		CFrame.new(-1, -1, 0) * CFrame.Angles(0, -HP, 0),
-		CFrame.new(-0.5, 1, 0) * CFrame.Angles(0, -HP, 0))
-	makeJoint("Right Hip", torso, torso, model["Right Leg"],
-		CFrame.new(1, -1, 0) * CFrame.Angles(0, HP, 0),
-		CFrame.new(0.5, 1, 0) * CFrame.Angles(0, HP, 0))
-
-	local humanoid = Instance.new("Humanoid")
-	humanoid.RigType = Enum.HumanoidRigType.R6
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
-	humanoid.Parent = model
-
-	model.PrimaryPart = rootPart
-	return model
-end
-
-local rigTemplate = buildTemplate()
-
--- Apply random colors to a cloned rig
-local function colorize(model)
-	local skin = randomColor()
-	local shirt = randomColor()
-	local pants = shirt:Lerp(Color3.new(0, 0, 0), 0.4)
-
-	model.Head.Color = skin
-	model["Left Arm"].Color = skin
-	model["Right Arm"].Color = skin
-	model.Torso.Color = shirt
-	model["Left Leg"].Color = pants
-	model["Right Leg"].Color = pants
 end
 
 local SCREEN_RANGE = 18
@@ -260,20 +181,30 @@ function NPCSpawner.spawn(config)
 	container.Parent = workspace
 
 	local failCount = 0
+	if not rigTemplate then
+		warn("[NPCSpawner] No rig template — skipping NPC spawn")
+		return
+	end
+
 	for i = 1, count do
 		task.defer(function()
 			local ok, err = pcall(function()
 				local rig = rigTemplate:Clone()
 				rig.Name = `PlazaNPC_{i}`
-				colorize(rig)
+				applyCollisionGroup(rig)
 
 				local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
 				humanoid.DisplayName = DISPLAY_NAMES[math.random(1, #DISPLAY_NAMES)]
 				humanoid.WalkSpeed = 7 + math.random() * 5
 
+				-- Disable states that cause ragdoll/falling issues for NPCs
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+
 				local anchor = info.navPoints[math.random(1, #info.navPoints)]
 				local offset = Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
-				rig:SetPrimaryPartCFrame(CFrame.new(anchor + offset + Vector3.new(0, 3, 0)))
+				rig:PivotTo(CFrame.new(anchor + offset + Vector3.new(0, 3, 0)))
 				rig.Parent = container
 
 				wander(rig, info.navPoints)

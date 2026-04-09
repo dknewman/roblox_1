@@ -1,1725 +1,39 @@
-<roblox xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.roblox.com/roblox.xsd" version="4">
-	<External>null</External>
-	<External>nil</External>
-	<Item class="Workspace" referent="22">
-		<Properties>
-			<float name="AirDensity">0.00120000006</float>
-			<float name="AirTurbulenceIntensity">0</float>
-			<bool name="AllowThirdPartySales">false</bool>
-			<token name="AuthorityMode">1</token>
-			<token name="AvatarUnificationMode">0</token>
-			<token name="ClientAnimatorThrottling">0</token>
-			<BinaryString name="CollisionGroupData">AQEABP////8HRGVmYXVsdA==</BinaryString>
-			<Ref name="CurrentCamera">RBXcebda650f4864c00851fa66550d1b65f</Ref>
-			<double name="DistributedGameTime">0</double>
-			<token name="EnableSLIMAvatars">0</token>
-			<bool name="ExplicitAutoJoints">true</bool>
-			<bool name="FallHeightEnabled">true</bool>
-			<float name="FallenPartsDestroyHeight">-500</float>
-			<token name="FluidForces">0</token>
-			<Vector3 name="GlobalWind">
-				<X>0</X>
-				<Y>0</Y>
-				<Z>0</Z>
-			</Vector3>
-			<float name="Gravity">196.199997</float>
-			<token name="IKControlConstraintSupport">0</token>
-			<token name="LayeredClothingCacheOptimizations">0</token>
-			<token name="LuauTypeCheckMode">0</token>
-			<token name="MeshPartHeadsAndAccessories">0</token>
-			<token name="ModelStreamingBehavior">0</token>
-			<token name="MoverConstraintRootBehavior">0</token>
-			<token name="NextGenerationReplication">0</token>
-			<token name="PathfindingUseImprovedSearch">0</token>
-			<token name="PhysicsImprovedSleep">0</token>
-			<token name="PhysicsSteppingMethod">0</token>
-			<token name="PlayerCharacterDestroyBehavior">0</token>
-			<token name="PlayerScriptsUseInputActionSystem">0</token>
-			<token name="PrimalPhysicsSolver">0</token>
-			<token name="RejectCharacterDeletions">0</token>
-			<token name="RenderingCacheOptimizations">0</token>
-			<token name="ReplicateInstanceDestroySetting">0</token>
-			<token name="Retargeting">0</token>
-			<token name="SandboxedInstanceMode">0</token>
-			<token name="SignalBehavior2">0</token>
-			<token name="StreamOutBehavior">0</token>
-			<bool name="StreamingEnabled">false</bool>
-			<token name="StreamingIntegrityMode">0</token>
-			<int name="StreamingMinRadius">64</int>
-			<int name="StreamingTargetRadius">1024</int>
-			<bool name="TerrainWeldsFixed">true</bool>
-			<token name="TouchEventsUseCollisionGroups">0</token>
-			<bool name="TouchesUseCollisionGroups">false</bool>
-			<token name="UseFixedSimulation">0</token>
-			<token name="UseNewLuauTypeSolver">2</token>
-			<token name="ValidateEnabledProximityPrompt">0</token>
-			<token name="LevelOfDetail">0</token>
-			<CoordinateFrame name="ModelMeshCFrame">
-				<X>0</X>
-				<Y>0</Y>
-				<Z>0</Z>
-				<R00>1</R00>
-				<R01>0</R01>
-				<R02>0</R02>
-				<R10>0</R10>
-				<R11>1</R11>
-				<R12>0</R12>
-				<R20>0</R20>
-				<R21>0</R21>
-				<R22>1</R22>
-			</CoordinateFrame>
-			<SharedString name="ModelMeshData">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-			<Vector3 name="ModelMeshSize">
-				<X>0</X>
-				<Y>0</Y>
-				<Z>0</Z>
-			</Vector3>
-			<token name="ModelStreamingMode">0</token>
-			<bool name="NeedsPivotMigration">false</bool>
-			<Ref name="PrimaryPart">null</Ref>
-			<float name="ScaleFactor">1</float>
-			<SharedString name="SlimHash">yuZpQdnvvUBOTYh1jqZ2cA==</SharedString>
-			<OptionalCoordinateFrame name="WorldPivotData"></OptionalCoordinateFrame>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Workspace</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000002</UniqueId>
-		</Properties>
-		<Item class="Camera" referent="RBXcebda650f4864c00851fa66550d1b65f">
-			<Properties>
-				<CoordinateFrame name="CFrame">
-					<X>-32.9058838</X>
-					<Y>12.921607</Y>
-					<Z>107.661972</Z>
-					<R00>-0.973573089</R00>
-					<R01>0.0156923756</R01>
-					<R02>0.227836043</R02>
-					<R10>9.31322686e-10</R10>
-					<R11>0.997636497</R11>
-					<R12>-0.0687129498</R12>
-					<R20>-0.228375822</R20>
-					<R21>-0.0668970793</R21>
-					<R22>-0.971271992</R22>
-				</CoordinateFrame>
-				<Ref name="CameraSubject">null</Ref>
-				<token name="CameraType">0</token>
-				<float name="FieldOfView">70</float>
-				<token name="FieldOfViewMode">0</token>
-				<CoordinateFrame name="Focus">
-					<X>-40.2002449</X>
-					<Y>15.1215096</Y>
-					<Z>138.758057</Z>
-					<R00>1</R00>
-					<R01>0</R01>
-					<R02>0</R02>
-					<R10>0</R10>
-					<R11>1</R11>
-					<R12>0</R12>
-					<R20>0</R20>
-					<R21>0</R21>
-					<R22>1</R22>
-				</CoordinateFrame>
-				<bool name="HeadLocked">true</bool>
-				<float name="HeadScale">1</float>
-				<bool name="VRTiltAndRollEnabled">false</bool>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">Camera</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e3570000038e</UniqueId>
-			</Properties>
-		</Item>
-		<Item class="Terrain" referent="RBX673423faccff48a589cac34ed3b1debf">
-			<Properties>
-				<token name="AcquisitionMethod">0</token>
-				<bool name="Decoration">false</bool>
-				<float name="GrassLength">0.699999988</float>
-				<BinaryString name="MaterialColors"><![CDATA[AAAAAAAAan8/P39rf2Y/ilY+j35fi21PZmxvZbDqw8faiVpHOi4kHh4lZlw76JxKc3trhHta
-gcLgc4RKxr21zq2UlJSM]]></BinaryString>
-				<BinaryString name="PhysicsGrid">AgMAAAAAAAAAAAAAAAA=</BinaryString>
-				<BinaryString name="SmoothGrid">AQU=</BinaryString>
-				<bool name="SmoothVoxelsUpgraded">false</bool>
-				<Color3 name="WaterColor">
-					<R>0.0500000007</R>
-					<G>0.330000013</G>
-					<B>0.360000014</B>
-				</Color3>
-				<float name="WaterReflectance">1</float>
-				<float name="WaterTransparency">0.300000012</float>
-				<float name="WaterWaveSize">0.150000006</float>
-				<float name="WaterWaveSpeed">10</float>
-				<bool name="Anchored">true</bool>
-				<bool name="AudioCanCollide">true</bool>
-				<float name="BackParamA">-0.5</float>
-				<float name="BackParamB">0.5</float>
-				<token name="BackSurface">0</token>
-				<token name="BackSurfaceInput">0</token>
-				<float name="BottomParamA">-0.5</float>
-				<float name="BottomParamB">0.5</float>
-				<token name="BottomSurface">4</token>
-				<token name="BottomSurfaceInput">0</token>
-				<CoordinateFrame name="CFrame">
-					<X>0</X>
-					<Y>0</Y>
-					<Z>0</Z>
-					<R00>1</R00>
-					<R01>0</R01>
-					<R02>0</R02>
-					<R10>0</R10>
-					<R11>1</R11>
-					<R12>0</R12>
-					<R20>0</R20>
-					<R21>0</R21>
-					<R22>1</R22>
-				</CoordinateFrame>
-				<bool name="CanCollide">true</bool>
-				<bool name="CanQuery">true</bool>
-				<bool name="CanTouch">true</bool>
-				<bool name="CastShadow">true</bool>
-				<string name="CollisionGroup">Default</string>
-				<int name="CollisionGroupId">0</int>
-				<Color3uint8 name="Color3uint8">4288914085</Color3uint8>
-				<PhysicalProperties name="CustomPhysicalProperties">
-					<CustomPhysics>false</CustomPhysics>
-				</PhysicalProperties>
-				<bool name="EnableFluidForces">true</bool>
-				<float name="FrontParamA">-0.5</float>
-				<float name="FrontParamB">0.5</float>
-				<token name="FrontSurface">0</token>
-				<token name="FrontSurfaceInput">0</token>
-				<float name="LeftParamA">-0.5</float>
-				<float name="LeftParamB">0.5</float>
-				<token name="LeftSurface">0</token>
-				<token name="LeftSurfaceInput">0</token>
-				<bool name="Locked">true</bool>
-				<bool name="Massless">false</bool>
-				<token name="Material">256</token>
-				<string name="MaterialVariantSerialized"></string>
-				<CoordinateFrame name="PivotOffset">
-					<X>0</X>
-					<Y>0</Y>
-					<Z>0</Z>
-					<R00>1</R00>
-					<R01>0</R01>
-					<R02>0</R02>
-					<R10>0</R10>
-					<R11>1</R11>
-					<R12>0</R12>
-					<R20>0</R20>
-					<R21>0</R21>
-					<R22>1</R22>
-				</CoordinateFrame>
-				<float name="Reflectance">0</float>
-				<float name="RightParamA">-0.5</float>
-				<float name="RightParamB">0.5</float>
-				<token name="RightSurface">0</token>
-				<token name="RightSurfaceInput">0</token>
-				<int name="RootPriority">0</int>
-				<Vector3 name="RotVelocity">
-					<X>0</X>
-					<Y>0</Y>
-					<Z>0</Z>
-				</Vector3>
-				<float name="TopParamA">-0.5</float>
-				<float name="TopParamB">0.5</float>
-				<token name="TopSurface">3</token>
-				<token name="TopSurfaceInput">0</token>
-				<float name="Transparency">0</float>
-				<Vector3 name="Velocity">
-					<X>0</X>
-					<Y>0</Y>
-					<Z>0</Z>
-				</Vector3>
-				<Vector3 name="size">
-					<X>2044</X>
-					<Y>252</Y>
-					<Z>2044</Z>
-				</Vector3>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">Terrain</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003ae</UniqueId>
-			</Properties>
-		</Item>
-	</Item>
-	<Item class="TimerService" referent="RBXacbedb3ff3df451288c6c71b97ae6052">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">TimerService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000331</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="SoundService" referent="18">
-		<Properties>
-			<bool name="AcousticSimulationEnabled">false</bool>
-			<token name="AmbientReverb">0</token>
-			<token name="AudioApiByDefault">0</token>
-			<token name="CharacterSoundsUseNewApi">0</token>
-			<token name="DefaultListenerLocation">0</token>
-			<float name="DistanceFactor">3.32999992</float>
-			<float name="DopplerScale">1</float>
-			<bool name="IsNewExpForAudioApiByDefault">false</bool>
-			<bool name="RespectFilteringEnabled">true</bool>
-			<float name="RolloffScale">1</float>
-			<token name="VolumetricAudio">1</token>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">SoundService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000332</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="VideoCaptureService" referent="RBX0aa0fba63bed4ddf9ef615d0fdf4e4ba">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">VideoCaptureService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000033e</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="NonReplicatedCSGDictionaryService" referent="RBX527994ff197d49ffb9ffb18ef8bb51ee">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">NonReplicatedCSGDictionaryService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000033f</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="CSGDictionaryService" referent="RBX28ff046721f040edb1c08a40ec52e9f8">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">CSGDictionaryService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000340</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="Chat" referent="RBX93707335af5348d2a0bd8165d8fec3b0">
-		<Properties>
-			<bool name="BubbleChatEnabled">false</bool>
-			<bool name="IsAutoMigrated">false</bool>
-			<bool name="LoadDefaultChat">true</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Chat</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000346</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="Players" referent="RBX6e26b8761dc542218b3d6f3ca508c45e">
-		<Properties>
-			<bool name="BanningEnabled">true</bool>
-			<bool name="CharacterAutoLoads">true</bool>
-			<int name="MaxPlayersInternal">12</int>
-			<int name="PreferredPlayersInternal">0</int>
-			<float name="RespawnTime">5</float>
-			<bool name="UseStrafingAnimations">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Players</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000348</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ReplicatedFirst" referent="RBXbc28e639303b4c5ea7ecd667c9fc95b1">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ReplicatedFirst</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000034b</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="TweenService" referent="RBX7b71a32fa1cf4e62b7f265e8abfec046">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">TweenService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000034d</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="MaterialService" referent="RBX49f150dc58914ea9a14bf6644025cad1">
-		<Properties>
-			<string name="AsphaltName">Asphalt</string>
-			<string name="BasaltName">Basalt</string>
-			<string name="BrickName">Brick</string>
-			<string name="CardboardName">Cardboard</string>
-			<string name="CarpetName">Carpet</string>
-			<string name="CeramicTilesName">CeramicTiles</string>
-			<string name="ClayRoofTilesName">ClayRoofTiles</string>
-			<string name="CobblestoneName">Cobblestone</string>
-			<string name="ConcreteName">Concrete</string>
-			<string name="CorrodedMetalName">CorrodedMetal</string>
-			<string name="CrackedLavaName">CrackedLava</string>
-			<string name="DiamondPlateName">DiamondPlate</string>
-			<string name="FabricName">Fabric</string>
-			<string name="FoilName">Foil</string>
-			<string name="GlacierName">Glacier</string>
-			<string name="GraniteName">Granite</string>
-			<string name="GrassName">Grass</string>
-			<string name="GroundName">Ground</string>
-			<string name="IceName">Ice</string>
-			<string name="LeafyGrassName">LeafyGrass</string>
-			<string name="LeatherName">Leather</string>
-			<string name="LimestoneName">Limestone</string>
-			<string name="MarbleName">Marble</string>
-			<string name="MetalName">Metal</string>
-			<string name="MudName">Mud</string>
-			<string name="PavementName">Pavement</string>
-			<string name="PebbleName">Pebble</string>
-			<string name="PlasterName">Plaster</string>
-			<string name="PlasticName">Plastic</string>
-			<string name="RockName">Rock</string>
-			<string name="RoofShinglesName">RoofShingles</string>
-			<string name="RubberName">Rubber</string>
-			<string name="SaltName">Salt</string>
-			<string name="SandName">Sand</string>
-			<string name="SandstoneName">Sandstone</string>
-			<string name="SlateName">Slate</string>
-			<string name="SmoothPlasticName">SmoothPlastic</string>
-			<string name="SnowName">Snow</string>
-			<bool name="Use2022MaterialsXml">false</bool>
-			<string name="WoodName">Wood</string>
-			<string name="WoodPlanksName">WoodPlanks</string>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">MaterialService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000034e</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="TextChatService" referent="RBX476ea44207f74ea1a9fb3cd829895c19">
-		<Properties>
-			<bool name="ChatTranslationFTUXShown">true</bool>
-			<bool name="ChatTranslationToggleEnabled">false</bool>
-			<token name="ChatVersion">0</token>
-			<bool name="CreateDefaultCommands">true</bool>
-			<bool name="CreateDefaultTextChannels">true</bool>
-			<bool name="HasSeenDeprecationDialog">false</bool>
-			<bool name="IsLegacyChatDisabled">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">TextChatService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000034f</UniqueId>
-		</Properties>
-		<Item class="ChatWindowConfiguration" referent="RBX81b2a18e598e40dcadca7c83183c5df8">
-			<Properties>
-				<Color3 name="BackgroundColor3">
-					<R>0.0980392173</R>
-					<G>0.105882354</G>
-					<B>0.113725491</B>
-				</Color3>
-				<double name="BackgroundTransparency">0.2999999999999999889</double>
-				<bool name="Enabled">true</bool>
-				<Font name="FontFace">
-					<Family><url>rbxasset://fonts/families/GothamSSm.json</url></Family>
-					<Weight>500</Weight>
-					<Style>Normal</Style>
-					<CachedFaceId><url>rbxasset://fonts/Montserrat-Medium.ttf</url></CachedFaceId>
-				</Font>
-				<float name="HeightScale">1</float>
-				<token name="HorizontalAlignment">1</token>
-				<Color3 name="TextColor3">
-					<R>1</R>
-					<G>1</G>
-					<B>1</B>
-				</Color3>
-				<int64 name="TextSize">14</int64>
-				<Color3 name="TextStrokeColor3">
-					<R>0</R>
-					<G>0</G>
-					<B>0</B>
-				</Color3>
-				<double name="TextStrokeTransparency">0.5</double>
-				<token name="VerticalAlignment">1</token>
-				<float name="WidthScale">1</float>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">ChatWindowConfiguration</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003b0</UniqueId>
-			</Properties>
-		</Item>
-		<Item class="ChatInputBarConfiguration" referent="RBX15c22068b23046e9817c566b377e2abf">
-			<Properties>
-				<bool name="AutocompleteEnabled">true</bool>
-				<Color3 name="BackgroundColor3">
-					<R>0.0980392173</R>
-					<G>0.105882354</G>
-					<B>0.113725491</B>
-				</Color3>
-				<double name="BackgroundTransparency">0.2000000000000000111</double>
-				<bool name="Enabled">true</bool>
-				<Font name="FontFace">
-					<Family><url>rbxasset://fonts/families/GothamSSm.json</url></Family>
-					<Weight>500</Weight>
-					<Style>Normal</Style>
-					<CachedFaceId><url>rbxasset://fonts/Montserrat-Medium.ttf</url></CachedFaceId>
-				</Font>
-				<token name="KeyboardKeyCode">47</token>
-				<Color3 name="PlaceholderColor3">
-					<R>0.698039234</R>
-					<G>0.698039234</G>
-					<B>0.698039234</B>
-				</Color3>
-				<Ref name="TargetTextChannel">null</Ref>
-				<Color3 name="TextColor3">
-					<R>1</R>
-					<G>1</G>
-					<B>1</B>
-				</Color3>
-				<int64 name="TextSize">14</int64>
-				<Color3 name="TextStrokeColor3">
-					<R>0</R>
-					<G>0</G>
-					<B>0</B>
-				</Color3>
-				<double name="TextStrokeTransparency">0.5</double>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">ChatInputBarConfiguration</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003b1</UniqueId>
-			</Properties>
-		</Item>
-		<Item class="BubbleChatConfiguration" referent="RBX2aaf0a028f4449a6aad5234550e8c516">
-			<Properties>
-				<string name="AdorneeName">HumanoidRootPart</string>
-				<Color3 name="BackgroundColor3">
-					<R>0.980392158</R>
-					<G>0.980392158</G>
-					<B>0.980392158</B>
-				</Color3>
-				<double name="BackgroundTransparency">0.10000000000000000555</double>
-				<float name="BubbleDuration">15</float>
-				<float name="BubblesSpacing">6</float>
-				<bool name="Enabled">true</bool>
-				<token name="Font">18</token>
-				<Font name="FontFace">
-					<Family><url>rbxasset://fonts/families/GothamSSm.json</url></Family>
-					<Weight>500</Weight>
-					<Style>Normal</Style>
-					<CachedFaceId><url>rbxasset://fonts/Montserrat-Medium.ttf</url></CachedFaceId>
-				</Font>
-				<Vector3 name="LocalPlayerStudsOffset">
-					<X>0</X>
-					<Y>0</Y>
-					<Z>0</Z>
-				</Vector3>
-				<float name="MaxBubbles">3</float>
-				<float name="MaxDistance">100</float>
-				<float name="MinimizeDistance">40</float>
-				<bool name="TailVisible">true</bool>
-				<Color3 name="TextColor3">
-					<R>0.223529413</R>
-					<G>0.23137255</G>
-					<B>0.239215687</B>
-				</Color3>
-				<int64 name="TextSize">16</int64>
-				<float name="VerticalStudsOffset">0</float>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">BubbleChatConfiguration</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003b2</UniqueId>
-			</Properties>
-		</Item>
-		<Item class="ChannelTabsConfiguration" referent="RBX954bd975684343cd9667b2871e11bfb1">
-			<Properties>
-				<Color3 name="BackgroundColor3">
-					<R>0.0980392173</R>
-					<G>0.105882354</G>
-					<B>0.113725491</B>
-				</Color3>
-				<double name="BackgroundTransparency">0</double>
-				<bool name="Enabled">false</bool>
-				<Font name="FontFace">
-					<Family><url>rbxasset://fonts/families/BuilderSans.json</url></Family>
-					<Weight>700</Weight>
-					<Style>Normal</Style>
-					<CachedFaceId><url>rbxasset://fonts/BuilderSans-Bold.otf</url></CachedFaceId>
-				</Font>
-				<Color3 name="HoverBackgroundColor3">
-					<R>0.490196079</R>
-					<G>0.490196079</G>
-					<B>0.490196079</B>
-				</Color3>
-				<Color3 name="SelectedTabTextColor3">
-					<R>1</R>
-					<G>1</G>
-					<B>1</B>
-				</Color3>
-				<Color3 name="TextColor3">
-					<R>0.686274529</R>
-					<G>0.686274529</G>
-					<B>0.686274529</B>
-				</Color3>
-				<int64 name="TextSize">18</int64>
-				<Color3 name="TextStrokeColor3">
-					<R>0</R>
-					<G>0</G>
-					<B>0</B>
-				</Color3>
-				<double name="TextStrokeTransparency">1</double>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">ChannelTabsConfiguration</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003b3</UniqueId>
-			</Properties>
-		</Item>
-	</Item>
-	<Item class="PermissionsService" referent="RBX478a6dcd85aa49d0b1ab47f40beb4fd1">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">PermissionsService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000351</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="PlayerEmulatorService" referent="RBX0de639309b8b41e695ee14e133604e39">
-		<Properties>
-			<bool name="CustomPoliciesEnabled">false</bool>
-			<string name="EmulatedCountryCode"></string>
-			<string name="EmulatedGameLocale"></string>
-			<bool name="PlayerEmulationEnabled">false</bool>
-			<bool name="PseudolocalizationEnabled">false</bool>
-			<BinaryString name="SerializedEmulatedPolicyInfo"></BinaryString>
-			<int name="TextElongationFactor">0</int>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">PlayerEmulatorService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000352</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="StudioData" referent="RBX6e53cd4f50f84aa7aa78805b89f08576">
-		<Properties>
-			<bool name="EnableScriptCollabByDefaultOnLoad">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">StudioData</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000355</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="StarterPlayer" referent="19">
-		<Properties>
-			<bool name="AllowCustomAnimations">true</bool>
-			<bool name="AutoJumpEnabled">true</bool>
-			<token name="AvatarJointUpgrade_SerializedRollout">0</token>
-			<float name="CameraMaxZoomDistance">400</float>
-			<float name="CameraMinZoomDistance">0.5</float>
-			<token name="CameraMode">0</token>
-			<bool name="CharacterBreakJointsOnDeath">true</bool>
-			<float name="CharacterJumpHeight">7.19999981</float>
-			<float name="CharacterJumpPower">50</float>
-			<float name="CharacterMaxSlopeAngle">89</float>
-			<bool name="CharacterUseJumpPower">true</bool>
-			<float name="CharacterWalkSpeed">16</float>
-			<bool name="ClassicDeath">true</bool>
-			<bool name="CreateDefaultPlayerModule">true</bool>
-			<token name="DevCameraOcclusionMode">0</token>
-			<token name="DevComputerCameraMovementMode">0</token>
-			<token name="DevComputerMovementMode">0</token>
-			<token name="DevTouchCameraMovementMode">0</token>
-			<token name="DevTouchMovementMode">0</token>
-			<token name="EnableDynamicHeads">0</token>
-			<bool name="EnableMouseLockOption">true</bool>
-			<int64 name="GameSettingsAssetIDFace">0</int64>
-			<int64 name="GameSettingsAssetIDHead">0</int64>
-			<int64 name="GameSettingsAssetIDLeftArm">0</int64>
-			<int64 name="GameSettingsAssetIDLeftLeg">0</int64>
-			<int64 name="GameSettingsAssetIDPants">0</int64>
-			<int64 name="GameSettingsAssetIDRightArm">0</int64>
-			<int64 name="GameSettingsAssetIDRightLeg">0</int64>
-			<int64 name="GameSettingsAssetIDShirt">0</int64>
-			<int64 name="GameSettingsAssetIDTeeShirt">0</int64>
-			<int64 name="GameSettingsAssetIDTorso">0</int64>
-			<token name="GameSettingsAvatar">1</token>
-			<token name="GameSettingsR15Collision">0</token>
-			<NumberRange name="GameSettingsScaleRangeBodyType">0 1 </NumberRange>
-			<NumberRange name="GameSettingsScaleRangeHead">0.95 1 </NumberRange>
-			<NumberRange name="GameSettingsScaleRangeHeight">0.9 1.05 </NumberRange>
-			<NumberRange name="GameSettingsScaleRangeProportion">0 1 </NumberRange>
-			<NumberRange name="GameSettingsScaleRangeWidth">0.7 1 </NumberRange>
-			<float name="HealthDisplayDistance">100</float>
-			<bool name="LoadCharacterAppearance">true</bool>
-			<token name="LoadCharacterLayeredClothing">0</token>
-			<token name="LuaCharacterController">0</token>
-			<float name="NameDisplayDistance">100</float>
-			<bool name="UserEmotesEnabled">true</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">StarterPlayer</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000357</UniqueId>
-		</Properties>
-		<Item class="StarterPlayerScripts" referent="20">
-			<Properties>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">StarterPlayerScripts</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003ac</UniqueId>
-			</Properties>
-			<Item class="LocalScript" referent="21">
-				<Properties>
-					<ProtectedString name="Source"><![CDATA[--[[
-	Client entry point - Baddies: Play to Slay!
-	Shows intro screen, then spawns player and runs camera intro.
-]]
-
-local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RunService = game:GetService("RunService")
-
-local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
-
-local player = Players.LocalPlayer
-
--- Read feature flags synced from server (StringValues in ReplicatedStorage/FeatureFlags)
-local function getFlag(name: string): boolean
-	local folder = ReplicatedStorage:FindFirstChild("FeatureFlags")
-	if folder then
-		local val = folder:FindFirstChild(name)
-		if val then
-			return val.Value == "true"
-		end
-	end
-	-- Fall back to Constants defaults
-	local default = Constants.FeatureFlags and Constants.FeatureFlags[name]
-	return default ~= false
-end
-local playerGui = player:WaitForChild("PlayerGui")
-local camera = workspace.CurrentCamera
-
--- Client log helper (non-blocking — resolves the remote in the background)
-local logEvent: RemoteEvent? = nil
-task.spawn(function()
-	logEvent = ReplicatedStorage:WaitForChild("FirebaseLogEvent", 30)
-end)
-local function logToServer(event: string, data: { [string]: any }?)
-	if logEvent then
-		logEvent:FireServer(event, data or {})
-	end
-end
-
---------------------------------------------------------------------------------
--- INTRO SCREEN
---------------------------------------------------------------------------------
-
-local function createIntroScreen()
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "IntroScreen"
-	gui.IgnoreGuiInset = true
-	gui.DisplayOrder = 100
-	gui.ResetOnSpawn = false
-	gui.Parent = playerGui
-
-	-- Lock camera to a static view during intro
-	camera.CameraType = Enum.CameraType.Scriptable
-	camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
-
-	-- Galaxy/sparkle background fill
-	local fill = Instance.new("Frame")
-	fill.Name = "BackgroundFill"
-	fill.Size = UDim2.new(1, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	fill.BorderSizePixel = 0
-	fill.ZIndex = 0
-	fill.Parent = gui
-
-	-- Animated rotating gradient
-	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 15, 100)),
-		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 25, 130)),
-		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(140, 40, 160)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 80, 170)),
-	})
-	gradient.Rotation = 0
-	gradient.Parent = fill
-
-	-- Scatter sparkle dots
-	local sparkles = {}
-	for i = 1, 50 do
-		local dot = Instance.new("Frame")
-		dot.Name = `Sparkle_{i}`
-		dot.BackgroundColor3 = Color3.fromHSV(
-			0.75 + math.random() * 0.2, -- purple to pink hue
-			0.2 + math.random() * 0.3,
-			0.9 + math.random() * 0.1
-		)
-		local sz = math.random(2, 5)
-		dot.Size = UDim2.new(0, sz, 0, sz)
-		dot.Position = UDim2.new(math.random() * 0.98, 0, math.random() * 0.98, 0)
-		dot.BackgroundTransparency = math.random() * 0.5
-		dot.BorderSizePixel = 0
-		dot.ZIndex = 1
-		dot.Parent = fill
-
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(1, 0)
-		corner.Parent = dot
-
-		sparkles[i] = { dot = dot, speed = 0.5 + math.random() * 2, phase = math.random() * math.pi * 2 }
-	end
-
-	-- Animate gradient rotation + sparkle twinkle
-	task.spawn(function()
-		while fill.Parent do
-			local t = tick()
-			gradient.Rotation = (t * 8) % 360
-			for _, s in sparkles do
-				s.dot.BackgroundTransparency = 0.3 + 0.6 * math.abs(math.sin(t * s.speed + s.phase))
-			end
-			RunService.RenderStepped:Wait()
-		end
-	end)
-
-	-- Centered image container that preserves 1:1 aspect ratio
-	local bg = Instance.new("ImageLabel")
-	bg.Name = "Background"
-	bg.Image = Constants.IntroScreen.ImageId
-	bg.AnchorPoint = Vector2.new(0.5, 0.5)
-	bg.Size = UDim2.new(1, 0, 1, 0)
-	bg.Position = UDim2.new(0.5, 0, 0.5, 0)
-	bg.BackgroundTransparency = 1
-	bg.ScaleType = Enum.ScaleType.Fit
-	bg.BorderSizePixel = 0
-	bg.Parent = gui
-
-	-- Lock aspect ratio so buttons stay aligned on all screens
-	local aspect = Instance.new("UIAspectRatioConstraint")
-	aspect.AspectRatio = 1
-	aspect.AspectType = Enum.AspectType.ScaleWithParentSize
-	aspect.DominantAxis = Enum.DominantAxis.Height
-	aspect.Parent = bg
-
-	-- Invisible buttons aligned over the image's built-in buttons
-	-- Positions are relative to the image (not the screen), so they stay accurate
-	local buttonDefs = {
-		{ name = "Play",      pos = UDim2.new(0.53, 0, 0.44, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "play" },
-		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.56, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
-		{ name = "Shop",      pos = UDim2.new(0.53, 0, 0.68, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
-	}
-
-	-- "Coming Soon!" popup
-	local popup = Instance.new("Frame")
-	popup.Name = "ComingSoonPopup"
-	popup.Size = UDim2.new(0, 300, 0, 160)
-	popup.Position = UDim2.new(0.5, -150, 0.5, -80)
-	popup.BackgroundColor3 = Color3.fromRGB(50, 20, 60)
-	popup.BorderSizePixel = 0
-	popup.Visible = false
-	popup.ZIndex = 10
-	popup.Parent = gui
-
-	local popupCorner = Instance.new("UICorner")
-	popupCorner.CornerRadius = UDim.new(0, 16)
-	popupCorner.Parent = popup
-
-	local popupStroke = Instance.new("UIStroke")
-	popupStroke.Color = Color3.fromRGB(255, 100, 200)
-	popupStroke.Thickness = 2
-	popupStroke.Parent = popup
-
-	local popupText = Instance.new("TextLabel")
-	popupText.Name = "Message"
-	popupText.Size = UDim2.new(1, 0, 0.55, 0)
-	popupText.Position = UDim2.new(0, 0, 0.05, 0)
-	popupText.BackgroundTransparency = 1
-	popupText.Text = "Coming Soon!"
-	popupText.TextColor3 = Color3.fromRGB(255, 200, 240)
-	popupText.TextScaled = true
-	popupText.Font = Enum.Font.GothamBold
-	popupText.ZIndex = 11
-	popupText.Parent = popup
-
-	local dismissBtn = Instance.new("TextButton")
-	dismissBtn.Name = "Dismiss"
-	dismissBtn.Size = UDim2.new(0.5, 0, 0, 36)
-	dismissBtn.Position = UDim2.new(0.25, 0, 1, -50)
-	dismissBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 180)
-	dismissBtn.Text = "OK"
-	dismissBtn.TextColor3 = Color3.new(1, 1, 1)
-	dismissBtn.TextScaled = true
-	dismissBtn.Font = Enum.Font.GothamBold
-	dismissBtn.ZIndex = 11
-	dismissBtn.Parent = popup
-
-	local dismissCorner = Instance.new("UICorner")
-	dismissCorner.CornerRadius = UDim.new(0, 10)
-	dismissCorner.Parent = dismissBtn
-
-	dismissBtn.MouseButton1Click:Connect(function()
-		popup.Visible = false
-	end)
-
-	-- Invisible clickable regions over the image's buttons
-	for _, def in ipairs(buttonDefs) do
-		local btn = Instance.new("TextButton")
-		btn.Name = def.name
-		btn.Size = def.size
-		btn.Position = def.pos
-		btn.BackgroundTransparency = 1
-		btn.Text = ""
-		btn.ZIndex = 5
-		btn.Parent = bg
-
-		if def.action == "play" then
-			btn.MouseButton1Click:Connect(function()
-				logToServer("play_pressed")
-				gui:Destroy()
-			end)
-		else
-			btn.MouseButton1Click:Connect(function()
-				popup.Visible = true
-			end)
-		end
-	end
-
-	return gui
-end
-
---------------------------------------------------------------------------------
--- GENDER SELECTION SCREEN
---------------------------------------------------------------------------------
-
-local function createGenderSelectScreen(): string
-	local chosen: string? = nil
-
-	local gui = Instance.new("ScreenGui")
-	gui.Name = "GenderSelectScreen"
-	gui.IgnoreGuiInset = true
-	gui.DisplayOrder = 100
-	gui.ResetOnSpawn = false
-	gui.Parent = playerGui
-
-	-- Galaxy background (same as intro)
-	local fill = Instance.new("Frame")
-	fill.Size = UDim2.new(1, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.new(1, 1, 1)
-	fill.BorderSizePixel = 0
-	fill.ZIndex = 0
-	fill.Parent = gui
-
-	local gradient = Instance.new("UIGradient")
-	gradient.Color = ColorSequence.new({
-		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 15, 100)),
-		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 25, 130)),
-		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(140, 40, 160)),
-		ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 80, 170)),
-	})
-	gradient.Parent = fill
-
-	-- Sparkle dots
-	local sparkles = {}
-	for i = 1, 30 do
-		local dot = Instance.new("Frame")
-		dot.BackgroundColor3 = Color3.fromHSV(0.75 + math.random() * 0.2, 0.2 + math.random() * 0.3, 0.9 + math.random() * 0.1)
-		local sz = math.random(2, 5)
-		dot.Size = UDim2.new(0, sz, 0, sz)
-		dot.Position = UDim2.new(math.random() * 0.98, 0, math.random() * 0.98, 0)
-		dot.BackgroundTransparency = math.random() * 0.5
-		dot.BorderSizePixel = 0
-		dot.ZIndex = 1
-		dot.Parent = fill
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(1, 0)
-		corner.Parent = dot
-		sparkles[i] = { dot = dot, speed = 0.5 + math.random() * 2, phase = math.random() * math.pi * 2 }
-	end
-
-	task.spawn(function()
-		while fill.Parent do
-			local t = tick()
-			gradient.Rotation = (t * 8) % 360
-			for _, s in sparkles do
-				s.dot.BackgroundTransparency = 0.3 + 0.6 * math.abs(math.sin(t * s.speed + s.phase))
-			end
-			RunService.RenderStepped:Wait()
-		end
-	end)
-
-	-- Center panel
-	local panel = Instance.new("Frame")
-	panel.Size = UDim2.new(0, 400, 0, 300)
-	panel.AnchorPoint = Vector2.new(0.5, 0.5)
-	panel.Position = UDim2.new(0.5, 0, 0.5, 0)
-	panel.BackgroundColor3 = Color3.fromRGB(50, 20, 60)
-	panel.BackgroundTransparency = 0.15
-	panel.BorderSizePixel = 0
-	panel.ZIndex = 5
-	panel.Parent = gui
-
-	local panelCorner = Instance.new("UICorner")
-	panelCorner.CornerRadius = UDim.new(0, 16)
-	panelCorner.Parent = panel
-
-	local panelStroke = Instance.new("UIStroke")
-	panelStroke.Color = Color3.fromRGB(255, 100, 200)
-	panelStroke.Thickness = 2
-	panelStroke.Parent = panel
-
-	-- Title
-	local title = Instance.new("TextLabel")
-	title.Size = UDim2.new(1, 0, 0, 50)
-	title.Position = UDim2.new(0, 0, 0, 20)
-	title.BackgroundTransparency = 1
-	title.Text = "Choose Your Look"
-	title.TextColor3 = Color3.fromRGB(255, 200, 240)
-	title.TextScaled = true
-	title.Font = Enum.Font.GothamBold
-	title.ZIndex = 6
-	title.Parent = panel
-
-	-- Subtitle
-	local subtitle = Instance.new("TextLabel")
-	subtitle.Size = UDim2.new(1, -40, 0, 30)
-	subtitle.Position = UDim2.new(0, 20, 0, 75)
-	subtitle.BackgroundTransparency = 1
-	subtitle.Text = "You can change this later!"
-	subtitle.TextColor3 = Color3.fromRGB(200, 170, 220)
-	subtitle.TextScaled = true
-	subtitle.Font = Enum.Font.GothamMedium
-	subtitle.ZIndex = 6
-	subtitle.Parent = panel
-
-	-- Button helper
-	local function makeGenderButton(text: string, xPos: number, color: Color3): TextButton
-		local btn = Instance.new("TextButton")
-		btn.Size = UDim2.new(0, 150, 0, 120)
-		btn.AnchorPoint = Vector2.new(0.5, 0)
-		btn.Position = UDim2.new(xPos, 0, 0, 130)
-		btn.BackgroundColor3 = color
-		btn.Text = text
-		btn.TextColor3 = Color3.new(1, 1, 1)
-		btn.TextSize = 24
-		btn.Font = Enum.Font.GothamBold
-		btn.ZIndex = 6
-		btn.Parent = panel
-
-		local corner = Instance.new("UICorner")
-		corner.CornerRadius = UDim.new(0, 12)
-		corner.Parent = btn
-
-		local stroke = Instance.new("UIStroke")
-		stroke.Color = color
-		stroke.Thickness = 0
-		stroke.Parent = btn
-
-		btn.MouseEnter:Connect(function()
-			stroke.Thickness = 2
-			stroke.Color = Color3.new(1, 1, 1)
-		end)
-		btn.MouseLeave:Connect(function()
-			stroke.Thickness = 0
-		end)
-
-		return btn
-	end
-
-	local femaleBtn = makeGenderButton("Female", 0.3, Color3.fromRGB(255, 80, 180))
-	local maleBtn = makeGenderButton("Male", 0.7, Color3.fromRGB(180, 80, 255))
-
-	femaleBtn.MouseButton1Click:Connect(function()
-		chosen = "Female"
-	end)
-	maleBtn.MouseButton1Click:Connect(function()
-		chosen = "Male"
-	end)
-
-	-- Yield until a choice is made
-	while chosen == nil do
-		task.wait(0.1)
-	end
-
-	gui:Destroy()
-	return chosen
-end
-
---------------------------------------------------------------------------------
--- CAMERA INTRO (runs after Play is pressed)
---------------------------------------------------------------------------------
-
-local function cameraIntro()
-	-- Immediately hand camera to the player — no slow pan
-	camera.CameraType = Enum.CameraType.Custom
-	logToServer("camera_intro_complete")
-end
-
---------------------------------------------------------------------------------
--- MAIN FLOW
---------------------------------------------------------------------------------
-
--- Start background music (loops forever, parented to PlayerGui so it persists)
-local music = Instance.new("Sound")
-music.Name = "BackgroundMusic"
-music.SoundId = Constants.Music.SoundId
-music.Volume = Constants.Music.Volume
-music.Looped = true
-music.Parent = playerGui
-if getFlag("MusicEnabled") then
-	music:Play()
-end
-
---------------------------------------------------------------------------------
--- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)
---------------------------------------------------------------------------------
-
-local Lighting = game:GetService("Lighting")
-
-local settingsGui = Instance.new("ScreenGui")
-settingsGui.Name = "SettingsGui"
-settingsGui.IgnoreGuiInset = true
-settingsGui.DisplayOrder = 110
-settingsGui.ResetOnSpawn = false
-settingsGui.Parent = playerGui
-
--- Gear icon button (top-right)
-local gearBtn = Instance.new("TextButton")
-gearBtn.Name = "GearButton"
-gearBtn.Size = UDim2.new(0, 40, 0, 40)
-gearBtn.Position = UDim2.new(1, -55, 0, 15)
-gearBtn.BackgroundColor3 = Color3.fromRGB(30, 15, 40)
-gearBtn.BackgroundTransparency = 0.4
-gearBtn.Text = "\u{2699}"
-gearBtn.TextColor3 = Color3.fromRGB(220, 200, 240)
-gearBtn.TextSize = 28
-gearBtn.Font = Enum.Font.GothamBold
-gearBtn.ZIndex = 20
-gearBtn.Parent = settingsGui
-
-local gearCorner = Instance.new("UICorner")
-gearCorner.CornerRadius = UDim.new(0, 10)
-gearCorner.Parent = gearBtn
-
--- Settings panel
-local panel = Instance.new("Frame")
-panel.Name = "SettingsPanel"
-panel.Size = UDim2.new(0, 260, 0, 220)
-panel.Position = UDim2.new(1, -275, 0, 60)
-panel.BackgroundColor3 = Color3.fromRGB(30, 12, 45)
-panel.BackgroundTransparency = 0.1
-panel.BorderSizePixel = 0
-panel.Visible = false
-panel.ZIndex = 20
-panel.Parent = settingsGui
-
-local panelCorner = Instance.new("UICorner")
-panelCorner.CornerRadius = UDim.new(0, 14)
-panelCorner.Parent = panel
-
-local panelStroke = Instance.new("UIStroke")
-panelStroke.Color = Color3.fromRGB(180, 80, 200)
-panelStroke.Thickness = 1.5
-panelStroke.Parent = panel
-
--- Title
-local panelTitle = Instance.new("TextLabel")
-panelTitle.Name = "Title"
-panelTitle.Size = UDim2.new(1, 0, 0, 36)
-panelTitle.BackgroundTransparency = 1
-panelTitle.Text = "Settings"
-panelTitle.TextColor3 = Color3.fromRGB(255, 180, 230)
-panelTitle.TextSize = 20
-panelTitle.Font = Enum.Font.GothamBold
-panelTitle.ZIndex = 21
-panelTitle.Parent = panel
-
--- Helper: create a slider row
-local function makeSlider(name, label, yPos, initial, onChange)
-	local row = Instance.new("Frame")
-	row.Name = name
-	row.Size = UDim2.new(1, -30, 0, 60)
-	row.Position = UDim2.new(0, 15, 0, yPos)
-	row.BackgroundTransparency = 1
-	row.ZIndex = 21
-	row.Parent = panel
-
-	local lbl = Instance.new("TextLabel")
-	lbl.Size = UDim2.new(0.5, 0, 0, 20)
-	lbl.BackgroundTransparency = 1
-	lbl.Text = label
-	lbl.TextColor3 = Color3.fromRGB(210, 190, 230)
-	lbl.TextSize = 14
-	lbl.Font = Enum.Font.GothamMedium
-	lbl.TextXAlignment = Enum.TextXAlignment.Left
-	lbl.ZIndex = 22
-	lbl.Parent = row
-
-	local valueLabel = Instance.new("TextLabel")
-	valueLabel.Name = "Value"
-	valueLabel.Size = UDim2.new(0.5, 0, 0, 20)
-	valueLabel.Position = UDim2.new(0.5, 0, 0, 0)
-	valueLabel.BackgroundTransparency = 1
-	valueLabel.Text = tostring(math.floor(initial * 100)) .. "%"
-	valueLabel.TextColor3 = Color3.fromRGB(255, 150, 220)
-	valueLabel.TextSize = 14
-	valueLabel.Font = Enum.Font.GothamMedium
-	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
-	valueLabel.ZIndex = 22
-	valueLabel.Parent = row
-
-	-- Track
-	local track = Instance.new("Frame")
-	track.Name = "Track"
-	track.Size = UDim2.new(1, 0, 0, 8)
-	track.Position = UDim2.new(0, 0, 0, 30)
-	track.BackgroundColor3 = Color3.fromRGB(60, 30, 80)
-	track.BorderSizePixel = 0
-	track.ZIndex = 22
-	track.Parent = row
-
-	local trackCorner = Instance.new("UICorner")
-	trackCorner.CornerRadius = UDim.new(1, 0)
-	trackCorner.Parent = track
-
-	-- Fill
-	local fill = Instance.new("Frame")
-	fill.Name = "Fill"
-	fill.Size = UDim2.new(initial, 0, 1, 0)
-	fill.BackgroundColor3 = Color3.fromRGB(255, 100, 200)
-	fill.BorderSizePixel = 0
-	fill.ZIndex = 23
-	fill.Parent = track
-
-	local fillCorner = Instance.new("UICorner")
-	fillCorner.CornerRadius = UDim.new(1, 0)
-	fillCorner.Parent = fill
-
-	-- Thumb
-	local thumb = Instance.new("Frame")
-	thumb.Name = "Thumb"
-	thumb.Size = UDim2.new(0, 16, 0, 16)
-	thumb.Position = UDim2.new(initial, -8, 0.5, -8)
-	thumb.BackgroundColor3 = Color3.new(1, 1, 1)
-	thumb.BorderSizePixel = 0
-	thumb.ZIndex = 24
-	thumb.Parent = track
-
-	local thumbCorner = Instance.new("UICorner")
-	thumbCorner.CornerRadius = UDim.new(1, 0)
-	thumbCorner.Parent = thumb
-
-	-- Drag interaction
-	local dragging = false
-	local inputBtn = Instance.new("TextButton")
-	inputBtn.Size = UDim2.new(1, 0, 0, 24)
-	inputBtn.Position = UDim2.new(0, 0, 0, 24)
-	inputBtn.BackgroundTransparency = 1
-	inputBtn.Text = ""
-	inputBtn.ZIndex = 25
-	inputBtn.Parent = row
-
-	local function updateSlider(inputX)
-		local trackAbsPos = track.AbsolutePosition.X
-		local trackAbsSize = track.AbsoluteSize.X
-		local pct = math.clamp((inputX - trackAbsPos) / trackAbsSize, 0, 1)
-		fill.Size = UDim2.new(pct, 0, 1, 0)
-		thumb.Position = UDim2.new(pct, -8, 0.5, -8)
-		valueLabel.Text = tostring(math.floor(pct * 100)) .. "%"
-		onChange(pct)
-	end
-
-	inputBtn.MouseButton1Down:Connect(function()
-		dragging = true
-	end)
-
-	inputBtn.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			updateSlider(input.Position.X)
-		end
-	end)
-
-	inputBtn.MouseButton1Up:Connect(function()
-		dragging = false
-	end)
-
-	inputBtn.MouseButton1Click:Connect(function(x)
-		local absX = inputBtn.AbsolutePosition.X
-		local relX = game:GetService("UserInputService"):GetMouseLocation().X
-		updateSlider(relX)
-	end)
-end
-
--- Volume slider
-makeSlider("Volume", "Volume", 45, Constants.Music.Volume, function(pct)
-	music.Volume = pct
-end)
-
--- Brightness slider
-local baseBrightness = Lighting.Brightness
-makeSlider("Brightness", "Brightness", 120, 0.5, function(pct)
-	Lighting.Brightness = pct * 2 -- 0% = 0, 50% = 1.0 (default), 100% = 2.0
-end)
-
--- Toggle panel
-gearBtn.MouseButton1Click:Connect(function()
-	panel.Visible = not panel.Visible
-end)
-
---------------------------------------------------------------------------------
--- INTRO SCREEN + CHARACTER CREATION + SPAWN
---------------------------------------------------------------------------------
-
--- Keep camera locked during entire flow
-camera.CameraType = Enum.CameraType.Scriptable
-camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
-
--- Show intro screen (if enabled) and wait for Play
-if getFlag("IntroScreenEnabled") then
-	local introGui = createIntroScreen()
-	logToServer("intro_shown")
-
-	-- Wait until the intro screen is destroyed (Play was pressed)
-	introGui.Destroying:Wait()
-end
-
--- Check if player needs character creation
-print("[Client] Waiting for CharacterCreated BoolValue...")
-local createdVal = player:WaitForChild("CharacterCreated", 10)
-if createdVal then
-	print(`[Client] CharacterCreated found, value = {createdVal.Value}`)
-else
-	print("[Client] CharacterCreated NOT FOUND (timeout)")
-end
-local needsCreation = not (createdVal and createdVal.Value)
-
--- NewPlayer flag = true: always show gender selection (even for returning players)
-if not needsCreation and getFlag("NewPlayer") then
-	needsCreation = true
-end
-
-if needsCreation then
-	print("[Client] Showing gender selection...")
-	local gender = createGenderSelectScreen()
-	print(`[Client] Gender chosen: {gender}`)
-	logToServer("gender_selected", { gender = gender })
-
-	-- Tell server to save gender and spawn character
-	local genderEvent = ReplicatedStorage:WaitForChild("GenderSelected", 10)
-	if genderEvent then
-		print("[Client] Firing GenderSelected to server...")
-		genderEvent:FireServer(gender)
-	else
-		warn("[Client] GenderSelected RemoteEvent not found!")
-	end
-
-	-- Wait for character to actually spawn before camera intro
-	print("[Client] Waiting for character to spawn...")
-	player.CharacterAdded:Wait()
-	task.wait(0.5)
-else
-	-- Returning player — just spawn
-	print("[Client] Returning player, firing PlayerReady...")
-	local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
-	if readyEvent then
-		readyEvent:FireServer()
-	end
-	player.CharacterAdded:Wait()
-	task.wait(0.5)
-end
-
--- Run camera intro after character exists
-print("[Client] Running camera intro...")
-cameraIntro()
-
-logToServer("ready")
-print("Social Spotlight Plaza client ready!")
-]]></ProtectedString>
-					<bool name="Disabled">false</bool>
-					<Content name="LinkedSource"><null></null></Content>
-					<token name="RunContext">0</token>
-					<string name="ScriptGuid">{949cc982-604c-45f8-8b6e-5464436e29a7}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Client</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<BinaryString name="Tags"></BinaryString>
-					<UniqueId name="UniqueId">69a89edf958b275709e5e357000003ad</UniqueId>
-				</Properties>
-			</Item>
-		</Item>
-		<Item class="StarterCharacterScripts" referent="RBXc030657c398d46089d85a14ad2137b33">
-			<Properties>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">StarterCharacterScripts</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003af</UniqueId>
-			</Properties>
-		</Item>
-	</Item>
-	<Item class="StarterPack" referent="RBX46d84dfbee88409a85d0c18b7a37ebac">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">StarterPack</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000358</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="StarterGui" referent="RBX901488768b9542c8938ad976168aa346">
-		<Properties>
-			<bool name="ResetPlayerGuiOnSpawn">true</bool>
-			<token name="RtlTextSupport">0</token>
-			<token name="ScreenOrientation">2</token>
-			<bool name="ShowDevelopmentGui">true</bool>
-			<Ref name="StudioDefaultStyleSheet">null</Ref>
-			<Ref name="StudioInsertWidgetLayerCollectorAutoLinkStyleSheet">null</Ref>
-			<token name="VirtualCursorMode">0</token>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">StarterGui</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000359</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="LocalizationService" referent="RBXdb5be69c11d142579d29f186e7541af2">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">LocalizationService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000035b</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="TeleportService" referent="RBX70c093044cd04226a66398abd76342b3">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Teleport Service</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000035f</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="CollectionService" referent="RBX70e13f1f69de43cdb0037ec7d840450f">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">CollectionService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000361</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="PhysicsService" referent="RBX2ef2183cc07640e89bfc73dabe0362a0">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">PhysicsService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000362</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="InsertService" referent="RBX8ee0e5f89dfd4b79a0c792d58c5c53e8">
-		<Properties>
-			<bool name="AllowClientInsertModels">false</bool>
-			<bool name="AllowInsertFreeModels">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">InsertService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000365</UniqueId>
-		</Properties>
-		<Item class="StringValue" referent="RBXef43914545dd43729342d5322189cf04">
-			<Properties>
-				<string name="Value">{c22d0114-0f7f-42a2-b3bd-9e31d88d5504}</string>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">InsertionHash</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e3570000101d</UniqueId>
-			</Properties>
-		</Item>
-	</Item>
-	<Item class="GamePassService" referent="RBXcc82720a9c534dc499cf78c76e638a58">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">GamePassService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000366</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="Debris" referent="RBX5cc49e86691949e8980a54986bcdc493">
-		<Properties>
-			<int name="MaxItems">1000</int>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Debris</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000367</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="CookiesService" referent="RBX0dbf99ca76f54e29b2108e535b2302c7">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">CookiesService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000368</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="Selection" referent="RBXfca5bc9505724127a5dca1109ec69a60">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Selection</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000369</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="VRService" referent="RBXcfb4c48da21346b694f6522e3b46e690">
-		<Properties>
-			<token name="AutomaticScaling">0</token>
-			<bool name="AvatarGestures">false</bool>
-			<token name="ControllerModels">1</token>
-			<bool name="FadeOutViewOnCollision">true</bool>
-			<token name="LaserPointer">1</token>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">VRService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000036d</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ContextActionService" referent="RBX452a66aae7664aa393e72f68d4b290cf">
-		<Properties>
-			<int name="NetcodeInputLatency">0</int>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ContextActionService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000036e</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ScriptService" referent="RBX725f7ef835de42a991114d2fb067a22a">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ScriptService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000036f</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="AssetService" referent="RBX56cefba90cc645fd894c1b43fe65727b">
-		<Properties>
-			<bool name="AllowInsertFreeAssets">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">AssetService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000370</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="TouchInputService" referent="RBX4b03676ba2b14778ac6c68c0e552d144">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">TouchInputService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000372</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="AvatarSettings" referent="RBXb68ae4046edd4d50ab497e48954d5b8d">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">AvatarSettings</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000378</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="LuaWebService" referent="RBX43430e550997435fbcf75d260515393a">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">LuaWebService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000380</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ProcessInstancePhysicsService" referent="RBXc4d1438f843e4d09873e1e641665e409">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ProcessInstancePhysicsService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000381</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ReplicatedStorage" referent="1">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ReplicatedStorage</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000382</UniqueId>
-		</Properties>
-		<Item class="Folder" referent="2">
-			<Properties>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">Shared</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e3570000039c</UniqueId>
-			</Properties>
-			<Item class="ModuleScript" referent="3">
-				<Properties>
-					<Content name="LinkedSource"><null></null></Content>
-					<ProtectedString name="Source"><![CDATA[--[[
+<roblox version="4">
+  <Item class="Lighting" referent="0">
+    <Properties>
+      <string name="Name">Lighting</string>
+      <Color3 name="Ambient">
+        <R>0.29</R>
+        <G>0.18</G>
+        <B>0.37</B>
+      </Color3>
+      <float name="Brightness">0.6</float>
+      <float name="ClockTime">14</float>
+      <Color3 name="ColorShift_Top">
+        <R>0.55</R>
+        <G>0.2</G>
+        <B>0.51</B>
+      </Color3>
+      <Color3 name="OutdoorAmbient">
+        <R>0.31</R>
+        <G>0.2</G>
+        <B>0.39</B>
+      </Color3>
+      <token name="Technology">4</token>
+    </Properties>
+  </Item>
+  <Item class="ReplicatedStorage" referent="1">
+    <Properties>
+      <string name="Name">ReplicatedStorage</string>
+    </Properties>
+    <Item class="Folder" referent="2">
+      <Properties>
+        <string name="Name">Shared</string>
+      </Properties>
+      <Item class="ModuleScript" referent="3">
+        <Properties>
+          <string name="Name">BuildPlaza</string>
+          <string name="Source"><![CDATA[--[[
     ╔══════════════════════════════════════════════════════════════╗
     ║         SOCIAL SPOTLIGHT PLAZA — MASTER BUILD SCRIPT        ║
     ║                                                              ║
@@ -3311,22 +1625,13 @@ print("  📊 Total zones: 9 sub-folders")
 print("═══════════════════════════════════════════")
 
 return true
-]]></ProtectedString>
-					<string name="ScriptGuid">{41339a64-49cf-455a-9f96-41cc056dbe0a}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">BuildPlaza</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<BinaryString name="Tags"></BinaryString>
-					<UniqueId name="UniqueId">69a89edf958b275709e5e3570000039d</UniqueId>
-				</Properties>
-			</Item>
-			<Item class="ModuleScript" referent="4">
-				<Properties>
-					<Content name="LinkedSource"><null></null></Content>
-					<ProtectedString name="Source"><![CDATA[local Constants = {}
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="4">
+        <Properties>
+          <string name="Name">Constants</string>
+          <string name="Source"><![CDATA[local Constants = {}
 
 Constants.HubName = "SocialHub"
 
@@ -3403,7 +1708,7 @@ Constants.IntroScreen = {
 
 -- Background music: upload eliveta-motivation-474064.mp3 and paste the asset ID
 Constants.Music = {
-	SoundId = "rbxassetid://101441438144535", -- Replace 0 with your uploaded audio asset ID
+	SoundId = "rbxassetid://84449759831841", -- Replace 0 with your uploaded audio asset ID
 	Volume = 0.4,
 }
 
@@ -3411,8 +1716,8 @@ Constants.Music = {
 -- All IDs verified via economy.roblox.com/v2/assets/{id}/details
 Constants.Outfits = {
 	Female = {
-		DTIModelId = 90731674309295, -- Creator Store DTI body model
-		DTIRig = "WomanRig",        -- rig name inside the model
+		DTIModelId = 84170624795797, -- custom baddie base body
+		DTIRig = "baddie_base_rig", -- rig name inside the uploaded model
 		UseDefaultHead = true,       -- skip DTI head, use default R15 head
 		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
 		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
@@ -3444,53 +1749,29 @@ Constants.FeatureFlags = {
 -- (server-only — never replicated to clients)
 
 return Constants
-]]></ProtectedString>
-					<string name="ScriptGuid">{981ea826-0f2a-490a-ba56-e686f7f8635a}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Constants</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<BinaryString name="Tags"></BinaryString>
-					<UniqueId name="UniqueId">69a89edf958b275709e5e3570000039e</UniqueId>
-				</Properties>
-			</Item>
-			<Item class="ModuleScript" referent="5">
-				<Properties>
-					<Content name="LinkedSource"><null></null></Content>
-					<ProtectedString name="Source"><![CDATA[return function()
+]]></string>
+        </Properties>
+      </Item>
+      <Item class="ModuleScript" referent="5">
+        <Properties>
+          <string name="Name">Hello</string>
+          <string name="Source"><![CDATA[return function()
 	print("Hello from shared module")
 end
-]]></ProtectedString>
-					<string name="ScriptGuid">{ec391dca-6191-4789-9182-1ebafedb438f}</string>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Hello</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<BinaryString name="Tags"></BinaryString>
-					<UniqueId name="UniqueId">69a89edf958b275709e5e3570000039f</UniqueId>
-				</Properties>
-			</Item>
-		</Item>
-	</Item>
-	<Item class="ServerScriptService" referent="6">
-		<Properties>
-			<bool name="LoadStringEnabled">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ServerScriptService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000383</UniqueId>
-		</Properties>
-		<Item class="Script" referent="7">
-			<Properties>
-				<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="ServerScriptService" referent="6">
+    <Properties>
+      <string name="Name">ServerScriptService</string>
+    </Properties>
+    <Item class="Script" referent="7">
+      <Properties>
+        <string name="Name">Server</string>
+        <token name="RunContext">0</token>
+        <string name="Source"><![CDATA[--[[
 	Server entry point - Social Spotlight Plaza
 	Orchestrates environment building, lighting, and NPC spawning.
 ]]
@@ -3662,35 +1943,16 @@ FeatureFlags.onChanged(function(name, newValue, oldValue)
 		end
 	end
 end)
-]]></ProtectedString>
-				<bool name="Disabled">false</bool>
-				<Content name="LinkedSource"><null></null></Content>
-				<token name="RunContext">0</token>
-				<string name="ScriptGuid">{9b57462e-c8ec-4036-8a99-46111e3fb34b}</string>
-				<BinaryString name="AttributesSerialize"></BinaryString>
-				<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-				<bool name="DefinesCapabilities">false</bool>
-				<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-				<string name="Name">Server</string>
-				<int64 name="SourceAssetId">-1</int64>
-				<BinaryString name="Tags"></BinaryString>
-				<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a0</UniqueId>
-			</Properties>
-			<Item class="Folder" referent="8">
-				<Properties>
-					<BinaryString name="AttributesSerialize"></BinaryString>
-					<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-					<bool name="DefinesCapabilities">false</bool>
-					<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-					<string name="Name">Modules</string>
-					<int64 name="SourceAssetId">-1</int64>
-					<BinaryString name="Tags"></BinaryString>
-					<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a1</UniqueId>
-				</Properties>
-				<Item class="ModuleScript" referent="9">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+      </Properties>
+      <Item class="Folder" referent="8">
+        <Properties>
+          <string name="Name">Modules</string>
+        </Properties>
+        <Item class="ModuleScript" referent="9">
+          <Properties>
+            <string name="Name">CharacterCreator</string>
+            <string name="Source"><![CDATA[--[[
 	CharacterCreator - Applies outfits based on gender selection.
 	Uses LoadCharacterWithHumanoidDescription for face/hair/colors,
 	then replaces body parts with cloned DTI MeshParts and welds
@@ -3721,12 +1983,55 @@ local dtiRigs: { [string]: {
 
 -- R15 body part names (Head kept as default R15, scaled to match DTI body)
 local R15_BODY_PARTS = {
-	"UpperTorso", "LowerTorso",
-	"LeftUpperArm", "LeftLowerArm", "LeftHand",
-	"RightUpperArm", "RightLowerArm", "RightHand",
-	"LeftUpperLeg", "LeftLowerLeg", "LeftFoot",
-	"RightUpperLeg", "RightLowerLeg", "RightFoot",
+	"UpperTorso",
+	"LowerTorso",
+	"LeftUpperArm",
+	"LeftLowerArm",
+	"LeftHand",
+	"RightUpperArm",
+	"RightLowerArm",
+	"RightHand",
+	"LeftUpperLeg",
+	"LeftLowerLeg",
+	"LeftFoot",
+	"RightUpperLeg",
+	"RightLowerLeg",
+	"RightFoot",
 }
+
+local function mapDTIPartName(partName: string): string
+	local lower = string.lower(partName)
+	if lower == "leftupleg" or lower == "leftupperleg" then
+		return "LeftUpperLeg"
+	elseif lower == "leftleg" or lower == "leftlowerleg" then
+		return "LeftLowerLeg"
+	elseif lower == "leftfoot" then
+		return "LeftFoot"
+	elseif lower == "rightupleg" or lower == "rightupperleg" then
+		return "RightUpperLeg"
+	elseif lower == "rightleg" or lower == "rightlowerleg" then
+		return "RightLowerLeg"
+	elseif lower == "rightfoot" then
+		return "RightFoot"
+	elseif lower == "hips" or lower == "pelvis" or lower == "lower" then
+		return "LowerTorso"
+	elseif lower == "spine02" or lower == "upper" then
+		return "UpperTorso"
+	elseif lower == "leftuparm" or lower == "leftupperarm" then
+		return "LeftUpperArm"
+	elseif lower == "leftarm" or lower == "leftlowerarm" then
+		return "LeftLowerArm"
+	elseif lower == "lefthand" or lower == "lefthand" then
+		return "LeftHand"
+	elseif lower == "rightuparm" or lower == "rightupperarm" then
+		return "RightUpperArm"
+	elseif lower == "rightarm" or lower == "rightlowerarm" then
+		return "RightLowerArm"
+	elseif lower == "righthand" or lower == "righthand" then
+		return "RightHand"
+	end
+	return partName
+end
 
 ---------------------------------------------------------------------------
 -- DTI Model Loading
@@ -3744,19 +2049,50 @@ local function loadDTIModel()
 		return
 	end
 
-	for _, rig in model:GetDescendants() do
-		if rig:IsA("Model") and rig.Name:match("Rig$") then
-			local partCache = {}
-			local jointCache = {}
+	-- DEBUG: Print full model hierarchy so we can see what's inside
+	print("[CharacterCreator] === MODEL HIERARCHY ===")
+	for _, obj in model:GetDescendants() do
+		local depth = 0
+		local parent = obj.Parent
+		while parent and parent ~= model do
+			depth += 1
+			parent = parent.Parent
+		end
+		local indent = string.rep("  ", depth)
+		local extra = ""
+		if obj:IsA("MeshPart") then
+			extra = ` [MeshPart, MeshId={obj.MeshId}]`
+		elseif obj:IsA("Motor6D") then
+			local p0 = obj.Part0 and obj.Part0.Name or "nil"
+			local p1 = obj.Part1 and obj.Part1.Name or "nil"
+			extra = ` [Motor6D, Part0={p0}, Part1={p1}]`
+		elseif obj:IsA("Humanoid") then
+			extra = ` [Humanoid, RigType={obj.RigType}]`
+		end
+		print(`[CharacterCreator] {indent}{obj.Name} ({obj.ClassName}){extra}`)
+	end
+	print("[CharacterCreator] === END HIERARCHY ===")
 
-			for _, part in rig:GetChildren() do
-				if part:IsA("MeshPart") then
+	-- Try to find rig by exact name first, then by pattern
+	local targetRigName = outfitDef.DTIRig or "WomanRig"
+	for _, rig in model:GetDescendants() do
+		if rig:IsA("Model") then
+			local isMatch = rig.Name == targetRigName
+				or string.lower(rig.Name):match("rig$")
+			if isMatch then
+				local partCache = {}
+				local jointCache = {}
+
+			for _, part in rig:GetDescendants() do
+				if part:IsA("MeshPart") and part.Name ~= "Handle" then
+					local mappedName = mapDTIPartName(part.Name)
 					-- Template strips all children; skin color set via Color3 at spawn time
 					local template = part:Clone()
 					for _, child in template:GetChildren() do
 						child:Destroy()
 					end
-					partCache[part.Name] = template
+					template.Name = mappedName
+					partCache[mappedName] = template
 
 					-- Cache Motor6D C0/C1 for joint alignment
 					local partJoints = {}
@@ -3776,15 +2112,15 @@ local function loadDTIModel()
 
 			-- Cache clothing meshes from EquippedAccessories
 			local clothingCache = {}
-			local accessories = rig:FindFirstChild("EquippedAccessories")
+			local accessories = rig:FindFirstChild("EquippedAccessories", true)
 			if accessories then
 				for _, meshPart in accessories:GetDescendants() do
 					if meshPart:IsA("MeshPart") then
 						-- Determine which body part this attaches to
-						local folder = meshPart.Parent
-						local bodyPartName = "UpperTorso"
-						if folder:IsA("Folder") and rig:FindFirstChild(folder.Name) then
-							bodyPartName = folder.Name
+					local folder = meshPart.Parent
+					local bodyPartName = "UpperTorso"
+					if folder:IsA("Folder") and rig:FindFirstChild(folder.Name) then
+						bodyPartName = mapDTIPartName(folder.Name)
 						end
 
 						-- Calculate CFrame offset relative to the body part
@@ -3816,8 +2152,54 @@ local function loadDTIModel()
 				joints = jointCache,
 				clothing = clothingCache,
 			}
-			print(`[CharacterCreator] Cached DTI rig: {rig.Name} ({#clothingCache} clothing pieces)`)
+				print(`[CharacterCreator] Cached DTI rig: {rig.Name} ({#clothingCache} clothing pieces)`)
+			end
 		end
+	end
+
+	-- If no rig was found by name, try any Model with a Humanoid
+	if not next(dtiRigs) then
+		warn("[CharacterCreator] No rig found by name pattern. Trying Models with Humanoid...")
+		for _, obj in model:GetDescendants() do
+			if obj:IsA("Model") and obj:FindFirstChildOfClass("Humanoid") then
+				print(`[CharacterCreator] Found Model with Humanoid: "{obj.Name}"`)
+				local partCache = {}
+				local jointCache = {}
+				for _, part in obj:GetDescendants() do
+					if part:IsA("MeshPart") then
+						local mappedName = mapDTIPartName(part.Name)
+						local template = part:Clone()
+						for _, child in template:GetChildren() do
+							child:Destroy()
+						end
+						template.Name = mappedName
+						partCache[mappedName] = template
+						print(`[CharacterCreator]   Part: {part.Name} -> {mappedName}`)
+
+						local partJoints = {}
+						for _, child in part:GetChildren() do
+							if child:IsA("Motor6D") then
+								partJoints[child.Name] = { C0 = child.C0, C1 = child.C1 }
+								print(`[CharacterCreator]     Motor6D: {child.Name}`)
+							end
+						end
+						if next(partJoints) then
+							jointCache[part.Name] = partJoints
+						end
+					end
+				end
+				-- Cache under both the actual name and the configured DTI rig name
+				local rigEntry = { parts = partCache, joints = jointCache, clothing = {} }
+				dtiRigs[obj.Name] = rigEntry
+				dtiRigs[targetRigName] = rigEntry
+				print(`[CharacterCreator] Cached rig "{obj.Name}" (also as "{targetRigName}") with {#partCache} parts`)
+				break
+			end
+		end
+	end
+
+	if not next(dtiRigs) then
+		warn("[CharacterCreator] No rigs found in model at all! Check the model hierarchy above.")
 	end
 
 	model:Destroy()
@@ -4128,22 +2510,13 @@ function CharacterCreator.init(spawnedPlayers: { [number]: true })
 end
 
 return CharacterCreator
-]]></ProtectedString>
-						<string name="ScriptGuid">{78a331d5-982f-4066-a195-0ccbe27ddb8e}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">CharacterCreator</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a2</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="10">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="10">
+          <Properties>
+            <string name="Name">FeatureFlags</string>
+            <string name="Source"><![CDATA[--[[
 	FeatureFlags - Remote feature flags via Firebase Realtime Database.
 	Fetches flags from the rbxFlags Cloud Function on startup, falls back
 	to Constants.FeatureFlags defaults if the function is unreachable.
@@ -4287,22 +2660,59 @@ syncToClients()
 startPolling()
 
 return FeatureFlags
-]]></ProtectedString>
-						<string name="ScriptGuid">{a506e869-8a8b-4fa8-ac24-d8d7b53b2bbe}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">FeatureFlags</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a3</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="11">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="11">
+          <Properties>
+            <string name="Name">FirebaseConfig</string>
+            <string name="Source"><![CDATA[--[[
+	FirebaseConfig - SERVER ONLY. Never replicated to clients.
+
+	Points to the Cloud Function proxy URLs. The proxy uses the
+	Firebase Admin SDK to read/write RTDB — no deprecated database secrets.
+
+	HOW TO SET UP:
+	  1. Generate a strong secret and store it in Firebase Secret Manager:
+	       openssl rand -hex 32   ← copy this output
+	       firebase functions:secrets:set ROBLOX_SECRET
+	       (paste the value when prompted)
+
+	  2. Install function deps and deploy:
+	       cd functions && npm install && cd ..
+	       firebase deploy
+
+	  3. After deploy, your function URLs are printed in the terminal. They look like:
+	       https://us-central1-roblox-baddies.cloudfunctions.net/rbxLog
+	       https://us-central1-roblox-baddies.cloudfunctions.net/rbxFlags
+	     Paste the base (everything before /rbxLog) as FunctionsBaseUrl below.
+
+	  4. Paste the same secret from step 1 as RobloxSecret below.
+
+	SECURITY:
+	  - This file lives in src/server/ and is NEVER replicated to clients.
+	  - Do NOT move these values to src/shared/Constants.luau.
+	  - FirebaseConfig.luau is listed in .gitignore — keep it there.
+]]
+
+return {
+	-- Base URL of your deployed Cloud Functions (no trailing slash).
+	-- Example: "https://us-central1-roblox-baddies.cloudfunctions.net"
+	FunctionsBaseUrl = "https://us-central1-roblox-baddies.cloudfunctions.net",
+
+	-- Shared secret — must match the ROBLOX_SECRET you set via:
+	--   firebase functions:secrets:set ROBLOX_SECRET
+	RobloxSecret = "e05c3eb9818a10929e1e407fad1dc3947121efc79714374f28ce9261716c81ab", -- ← replace this
+
+	Enabled = true,
+}
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="12">
+          <Properties>
+            <string name="Name">FirebaseLogger</string>
+            <string name="Source"><![CDATA[--[[
 	FirebaseLogger - Sends structured log events to Firebase Realtime Database
 	via a Cloud Function proxy. All calls are fire-and-forget (async, pcall-wrapped).
 
@@ -4381,22 +2791,13 @@ function FirebaseLogger.startTimer(category: string, event: string): (data: { [s
 end
 
 return FirebaseLogger
-]]></ProtectedString>
-						<string name="ScriptGuid">{d88d5388-7d7d-4112-bcf5-89bb8aeaa3ab}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">FirebaseLogger</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a4</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="12">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="13">
+          <Properties>
+            <string name="Name">LightingController</string>
+            <string name="Source"><![CDATA[--[[
 	LightingController - Sets up the atmospheric lighting for Social Spotlight Plaza
 	Target: soft lavender/purple ambient with colorful neon accents that glow
 	without washing out the scene. Think dimmed venue with accent lighting,
@@ -4494,22 +2895,13 @@ function LightingController.apply()
 end
 
 return LightingController
-]]></ProtectedString>
-						<string name="ScriptGuid">{df00b042-d4fb-4cd5-adc6-0be99096c2c7}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">LightingController</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a5</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="13">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="14">
+          <Properties>
+            <string name="Name">MapBuilder</string>
+            <string name="Source"><![CDATA[--[[
 	MapBuilder - Procedurally constructs the Social Spotlight Plaza
 	Reference image analysis:
 	  - Two grand staircases flank the stage, going UP+BACK to upper balconies
@@ -5259,22 +3651,13 @@ function MapBuilder.build()
 end
 
 return MapBuilder
-]]></ProtectedString>
-						<string name="ScriptGuid">{dff186f1-a4b2-4174-b129-2627acc090d3}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">MapBuilder</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a6</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="14">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="15">
+          <Properties>
+            <string name="Name">NPCSpawner</string>
+            <string name="Source"><![CDATA[--[[
 	NPCSpawner - Spawns crowd NPCs throughout the Social Spotlight Plaza
 	Builds one R6 rig template at startup, then clones it for each NPC.
 ]]
@@ -5573,22 +3956,13 @@ function NPCSpawner.spawn(config)
 end
 
 return NPCSpawner
-]]></ProtectedString>
-						<string name="ScriptGuid">{20b78eb4-5030-4f1a-acb8-77127b17b281}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">NPCSpawner</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a7</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="15">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="16">
+          <Properties>
+            <string name="Name">PlayerData</string>
+            <string name="Source"><![CDATA[--[[
 	PlayerData - Persistent player data via ProfileService.
 	Wraps ProfileService with a character-creation-ready profile template.
 
@@ -5709,22 +4083,13 @@ game:BindToClose(function()
 end)
 
 return PlayerData
-]]></ProtectedString>
-						<string name="ScriptGuid">{65813d3c-0247-46a7-998e-bb70a2b201a5}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">PlayerData</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a8</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="16">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[-- local Madwork = _G.Madwork
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="17">
+          <Properties>
+            <string name="Name">ProfileService</string>
+            <string name="Source">-- local Madwork = _G.Madwork
 --[[
 {Madwork}
 
@@ -5761,7 +4126,7 @@ return PlayerData
 	
 	Functions:
 	
-		ProfileService.GetProfileStore(profile_store_index, profile_template) --> [ProfileStore]
+		ProfileService.GetProfileStore(profile_store_index, profile_template) --&gt; [ProfileStore]
 			profile_store_index   [string] -- DataStore name
 			OR
 			profile_store_index   [table]: -- Allows the developer to define more GlobalDataStore variables
@@ -5772,7 +4137,7 @@ return PlayerData
 				}
 			profile_template      [table] -- Profiles will default to given table (hard-copy) when no data was saved previously
 
-		ProfileService.IsLive() --> [bool] -- (CAN YIELD!!!)
+		ProfileService.IsLive() --&gt; [bool] -- (CAN YIELD!!!)
 			-- Returns true if ProfileService is connected to live Roblox DataStores
 				
 	Members [ProfileStore]:
@@ -5781,14 +4146,14 @@ return PlayerData
 		
 	Methods [ProfileStore]:
 	
-		ProfileStore:LoadProfileAsync(profile_key, not_released_handler) --> [Profile] or nil -- not_released_handler(place_id, game_job_id)
+		ProfileStore:LoadProfileAsync(profile_key, not_released_handler) --&gt; [Profile] or nil -- not_released_handler(place_id, game_job_id)
 			profile_key            [string] -- DataStore key
 			not_released_handler   nil or []: -- Defaults to "ForceLoad"
 				[string] "ForceLoad" -- Force loads profile on first call
 				OR
 				[string] "Steal" -- Steals the profile ignoring it's session lock
 				OR
-				[function] (place_id, game_job_id) --> [string] "Repeat", "Cancel", "ForceLoad" or "Steal"
+				[function] (place_id, game_job_id) --&gt; [string] "Repeat", "Cancel", "ForceLoad" or "Steal"
 					place_id      [number] or nil
 					game_job_id   [string] or nil
 
@@ -5802,23 +4167,23 @@ return PlayerData
 						["Steal"] - The profile will usually be loaded immediately, ignoring an existing remote session lock and applying
 							a session lock for this session.
 
-		ProfileStore:GlobalUpdateProfileAsync(profile_key, update_handler) --> [GlobalUpdates] or nil
+		ProfileStore:GlobalUpdateProfileAsync(profile_key, update_handler) --&gt; [GlobalUpdates] or nil
 			-- Returns GlobalUpdates object if update was successful, otherwise returns nil
 			profile_key      [string] -- DataStore key
 			update_handler   [function] (global_updates [GlobalUpdates])
 			
-		ProfileStore:ViewProfileAsync(profile_key, version) --> [Profile] or nil
+		ProfileStore:ViewProfileAsync(profile_key, version) --&gt; [Profile] or nil
 			-- Reads profile without requesting a session lock; Data will not be saved and profile doesn't need to be released
 			profile_key   [string] -- DataStore key
 			version       nil or [string] -- DataStore key version
 
-		ProfileStore:ProfileVersionQuery(profile_key, sort_direction, min_date, max_date) --> [ProfileVersionQuery]
+		ProfileStore:ProfileVersionQuery(profile_key, sort_direction, min_date, max_date) --&gt; [ProfileVersionQuery]
 			profile_key      [string]
 			sort_direction   nil or [Enum.SortDirection]
 			min_date         nil or [DateTime]
 			max_date         nil or [DateTime]
 			
-		ProfileStore:WipeProfileAsync(profile_key) --> is_wipe_successful [bool]
+		ProfileStore:WipeProfileAsync(profile_key) --&gt; is_wipe_successful [bool]
 			-- Completely wipes out profile data from the DataStore / mock DataStore with no way to recover it.
 						
 		* Parameter description for "ProfileStore:GlobalUpdateProfileAsync()":
@@ -5829,7 +4194,7 @@ return PlayerData
 
 	Methods [ProfileVersionQuery]:
 
-		ProfileVersionQuery:NextAsync() --> [Profile] or nil -- (Yields)
+		ProfileVersionQuery:NextAsync() --&gt; [Profile] or nil -- (Yields)
 			-- Returned profile has the same rules as profile returned by :ViewProfileAsync()
 		
 	Members [Profile]:
@@ -5863,21 +4228,21 @@ return PlayerData
 	Methods [Profile]:
 	
 		-- SAFE METHODS - Will not error after profile expires:
-		Profile:IsActive() --> [bool] -- Returns true while the profile is active and can be written to
+		Profile:IsActive() --&gt; [bool] -- Returns true while the profile is active and can be written to
 			
-		Profile:GetMetaTag(tag_name) --> value [any]
+		Profile:GetMetaTag(tag_name) --&gt; value [any]
 			tag_name   [string]
 		
 		Profile:Reconcile() -- Fills in missing (nil) [string_key] = [value] pairs to the Profile.Data structure
 		
-		Profile:ListenToRelease(listener) --> [ScriptConnection] (place_id / nil, game_job_id / nil)
+		Profile:ListenToRelease(listener) --&gt; [ScriptConnection] (place_id / nil, game_job_id / nil)
 			-- WARNING: Profiles can be released externally if another session force-loads
 			--	this profile - use :ListenToRelease() to handle player leaving cleanup.
 			
 		Profile:Release() -- Call after the session has finished working with this profile
 			e.g., after the player leaves (Profile object will become expired) (Does not yield)
 
-		Profile:ListenToHopReady(listener) --> [ScriptConnection] () -- Passed listener will be executed after the releasing UpdateAsync call finishes;
+		Profile:ListenToHopReady(listener) --&gt; [ScriptConnection] () -- Passed listener will be executed after the releasing UpdateAsync call finishes;
 			--	Wrap universe teleport requests with this method AFTER releasing the profile to improve session lock sharing between universe places;
 			--  :ListenToHopReady() will usually call the listener in around a second, but may ocassionally take up to 7 seconds when a release happens
 			--	next to an auto-update in regular usage scenarios.
@@ -5888,7 +4253,7 @@ return PlayerData
 		Profile:RemoveUserId(user_id) -- Unassociates user_id with profile (safe function)
 			user_id   [number]
 
-		Profile:Identify() --> [string] -- Returns a string containing DataStore name, scope and key; Used for debug;
+		Profile:Identify() --&gt; [string] -- Returns a string containing DataStore name, scope and key; Used for debug;
 			-- Example return: "[Store:"GameData";Scope:"Live";Key:"Player_2312310"]"
 		
 		Profile:SetMetaTag(tag_name, value) -- Equivalent of Profile.MetaData.MetaTags[tag_name] = value
@@ -5906,13 +4271,13 @@ return PlayerData
 	Methods [GlobalUpdates]:
 	
 	-- ALWAYS PUBLIC:
-		GlobalUpdates:GetActiveUpdates() --> [table] {{update_id, update_data [table]}, ...}
-		GlobalUpdates:GetLockedUpdates() --> [table] {{update_id, update_data [table]}, ...}
+		GlobalUpdates:GetActiveUpdates() --&gt; [table] {{update_id, update_data [table]}, ...}
+		GlobalUpdates:GetLockedUpdates() --&gt; [table] {{update_id, update_data [table]}, ...}
 		
 	-- ONLY WHEN FROM "Profile.GlobalUpdates":
-		GlobalUpdates:ListenToNewActiveUpdate(listener) --> [ScriptConnection] (update_id, update_data)
+		GlobalUpdates:ListenToNewActiveUpdate(listener) --&gt; [ScriptConnection] (update_id, update_data)
 			update_data   [table]
-		GlobalUpdates:ListenToNewLockedUpdate(listener) --> [ScriptConnection] (update_id, update_data)
+		GlobalUpdates:ListenToNewLockedUpdate(listener) --&gt; [ScriptConnection] (update_id, update_data)
 			update_data   [table]
 		GlobalUpdates:LockActiveUpdate(update_id)  -- WARNING: will error after profile expires
 		GlobalUpdates:ClearLockedUpdate(update_id) -- WARNING: will error after profile expires
@@ -6025,7 +4390,7 @@ do
 	}
 	ScriptSignal.__index = ScriptSignal
 
-	function ScriptSignal:Connect(listener, disconnect_listener, disconnect_param) --> [ScriptConnection]
+	function ScriptSignal:Connect(listener, disconnect_listener, disconnect_param) --&gt; [ScriptConnection]
 
 		local script_connection = {
 			_listener = listener,
@@ -6045,7 +4410,7 @@ do
 
 	end
 
-	function ScriptSignal:GetListenerCount() --> [number]
+	function ScriptSignal:GetListenerCount() --&gt; [number]
 		return self._listener_count
 	end
 
@@ -6075,7 +4440,7 @@ do
 		end
 	end
 
-	function MadworkScriptSignal.NewScriptSignal() --> [ScriptSignal]
+	function MadworkScriptSignal.NewScriptSignal() --&gt; [ScriptSignal]
 		return {
 			_head = nil,
 			_listener_count = 0,
@@ -6272,7 +4637,7 @@ local function CustomWriteQueueMarkForCleanup(store, key)
 			if queue_data.CleanupJob == nil then
 
 				queue_data.CleanupJob = RunService.Heartbeat:Connect(function()
-					if os.clock() - queue_data.LastWrite > SETTINGS.RobloxWriteCooldown and #queue == 0 then
+					if os.clock() - queue_data.LastWrite &gt; SETTINGS.RobloxWriteCooldown and #queue == 0 then
 						queue_data.CleanupJob:Disconnect()
 						CustomWriteQueueCleanup(store, key)
 					end
@@ -6286,7 +4651,7 @@ local function CustomWriteQueueMarkForCleanup(store, key)
 	end
 end
 
-local function CustomWriteQueueAsync(callback, store, key) --> ... -- Passed return from callback
+local function CustomWriteQueueAsync(callback, store, key) --&gt; ... -- Passed return from callback
 
 	if CustomWriteQueue[store] == nil then
 		CustomWriteQueue[store] = {}
@@ -6307,13 +4672,13 @@ local function CustomWriteQueueAsync(callback, store, key) --> ... -- Passed ret
 
 	-- Queue logic:
 
-	if os.clock() - queue_data.LastWrite > SETTINGS.RobloxWriteCooldown and #queue == 0 then
+	if os.clock() - queue_data.LastWrite &gt; SETTINGS.RobloxWriteCooldown and #queue == 0 then
 		queue_data.LastWrite = os.clock()
 		return callback()
 	else
 		table.insert(queue, callback)
 		while true do
-			if os.clock() - queue_data.LastWrite > SETTINGS.RobloxWriteCooldown and queue[1] == callback then
+			if os.clock() - queue_data.LastWrite &gt; SETTINGS.RobloxWriteCooldown and queue[1] == callback then
 				table.remove(queue, 1)
 				queue_data.LastWrite = os.clock()
 				return callback()
@@ -6324,7 +4689,7 @@ local function CustomWriteQueueAsync(callback, store, key) --> ... -- Passed ret
 
 end
 
-local function IsCustomWriteQueueEmptyFor(store, key) --> is_empty [bool]
+local function IsCustomWriteQueueEmptyFor(store, key) --&gt; is_empty [bool]
 	local lookup = CustomWriteQueue[store]
 	if lookup ~= nil then
 		lookup = lookup[key]
@@ -6380,7 +4745,7 @@ local function NewMockDataStoreKeyInfo(params)
 
 end
 
-local function MockUpdateAsync(mock_data_store, profile_store_name, key, transform_function, is_get_call) --> loaded_data, key_info
+local function MockUpdateAsync(mock_data_store, profile_store_name, key, transform_function, is_get_call) --&gt; loaded_data, key_info
 
 	local profile_store = mock_data_store[profile_store_name]
 
@@ -6439,7 +4804,7 @@ update_settings = {
 	EditProfile = function(lastest_data),
 }
 --]]
-local function StandardProfileUpdateAsyncDataStore(profile_store, profile_key, update_settings, is_user_mock, is_get_call, version) --> loaded_data, key_info
+local function StandardProfileUpdateAsyncDataStore(profile_store, profile_key, update_settings, is_user_mock, is_get_call, version) --&gt; loaded_data, key_info
 	local loaded_data, key_info
 	local success, error_message = pcall(function()
 		local transform_function = function(latest_data)
@@ -6563,7 +4928,7 @@ local function RemoveProfileFromAutoSave(profile)
 	local auto_save_index = table.find(AutoSaveList, profile)
 	if auto_save_index ~= nil then
 		table.remove(AutoSaveList, auto_save_index)
-		if auto_save_index < AutoSaveIndex then
+		if auto_save_index &lt; AutoSaveIndex then
 			AutoSaveIndex = AutoSaveIndex - 1 -- Table contents were moved left before AutoSaveIndex so move AutoSaveIndex left as well
 		end
 		if AutoSaveList[AutoSaveIndex] == nil then -- AutoSaveIndex was at the end of the AutoSaveList - reset to 1
@@ -6575,7 +4940,7 @@ end
 local function AddProfileToAutoSave(profile) -- Notice: Makes sure this profile isn't auto-saved too soon
 	-- Add at AutoSaveIndex and move AutoSaveIndex right:
 	table.insert(AutoSaveList, AutoSaveIndex, profile)
-	if #AutoSaveList > 1 then
+	if #AutoSaveList &gt; 1 then
 		AutoSaveIndex = AutoSaveIndex + 1
 	elseif #AutoSaveList == 1 then
 		-- First profile created - make sure it doesn't get immediately auto saved:
@@ -6624,7 +4989,7 @@ local function CheckForNewGlobalUpdates(profile, old_global_updates_data, new_gl
 		end
 		-- A global update is new when it didn't exist before or its version_id or update_locked state changed:
 		local is_new = false
-		if old_global_update == nil or new_global_update[2] > old_global_update[2] or new_global_update[3] ~= old_global_update[3] then
+		if old_global_update == nil or new_global_update[2] &gt; old_global_update[2] or new_global_update[3] ~= old_global_update[3] then
 			is_new = true
 		end
 		if is_new == true then
@@ -6852,7 +5217,7 @@ local GlobalUpdates = {
 GlobalUpdates.__index = GlobalUpdates
 
 -- ALWAYS PUBLIC:
-function GlobalUpdates:GetActiveUpdates() --> [table] {{update_id, update_data}, ...}
+function GlobalUpdates:GetActiveUpdates() --&gt; [table] {{update_id, update_data}, ...}
 	local query_list = {}
 	for _, global_update in ipairs(self._updates_latest[2]) do
 		if global_update[3] == false then
@@ -6873,7 +5238,7 @@ function GlobalUpdates:GetActiveUpdates() --> [table] {{update_id, update_data},
 	return query_list
 end
 
-function GlobalUpdates:GetLockedUpdates() --> [table] {{update_id, update_data}, ...}
+function GlobalUpdates:GetLockedUpdates() --&gt; [table] {{update_id, update_data}, ...}
 	local query_list = {}
 	for _, global_update in ipairs(self._updates_latest[2]) do
 		if global_update[3] == true then
@@ -6895,7 +5260,7 @@ function GlobalUpdates:GetLockedUpdates() --> [table] {{update_id, update_data},
 end
 
 -- ONLY WHEN FROM "Profile.GlobalUpdates":
-function GlobalUpdates:ListenToNewActiveUpdate(listener) --> [ScriptConnection] listener(update_id, update_data)
+function GlobalUpdates:ListenToNewActiveUpdate(listener) --&gt; [ScriptConnection] listener(update_id, update_data)
 	if type(listener) ~= "function" then
 		error("[ProfileService]: Only a function can be set as listener in GlobalUpdates:ListenToNewActiveUpdate()")
 	end
@@ -6913,7 +5278,7 @@ function GlobalUpdates:ListenToNewActiveUpdate(listener) --> [ScriptConnection] 
 	return self._new_active_update_listeners:Connect(listener)
 end
 
-function GlobalUpdates:ListenToNewLockedUpdate(listener) --> [ScriptConnection] listener(update_id, update_data)
+function GlobalUpdates:ListenToNewLockedUpdate(listener) --&gt; [ScriptConnection] listener(update_id, update_data)
 	if type(listener) ~= "function" then
 		error("[ProfileService]: Only a function can be set as listener in GlobalUpdates:ListenToNewLockedUpdate()")
 	end
@@ -7108,12 +5473,12 @@ local Profile = {
 }
 Profile.__index = Profile
 
-function Profile:IsActive() --> [bool]
+function Profile:IsActive() --&gt; [bool]
 	local loaded_profiles = self._is_user_mock == true and self._profile_store._mock_loaded_profiles or self._profile_store._loaded_profiles
 	return loaded_profiles[self._profile_key] == self
 end
 
-function Profile:GetMetaTag(tag_name) --> value
+function Profile:GetMetaTag(tag_name) --&gt; value
 	local meta_data = self.MetaData
 	if meta_data == nil then
 		return nil
@@ -7135,7 +5500,7 @@ function Profile:Reconcile()
 	ReconcileTable(self.Data, self._profile_store._profile_template)
 end
 
-function Profile:ListenToRelease(listener) --> [ScriptConnection] (place_id / nil, game_job_id / nil)
+function Profile:ListenToRelease(listener) --&gt; [ScriptConnection] (place_id / nil, game_job_id / nil)
 	if type(listener) ~= "function" then
 		error("[ProfileService]: Only a function can be set as listener in Profile:ListenToRelease()")
 	end
@@ -7187,7 +5552,7 @@ function Profile:Release()
 	end
 end
 
-function Profile:ListenToHopReady(listener) --> [ScriptConnection] ()
+function Profile:ListenToHopReady(listener) --&gt; [ScriptConnection] ()
 	if type(listener) ~= "function" then
 		error("[ProfileService]: Only a function can be set as listener in Profile:ListenToHopReady()")
 	end
@@ -7210,7 +5575,7 @@ function Profile:AddUserId(user_id) -- Associates user_id with profile (GDPR com
 		return
 	end
 
-	if user_id < 0 and self._is_user_mock ~= true and UseMockDataStore ~= true then
+	if user_id &lt; 0 and self._is_user_mock ~= true and UseMockDataStore ~= true then
 		return -- Avoid giving real Roblox APIs negative UserId's
 	end
 
@@ -7236,7 +5601,7 @@ function Profile:RemoveUserId(user_id) -- Unassociates user_id with profile (saf
 
 end
 
-function Profile:Identify() --> [string]
+function Profile:Identify() --&gt; [string]
 	return IdentifyProfile(
 		self._profile_store._profile_store_name,
 		self._profile_store._profile_store_scope,
@@ -7291,7 +5656,7 @@ local ProfileVersionQuery = {
 ProfileVersionQuery.__index = ProfileVersionQuery
 
 function ProfileVersionQuery:_MoveQueue()
-	while #self._query_queue > 0 do
+	while #self._query_queue &gt; 0 do
 		local queue_entry = table.remove(self._query_queue, 1)
 		task.spawn(queue_entry)
 		if self._is_query_yielded == true then
@@ -7300,7 +5665,7 @@ function ProfileVersionQuery:_MoveQueue()
 	end
 end
 
-function ProfileVersionQuery:NextAsync(_is_stacking) --> [Profile] or nil
+function ProfileVersionQuery:NextAsync(_is_stacking) --&gt; [Profile] or nil
 
 	if self._profile_store == nil then
 		return nil
@@ -7432,7 +5797,7 @@ local ProfileStore = {
 }
 ProfileStore.__index = ProfileStore
 
-function ProfileStore:LoadProfileAsync(profile_key, not_released_handler, _use_mock) --> [Profile / nil] not_released_handler(place_id, game_job_id)
+function ProfileStore:LoadProfileAsync(profile_key, not_released_handler, _use_mock) --&gt; [Profile / nil] not_released_handler(place_id, game_job_id)
 
 	not_released_handler = not_released_handler or "ForceLoad"
 
@@ -7514,7 +5879,7 @@ function ProfileStore:LoadProfileAsync(profile_key, not_released_handler, _use_m
 								if IsThisSession(active_session) == false then
 									local last_update = latest_data.MetaData.LastUpdate
 									if last_update ~= nil then
-										if os.time() - last_update > SETTINGS.AssumeDeadSessionLock then
+										if os.time() - last_update &gt; SETTINGS.AssumeDeadSessionLock then
 											latest_data.MetaData.ActiveSession = {PlaceId, JobId}
 											latest_data.MetaData.ForceLoadSession = nil
 											return
@@ -7691,7 +6056,7 @@ function ProfileStore:LoadProfileAsync(profile_key, not_released_handler, _use_m
 	return nil -- If loop breaks return nothing
 end
 
-function ProfileStore:GlobalUpdateProfileAsync(profile_key, update_handler, _use_mock) --> [GlobalUpdates / nil] (update_handler(GlobalUpdates))
+function ProfileStore:GlobalUpdateProfileAsync(profile_key, update_handler, _use_mock) --&gt; [GlobalUpdates / nil] (update_handler(GlobalUpdates))
 	if type(profile_key) ~= "string" or string.len(profile_key) == 0 then
 		error("[ProfileService]: Invalid profile_key")
 	end
@@ -7741,7 +6106,7 @@ function ProfileStore:GlobalUpdateProfileAsync(profile_key, update_handler, _use
 	return nil -- Return nothing (Update unsuccessful)
 end
 
-function ProfileStore:ViewProfileAsync(profile_key, version, _use_mock) --> [Profile / nil]
+function ProfileStore:ViewProfileAsync(profile_key, version, _use_mock) --&gt; [Profile / nil]
 	if type(profile_key) ~= "string" or string.len(profile_key) == 0 then
 		error("[ProfileService]: Invalid profile_key")
 	end
@@ -7821,7 +6186,7 @@ function ProfileStore:ViewProfileAsync(profile_key, version, _use_mock) --> [Pro
 	return nil -- If loop breaks return nothing
 end
 
-function ProfileStore:ProfileVersionQuery(profile_key, sort_direction, min_date, max_date, _use_mock) --> [ProfileVersionQuery]
+function ProfileStore:ProfileVersionQuery(profile_key, sort_direction, min_date, max_date, _use_mock) --&gt; [ProfileVersionQuery]
 	if type(profile_key) ~= "string" or string.len(profile_key) == 0 then
 		error("[ProfileService]: Invalid profile_key")
 	end
@@ -7873,7 +6238,7 @@ function ProfileStore:ProfileVersionQuery(profile_key, sort_direction, min_date,
 
 end
 
-function ProfileStore:WipeProfileAsync(profile_key, _use_mock) --> is_wipe_successful [bool]
+function ProfileStore:WipeProfileAsync(profile_key, _use_mock) --&gt; is_wipe_successful [bool]
 	if type(profile_key) ~= "string" or string.len(profile_key) == 0 then
 		error("[ProfileService]: Invalid profile_key")
 	end
@@ -7913,7 +6278,7 @@ end
 
 -- New ProfileStore:
 
-function ProfileService.GetProfileStore(profile_store_index, profile_template) --> [ProfileStore]
+function ProfileService.GetProfileStore(profile_store_index, profile_template) --&gt; [ProfileStore]
 
 	local profile_store_name
 	local profile_store_scope = nil
@@ -7997,7 +6362,7 @@ function ProfileService.GetProfileStore(profile_store_index, profile_template) -
 	return profile_store
 end
 
-function ProfileService.IsLive() --> [bool] -- (CAN YIELD!!!)
+function ProfileService.IsLive() --&gt; [bool] -- (CAN YIELD!!!)
 
 	WaitForLiveAccessCheck()
 
@@ -8039,23 +6404,23 @@ end
 RunService.Heartbeat:Connect(function()
 	-- 1) Auto saving: --
 	local auto_save_list_length = #AutoSaveList
-	if auto_save_list_length > 0 then
+	if auto_save_list_length &gt; 0 then
 		local auto_save_index_speed = SETTINGS.AutoSaveProfiles / auto_save_list_length
 		local os_clock = os.clock()
-		while os_clock - LastAutoSave > auto_save_index_speed do
+		while os_clock - LastAutoSave &gt; auto_save_index_speed do
 			LastAutoSave = LastAutoSave + auto_save_index_speed
 			local profile = AutoSaveList[AutoSaveIndex]
-			if os_clock - profile._load_timestamp < SETTINGS.AutoSaveProfiles then
+			if os_clock - profile._load_timestamp &lt; SETTINGS.AutoSaveProfiles then
 				-- This profile is freshly loaded - auto-saving immediately after loading will cause a warning in the log:
 				profile = nil
 				for _ = 1, auto_save_list_length - 1 do
 					-- Move auto save index to the right:
 					AutoSaveIndex = AutoSaveIndex + 1
-					if AutoSaveIndex > auto_save_list_length then
+					if AutoSaveIndex &gt; auto_save_list_length then
 						AutoSaveIndex = 1
 					end
 					profile = AutoSaveList[AutoSaveIndex]
-					if os_clock - profile._load_timestamp >= SETTINGS.AutoSaveProfiles then
+					if os_clock - profile._load_timestamp &gt;= SETTINGS.AutoSaveProfiles then
 						break
 					else
 						profile = nil
@@ -8064,7 +6429,7 @@ RunService.Heartbeat:Connect(function()
 			end
 			-- Move auto save index to the right:
 			AutoSaveIndex = AutoSaveIndex + 1
-			if AutoSaveIndex > auto_save_list_length then
+			if AutoSaveIndex &gt; auto_save_list_length then
 				AutoSaveIndex = 1
 			end
 			-- Perform save call:
@@ -8076,16 +6441,16 @@ RunService.Heartbeat:Connect(function()
 	-- 2) Issue queue: --
 	-- Critical state handling:
 	if ProfileService.CriticalState == false then
-		if #IssueQueue >= SETTINGS.IssueCountForCriticalState then
+		if #IssueQueue &gt;= SETTINGS.IssueCountForCriticalState then
 			ProfileService.CriticalState = true
 			ProfileService.CriticalStateSignal:Fire(true)
 			CriticalStateStart = os.clock()
 			warn("[ProfileService]: Entered critical state")
 		end
 	else
-		if #IssueQueue >= SETTINGS.IssueCountForCriticalState then
+		if #IssueQueue &gt;= SETTINGS.IssueCountForCriticalState then
 			CriticalStateStart = os.clock()
-		elseif os.clock() - CriticalStateStart > SETTINGS.CriticalStateLast then
+		elseif os.clock() - CriticalStateStart &gt; SETTINGS.CriticalStateLast then
 			ProfileService.CriticalState = false
 			ProfileService.CriticalStateSignal:Fire(false)
 			warn("[ProfileService]: Critical state ended")
@@ -8096,7 +6461,7 @@ RunService.Heartbeat:Connect(function()
 		local issue_time = IssueQueue[1]
 		if issue_time == nil then
 			break
-		elseif os.clock() - issue_time > SETTINGS.IssueLast then
+		elseif os.clock() - issue_time &gt; SETTINGS.IssueLast then
 			table.remove(IssueQueue, 1)
 		else
 			break
@@ -8128,7 +6493,7 @@ task.spawn(function()
 				end
 			end
 			-- 2) Yield until all active profile jobs are finished: --
-			while on_close_save_job_count > 0 or ActiveProfileLoadJobs > 0 or ActiveProfileSaveJobs > 0 do
+			while on_close_save_job_count &gt; 0 or ActiveProfileLoadJobs &gt; 0 or ActiveProfileSaveJobs &gt; 0 do
 				task.wait()
 			end
 			return -- We're done!
@@ -8137,22 +6502,13 @@ task.spawn(function()
 	)
 end)
 
-return ProfileService]]></ProtectedString>
-						<string name="ScriptGuid">{da28c9ab-ef76-48ca-a8be-cc41e5d1d5d1}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">ProfileService</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003a9</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="17">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
+return ProfileService</string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="18">
+          <Properties>
+            <string name="Name">ScreenGenerator</string>
+            <string name="Source"><![CDATA[--[[
 	ScreenGenerator - Creates stylized social media content on billboard screens
 	Generates cyan-blue backgrounds with avatar silhouettes and social content
 	matching the reference image's digital display aesthetic.
@@ -8361,265 +6717,747 @@ function ScreenGenerator.decorate(part, seed)
 end
 
 return ScreenGenerator
-]]></ProtectedString>
-						<string name="ScriptGuid">{6d96c1f0-e0ef-4f83-901e-b9e109c6cdad}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">ScreenGenerator</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">69a89edf958b275709e5e357000003aa</UniqueId>
-					</Properties>
-				</Item>
-				<Item class="ModuleScript" referent="RBX657a7a0b769c493b93aa524e361fb29a">
-					<Properties>
-						<Content name="LinkedSource"><null></null></Content>
-						<ProtectedString name="Source"><![CDATA[--[[
-	FirebaseConfig - SERVER ONLY. Never replicated to clients.
-
-	Points to the Cloud Function proxy URLs. The proxy uses the
-	Firebase Admin SDK to read/write RTDB — no deprecated database secrets.
-
-	HOW TO SET UP:
-	  1. Generate a strong secret and store it in Firebase Secret Manager:
-	       openssl rand -hex 32   ← copy this output
-	       firebase functions:secrets:set ROBLOX_SECRET
-	       (paste the value when prompted)
-
-	  2. Install function deps and deploy:
-	       cd functions && npm install && cd ..
-	       firebase deploy
-
-	  3. After deploy, your function URLs are printed in the terminal. They look like:
-	       https://us-central1-roblox-baddies.cloudfunctions.net/rbxLog
-	       https://us-central1-roblox-baddies.cloudfunctions.net/rbxFlags
-	     Paste the base (everything before /rbxLog) as FunctionsBaseUrl below.
-
-	  4. Paste the same secret from step 1 as RobloxSecret below.
-
-	SECURITY:
-	  - This file lives in src/server/ and is NEVER replicated to clients.
-	  - Do NOT move these values to src/shared/Constants.luau.
-	  - FirebaseConfig.luau is listed in .gitignore — keep it there.
+]]></string>
+          </Properties>
+        </Item>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="SoundService" referent="19">
+    <Properties>
+      <string name="Name">SoundService</string>
+      <bool name="RespectFilteringEnabled">true</bool>
+    </Properties>
+  </Item>
+  <Item class="StarterPlayer" referent="20">
+    <Properties>
+      <string name="Name">StarterPlayer</string>
+    </Properties>
+    <Item class="StarterPlayerScripts" referent="21">
+      <Properties>
+        <string name="Name">StarterPlayerScripts</string>
+      </Properties>
+      <Item class="LocalScript" referent="22">
+        <Properties>
+          <string name="Name">Client</string>
+          <string name="Source"><![CDATA[--[[
+	Client entry point - Baddies: Play to Slay!
+	Shows intro screen, then spawns player and runs camera intro.
 ]]
 
-return {
-	-- Base URL of your deployed Cloud Functions (no trailing slash).
-	-- Example: "https://us-central1-roblox-baddies.cloudfunctions.net"
-	FunctionsBaseUrl = "https://us-central1-roblox-baddies.cloudfunctions.net",
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
-	-- Shared secret — must match the ROBLOX_SECRET you set via:
-	--   firebase functions:secrets:set ROBLOX_SECRET
-	RobloxSecret = "e05c3eb9818a10929e1e407fad1dc3947121efc79714374f28ce9261716c81ab", -- ← replace this
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 
-	Enabled = true,
-}
-]]></ProtectedString>
-						<string name="ScriptGuid">{86d4f4fe-60da-4ac7-a27e-f0ef41e5ddf0}</string>
-						<BinaryString name="AttributesSerialize"></BinaryString>
-						<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-						<bool name="DefinesCapabilities">false</bool>
-						<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-						<string name="Name">FirebaseConfig</string>
-						<int64 name="SourceAssetId">-1</int64>
-						<BinaryString name="Tags"></BinaryString>
-						<UniqueId name="UniqueId">102d592339ea668509e6aa68000008c0</UniqueId>
-					</Properties>
-				</Item>
-			</Item>
-		</Item>
-	</Item>
-	<Item class="ServerStorage" referent="RBXd9615d89d1194074905c96082f8ac317">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ServerStorage</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000384</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ServiceVisibilityService" referent="RBX93d7ba6825e743538f5e958af6f2d9cb">
-		<Properties>
-			<BinaryString name="HiddenServices">AAAAAA==</BinaryString>
-			<BinaryString name="VisibleServices">AAAAAA==</BinaryString>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ServiceVisibilityService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000387</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="HttpService" referent="RBX484cd2a825a94b3cb5ae94a492a64ac7">
-		<Properties>
-			<bool name="HttpEnabled">false</bool>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">HttpService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000399</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="Lighting" referent="0">
-		<Properties>
-			<Color3 name="Ambient">
-				<R>0.289999992</R>
-				<G>0.180000007</G>
-				<B>0.370000005</B>
-			</Color3>
-			<float name="Brightness">0.600000024</float>
-			<Color3 name="ColorShift_Bottom">
-				<R>0</R>
-				<G>0</G>
-				<B>0</B>
-			</Color3>
-			<Color3 name="ColorShift_Top">
-				<R>0.549019635</R>
-				<G>0.200000003</G>
-				<B>0.509803951</B>
-			</Color3>
-			<float name="EnvironmentDiffuseScale">0</float>
-			<float name="EnvironmentSpecularScale">0</float>
-			<float name="ExposureCompensation">0</float>
-			<token name="ExtendLightRangeTo120">0</token>
-			<Color3 name="FogColor">
-				<R>0.75</R>
-				<G>0.75</G>
-				<B>0.75</B>
-			</Color3>
-			<float name="FogEnd">100000</float>
-			<float name="FogStart">0</float>
-			<float name="GeographicLatitude">41.7332993</float>
-			<bool name="GlobalShadows">false</bool>
-			<token name="LightingStyle">0</token>
-			<Color3 name="OutdoorAmbient">
-				<R>0.309803933</R>
-				<G>0.200000003</G>
-				<B>0.388235301</B>
-			</Color3>
-			<bool name="Outlines">true</bool>
-			<bool name="PrioritizeLightingQuality">true</bool>
-			<float name="ShadowSoftness">0.5</float>
-			<token name="Technology">4</token>
-			<string name="TimeOfDay">14:00:00</string>
-			<BinaryString name="AttributesSerialize"><![CDATA[AgAAACYAAABSQlhfTGlnaHRpbmdUZWNobm9sb2d5VW5pZmllZE1pZ3JhdGlvbgMBIAAAAFJC
-WF9PcmlnaW5hbFRlY2hub2xvZ3lPbkZpbGVMb2FkBAQAAAA=]]></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">Lighting</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e3570000039b</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="TestService" referent="RBXec5754f36a734ffc9afd73fa84005e69">
-		<Properties>
-			<bool name="AutoRuns">true</bool>
-			<string name="Description"></string>
-			<bool name="ExecuteWithStudioRun">false</bool>
-			<bool name="IsPhysicsEnvironmentalThrottled">true</bool>
-			<bool name="IsSleepAllowed">true</bool>
-			<int name="NumberOfPlayers">0</int>
-			<double name="SimulateSecondsLag">0</double>
-			<bool name="ThrottlePhysicsToRealtime">true</bool>
-			<double name="Timeout">10</double>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">TestService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e357000003de</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="VirtualInputManager" referent="RBX292ecc8d8223469ca4e747851764af2f">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">VirtualInputManager</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000429</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="SerializationService" referent="RBX54568dbc92da4652a06a1d4fa7ac0f0c">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">SerializationService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e357000005f5</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="VideoService" referent="RBX12624fb86c734006840731aa71108858">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">VideoService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000606</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="LodDataService" referent="RBX1d3df0028d974ed4acf1a140d5148335">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">LodDataService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e35700000607</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="ProximityPromptService" referent="RBX4b378e380fec4be3b5d4ec5c070630cb">
-		<Properties>
-			<bool name="Enabled">true</bool>
-			<int name="MaxIndicatorsVisible">16</int>
-			<int name="MaxPromptsVisible">16</int>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">ProximityPromptService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">69a89edf958b275709e5e357000006c3</UniqueId>
-		</Properties>
-	</Item>
-	<Item class="UGCAvatarService" referent="RBX13d91a58618745709dd5e24b8b2505c2">
-		<Properties>
-			<BinaryString name="AttributesSerialize"></BinaryString>
-			<SecurityCapabilities name="Capabilities">0</SecurityCapabilities>
-			<bool name="DefinesCapabilities">false</bool>
-			<UniqueId name="HistoryId">00000000000000000000000000000000</UniqueId>
-			<string name="Name">UGCAvatarService</string>
-			<int64 name="SourceAssetId">-1</int64>
-			<BinaryString name="Tags"></BinaryString>
-			<UniqueId name="UniqueId">0091fdb19ac319bf09e724fd00000625</UniqueId>
-		</Properties>
-	</Item>
-	<SharedStrings>
-		<SharedString md5="yuZpQdnvvUBOTYh1jqZ2cA=="></SharedString>
-	</SharedStrings>
+local player = Players.LocalPlayer
+
+-- Read feature flags synced from server (StringValues in ReplicatedStorage/FeatureFlags)
+local featureFlagFolder: Folder? = nil
+task.spawn(function()
+	featureFlagFolder = ReplicatedStorage:WaitForChild("FeatureFlags", 30)
+end)
+
+local function getFlag(name: string): boolean
+	local folder = featureFlagFolder or ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if folder then
+		local val = folder:FindFirstChild(name)
+		if val then
+			return val.Value == "true"
+		end
+	end
+	-- Fall back to Constants defaults
+	local default = Constants.FeatureFlags and Constants.FeatureFlags[name]
+	return default ~= false
+end
+
+local function observeFlag(name: string, callback: (boolean) -> ())
+	local function hookValue(valueObj: StringValue)
+		callback(valueObj.Value == "true")
+		valueObj:GetPropertyChangedSignal("Value"):Connect(function()
+			callback(valueObj.Value == "true")
+		end)
+	end
+
+	local folder = featureFlagFolder or ReplicatedStorage:FindFirstChild("FeatureFlags")
+	if folder then
+		local existing = folder:FindFirstChild(name)
+		if existing and existing:IsA("StringValue") then
+			hookValue(existing)
+		end
+		folder.ChildAdded:Connect(function(child)
+			if child.Name == name and child:IsA("StringValue") then
+				hookValue(child)
+			end
+		end)
+	else
+		task.spawn(function()
+			local newFolder = ReplicatedStorage:WaitForChild("FeatureFlags")
+			featureFlagFolder = newFolder
+			observeFlag(name, callback)
+		end)
+	end
+end
+local playerGui = player:WaitForChild("PlayerGui")
+local camera = workspace.CurrentCamera
+
+-- Client log helper (non-blocking — resolves the remote in the background)
+local logEvent: RemoteEvent? = nil
+task.spawn(function()
+	logEvent = ReplicatedStorage:WaitForChild("FirebaseLogEvent", 30)
+end)
+local function logToServer(event: string, data: { [string]: any }?)
+	if logEvent then
+		logEvent:FireServer(event, data or {})
+	end
+end
+
+--------------------------------------------------------------------------------
+-- INTRO SCREEN
+--------------------------------------------------------------------------------
+
+local function createIntroScreen()
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "IntroScreen"
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 100
+	gui.ResetOnSpawn = false
+	gui.Parent = playerGui
+
+	-- Lock camera to a static view during intro
+	camera.CameraType = Enum.CameraType.Scriptable
+	camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
+
+	-- Galaxy/sparkle background fill
+	local fill = Instance.new("Frame")
+	fill.Name = "BackgroundFill"
+	fill.Size = UDim2.new(1, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = 0
+	fill.Parent = gui
+
+	-- Animated rotating gradient
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 15, 100)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 25, 130)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(140, 40, 160)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 80, 170)),
+	})
+	gradient.Rotation = 0
+	gradient.Parent = fill
+
+	-- Scatter sparkle dots
+	local sparkles = {}
+	for i = 1, 50 do
+		local dot = Instance.new("Frame")
+		dot.Name = `Sparkle_{i}`
+		dot.BackgroundColor3 = Color3.fromHSV(
+			0.75 + math.random() * 0.2, -- purple to pink hue
+			0.2 + math.random() * 0.3,
+			0.9 + math.random() * 0.1
+		)
+		local sz = math.random(2, 5)
+		dot.Size = UDim2.new(0, sz, 0, sz)
+		dot.Position = UDim2.new(math.random() * 0.98, 0, math.random() * 0.98, 0)
+		dot.BackgroundTransparency = math.random() * 0.5
+		dot.BorderSizePixel = 0
+		dot.ZIndex = 1
+		dot.Parent = fill
+
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = dot
+
+		sparkles[i] = { dot = dot, speed = 0.5 + math.random() * 2, phase = math.random() * math.pi * 2 }
+	end
+
+	-- Animate gradient rotation + sparkle twinkle
+	task.spawn(function()
+		while fill.Parent do
+			local t = tick()
+			gradient.Rotation = (t * 8) % 360
+			for _, s in sparkles do
+				s.dot.BackgroundTransparency = 0.3 + 0.6 * math.abs(math.sin(t * s.speed + s.phase))
+			end
+			RunService.RenderStepped:Wait()
+		end
+	end)
+
+	-- Centered image container that preserves 1:1 aspect ratio
+	local bg = Instance.new("ImageLabel")
+	bg.Name = "Background"
+	bg.Image = Constants.IntroScreen.ImageId
+	bg.AnchorPoint = Vector2.new(0.5, 0.5)
+	bg.Size = UDim2.new(1, 0, 1, 0)
+	bg.Position = UDim2.new(0.5, 0, 0.5, 0)
+	bg.BackgroundTransparency = 1
+	bg.ScaleType = Enum.ScaleType.Fit
+	bg.BorderSizePixel = 0
+	bg.Parent = gui
+
+	-- Lock aspect ratio so buttons stay aligned on all screens
+	local aspect = Instance.new("UIAspectRatioConstraint")
+	aspect.AspectRatio = 1
+	aspect.AspectType = Enum.AspectType.ScaleWithParentSize
+	aspect.DominantAxis = Enum.DominantAxis.Height
+	aspect.Parent = bg
+
+	-- Invisible buttons aligned over the image's built-in buttons
+	-- Positions are relative to the image (not the screen), so they stay accurate
+	local buttonDefs = {
+		{ name = "Play",      pos = UDim2.new(0.53, 0, 0.44, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "play" },
+		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.56, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
+		{ name = "Shop",      pos = UDim2.new(0.53, 0, 0.68, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
+	}
+
+	-- "Coming Soon!" popup
+	local popup = Instance.new("Frame")
+	popup.Name = "ComingSoonPopup"
+	popup.Size = UDim2.new(0, 300, 0, 160)
+	popup.Position = UDim2.new(0.5, -150, 0.5, -80)
+	popup.BackgroundColor3 = Color3.fromRGB(50, 20, 60)
+	popup.BorderSizePixel = 0
+	popup.Visible = false
+	popup.ZIndex = 10
+	popup.Parent = gui
+
+	local popupCorner = Instance.new("UICorner")
+	popupCorner.CornerRadius = UDim.new(0, 16)
+	popupCorner.Parent = popup
+
+	local popupStroke = Instance.new("UIStroke")
+	popupStroke.Color = Color3.fromRGB(255, 100, 200)
+	popupStroke.Thickness = 2
+	popupStroke.Parent = popup
+
+	local popupText = Instance.new("TextLabel")
+	popupText.Name = "Message"
+	popupText.Size = UDim2.new(1, 0, 0.55, 0)
+	popupText.Position = UDim2.new(0, 0, 0.05, 0)
+	popupText.BackgroundTransparency = 1
+	popupText.Text = "Coming Soon!"
+	popupText.TextColor3 = Color3.fromRGB(255, 200, 240)
+	popupText.TextScaled = true
+	popupText.Font = Enum.Font.GothamBold
+	popupText.ZIndex = 11
+	popupText.Parent = popup
+
+	local dismissBtn = Instance.new("TextButton")
+	dismissBtn.Name = "Dismiss"
+	dismissBtn.Size = UDim2.new(0.5, 0, 0, 36)
+	dismissBtn.Position = UDim2.new(0.25, 0, 1, -50)
+	dismissBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 180)
+	dismissBtn.Text = "OK"
+	dismissBtn.TextColor3 = Color3.new(1, 1, 1)
+	dismissBtn.TextScaled = true
+	dismissBtn.Font = Enum.Font.GothamBold
+	dismissBtn.ZIndex = 11
+	dismissBtn.Parent = popup
+
+	local dismissCorner = Instance.new("UICorner")
+	dismissCorner.CornerRadius = UDim.new(0, 10)
+	dismissCorner.Parent = dismissBtn
+
+	dismissBtn.MouseButton1Click:Connect(function()
+		popup.Visible = false
+	end)
+
+	-- Invisible clickable regions over the image's buttons
+	for _, def in ipairs(buttonDefs) do
+		local btn = Instance.new("TextButton")
+		btn.Name = def.name
+		btn.Size = def.size
+		btn.Position = def.pos
+		btn.BackgroundTransparency = 1
+		btn.Text = ""
+		btn.ZIndex = 5
+		btn.Parent = bg
+
+		if def.action == "play" then
+			btn.MouseButton1Click:Connect(function()
+				logToServer("play_pressed")
+				gui:Destroy()
+			end)
+		else
+			btn.MouseButton1Click:Connect(function()
+				popup.Visible = true
+			end)
+		end
+	end
+
+	return gui
+end
+
+--------------------------------------------------------------------------------
+-- GENDER SELECTION SCREEN
+--------------------------------------------------------------------------------
+
+local function createGenderSelectScreen(): string
+	local chosen: string? = nil
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "GenderSelectScreen"
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 100
+	gui.ResetOnSpawn = false
+	gui.Parent = playerGui
+
+	-- Galaxy background (same as intro)
+	local fill = Instance.new("Frame")
+	fill.Size = UDim2.new(1, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.new(1, 1, 1)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = 0
+	fill.Parent = gui
+
+	local gradient = Instance.new("UIGradient")
+	gradient.Color = ColorSequence.new({
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(60, 15, 100)),
+		ColorSequenceKeypoint.new(0.4, Color3.fromRGB(90, 25, 130)),
+		ColorSequenceKeypoint.new(0.8, Color3.fromRGB(140, 40, 160)),
+		ColorSequenceKeypoint.new(1, Color3.fromRGB(220, 80, 170)),
+	})
+	gradient.Parent = fill
+
+	-- Sparkle dots
+	local sparkles = {}
+	for i = 1, 30 do
+		local dot = Instance.new("Frame")
+		dot.BackgroundColor3 = Color3.fromHSV(0.75 + math.random() * 0.2, 0.2 + math.random() * 0.3, 0.9 + math.random() * 0.1)
+		local sz = math.random(2, 5)
+		dot.Size = UDim2.new(0, sz, 0, sz)
+		dot.Position = UDim2.new(math.random() * 0.98, 0, math.random() * 0.98, 0)
+		dot.BackgroundTransparency = math.random() * 0.5
+		dot.BorderSizePixel = 0
+		dot.ZIndex = 1
+		dot.Parent = fill
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = dot
+		sparkles[i] = { dot = dot, speed = 0.5 + math.random() * 2, phase = math.random() * math.pi * 2 }
+	end
+
+	task.spawn(function()
+		while fill.Parent do
+			local t = tick()
+			gradient.Rotation = (t * 8) % 360
+			for _, s in sparkles do
+				s.dot.BackgroundTransparency = 0.3 + 0.6 * math.abs(math.sin(t * s.speed + s.phase))
+			end
+			RunService.RenderStepped:Wait()
+		end
+	end)
+
+	-- Center panel
+	local panel = Instance.new("Frame")
+	panel.Size = UDim2.new(0, 400, 0, 300)
+	panel.AnchorPoint = Vector2.new(0.5, 0.5)
+	panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+	panel.BackgroundColor3 = Color3.fromRGB(50, 20, 60)
+	panel.BackgroundTransparency = 0.15
+	panel.BorderSizePixel = 0
+	panel.ZIndex = 5
+	panel.Parent = gui
+
+	local panelCorner = Instance.new("UICorner")
+	panelCorner.CornerRadius = UDim.new(0, 16)
+	panelCorner.Parent = panel
+
+	local panelStroke = Instance.new("UIStroke")
+	panelStroke.Color = Color3.fromRGB(255, 100, 200)
+	panelStroke.Thickness = 2
+	panelStroke.Parent = panel
+
+	-- Title
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 50)
+	title.Position = UDim2.new(0, 0, 0, 20)
+	title.BackgroundTransparency = 1
+	title.Text = "Choose Your Look"
+	title.TextColor3 = Color3.fromRGB(255, 200, 240)
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+	title.ZIndex = 6
+	title.Parent = panel
+
+	-- Subtitle
+	local subtitle = Instance.new("TextLabel")
+	subtitle.Size = UDim2.new(1, -40, 0, 30)
+	subtitle.Position = UDim2.new(0, 20, 0, 75)
+	subtitle.BackgroundTransparency = 1
+	subtitle.Text = "You can change this later!"
+	subtitle.TextColor3 = Color3.fromRGB(200, 170, 220)
+	subtitle.TextScaled = true
+	subtitle.Font = Enum.Font.GothamMedium
+	subtitle.ZIndex = 6
+	subtitle.Parent = panel
+
+	-- Button helper
+	local function makeGenderButton(text: string, xPos: number, color: Color3): TextButton
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(0, 150, 0, 120)
+		btn.AnchorPoint = Vector2.new(0.5, 0)
+		btn.Position = UDim2.new(xPos, 0, 0, 130)
+		btn.BackgroundColor3 = color
+		btn.Text = text
+		btn.TextColor3 = Color3.new(1, 1, 1)
+		btn.TextSize = 24
+		btn.Font = Enum.Font.GothamBold
+		btn.ZIndex = 6
+		btn.Parent = panel
+
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(0, 12)
+		corner.Parent = btn
+
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = color
+		stroke.Thickness = 0
+		stroke.Parent = btn
+
+		btn.MouseEnter:Connect(function()
+			stroke.Thickness = 2
+			stroke.Color = Color3.new(1, 1, 1)
+		end)
+		btn.MouseLeave:Connect(function()
+			stroke.Thickness = 0
+		end)
+
+		return btn
+	end
+
+	local femaleBtn = makeGenderButton("Female", 0.3, Color3.fromRGB(255, 80, 180))
+	local maleBtn = makeGenderButton("Male", 0.7, Color3.fromRGB(180, 80, 255))
+
+	femaleBtn.MouseButton1Click:Connect(function()
+		chosen = "Female"
+	end)
+	maleBtn.MouseButton1Click:Connect(function()
+		chosen = "Male"
+	end)
+
+	-- Yield until a choice is made
+	while chosen == nil do
+		task.wait(0.1)
+	end
+
+	gui:Destroy()
+	return chosen
+end
+
+--------------------------------------------------------------------------------
+-- CAMERA INTRO (runs after Play is pressed)
+--------------------------------------------------------------------------------
+
+local function cameraIntro()
+	-- Immediately hand camera to the player — no slow pan
+	camera.CameraType = Enum.CameraType.Custom
+	logToServer("camera_intro_complete")
+end
+
+--------------------------------------------------------------------------------
+-- MAIN FLOW
+--------------------------------------------------------------------------------
+
+-- Start background music (loops forever, parented to PlayerGui so it persists)
+local music = Instance.new("Sound")
+music.Name = "BackgroundMusic"
+music.SoundId = Constants.Music.SoundId
+music.Volume = Constants.Music.Volume
+music.Looped = true
+music.Parent = playerGui
+local function updateMusic(enabled: boolean)
+	if enabled then
+		if not music.IsPlaying then
+			music:Play()
+		end
+	else
+		if music.IsPlaying then
+			music:Stop()
+		end
+	end
+end
+
+updateMusic(getFlag("MusicEnabled"))
+observeFlag("MusicEnabled", updateMusic)
+
+--------------------------------------------------------------------------------
+-- SETTINGS MENU (persistent gear icon, top-right — visible on intro + in-game)
+--------------------------------------------------------------------------------
+
+local Lighting = game:GetService("Lighting")
+
+local settingsGui = Instance.new("ScreenGui")
+settingsGui.Name = "SettingsGui"
+settingsGui.IgnoreGuiInset = true
+settingsGui.DisplayOrder = 110
+settingsGui.ResetOnSpawn = false
+settingsGui.Parent = playerGui
+
+-- Gear icon button (top-right)
+local gearBtn = Instance.new("TextButton")
+gearBtn.Name = "GearButton"
+gearBtn.Size = UDim2.new(0, 40, 0, 40)
+gearBtn.Position = UDim2.new(1, -55, 0, 15)
+gearBtn.BackgroundColor3 = Color3.fromRGB(30, 15, 40)
+gearBtn.BackgroundTransparency = 0.4
+gearBtn.Text = "\u{2699}"
+gearBtn.TextColor3 = Color3.fromRGB(220, 200, 240)
+gearBtn.TextSize = 28
+gearBtn.Font = Enum.Font.GothamBold
+gearBtn.ZIndex = 20
+gearBtn.Parent = settingsGui
+
+local gearCorner = Instance.new("UICorner")
+gearCorner.CornerRadius = UDim.new(0, 10)
+gearCorner.Parent = gearBtn
+
+-- Settings panel
+local panel = Instance.new("Frame")
+panel.Name = "SettingsPanel"
+panel.Size = UDim2.new(0, 260, 0, 220)
+panel.Position = UDim2.new(1, -275, 0, 60)
+panel.BackgroundColor3 = Color3.fromRGB(30, 12, 45)
+panel.BackgroundTransparency = 0.1
+panel.BorderSizePixel = 0
+panel.Visible = false
+panel.ZIndex = 20
+panel.Parent = settingsGui
+
+local panelCorner = Instance.new("UICorner")
+panelCorner.CornerRadius = UDim.new(0, 14)
+panelCorner.Parent = panel
+
+local panelStroke = Instance.new("UIStroke")
+panelStroke.Color = Color3.fromRGB(180, 80, 200)
+panelStroke.Thickness = 1.5
+panelStroke.Parent = panel
+
+-- Title
+local panelTitle = Instance.new("TextLabel")
+panelTitle.Name = "Title"
+panelTitle.Size = UDim2.new(1, 0, 0, 36)
+panelTitle.BackgroundTransparency = 1
+panelTitle.Text = "Settings"
+panelTitle.TextColor3 = Color3.fromRGB(255, 180, 230)
+panelTitle.TextSize = 20
+panelTitle.Font = Enum.Font.GothamBold
+panelTitle.ZIndex = 21
+panelTitle.Parent = panel
+
+-- Helper: create a slider row
+local function makeSlider(name, label, yPos, initial, onChange)
+	local row = Instance.new("Frame")
+	row.Name = name
+	row.Size = UDim2.new(1, -30, 0, 60)
+	row.Position = UDim2.new(0, 15, 0, yPos)
+	row.BackgroundTransparency = 1
+	row.ZIndex = 21
+	row.Parent = panel
+
+	local lbl = Instance.new("TextLabel")
+	lbl.Size = UDim2.new(0.5, 0, 0, 20)
+	lbl.BackgroundTransparency = 1
+	lbl.Text = label
+	lbl.TextColor3 = Color3.fromRGB(210, 190, 230)
+	lbl.TextSize = 14
+	lbl.Font = Enum.Font.GothamMedium
+	lbl.TextXAlignment = Enum.TextXAlignment.Left
+	lbl.ZIndex = 22
+	lbl.Parent = row
+
+	local valueLabel = Instance.new("TextLabel")
+	valueLabel.Name = "Value"
+	valueLabel.Size = UDim2.new(0.5, 0, 0, 20)
+	valueLabel.Position = UDim2.new(0.5, 0, 0, 0)
+	valueLabel.BackgroundTransparency = 1
+	valueLabel.Text = tostring(math.floor(initial * 100)) .. "%"
+	valueLabel.TextColor3 = Color3.fromRGB(255, 150, 220)
+	valueLabel.TextSize = 14
+	valueLabel.Font = Enum.Font.GothamMedium
+	valueLabel.TextXAlignment = Enum.TextXAlignment.Right
+	valueLabel.ZIndex = 22
+	valueLabel.Parent = row
+
+	-- Track
+	local track = Instance.new("Frame")
+	track.Name = "Track"
+	track.Size = UDim2.new(1, 0, 0, 8)
+	track.Position = UDim2.new(0, 0, 0, 30)
+	track.BackgroundColor3 = Color3.fromRGB(60, 30, 80)
+	track.BorderSizePixel = 0
+	track.ZIndex = 22
+	track.Parent = row
+
+	local trackCorner = Instance.new("UICorner")
+	trackCorner.CornerRadius = UDim.new(1, 0)
+	trackCorner.Parent = track
+
+	-- Fill
+	local fill = Instance.new("Frame")
+	fill.Name = "Fill"
+	fill.Size = UDim2.new(initial, 0, 1, 0)
+	fill.BackgroundColor3 = Color3.fromRGB(255, 100, 200)
+	fill.BorderSizePixel = 0
+	fill.ZIndex = 23
+	fill.Parent = track
+
+	local fillCorner = Instance.new("UICorner")
+	fillCorner.CornerRadius = UDim.new(1, 0)
+	fillCorner.Parent = fill
+
+	-- Thumb
+	local thumb = Instance.new("Frame")
+	thumb.Name = "Thumb"
+	thumb.Size = UDim2.new(0, 16, 0, 16)
+	thumb.Position = UDim2.new(initial, -8, 0.5, -8)
+	thumb.BackgroundColor3 = Color3.new(1, 1, 1)
+	thumb.BorderSizePixel = 0
+	thumb.ZIndex = 24
+	thumb.Parent = track
+
+	local thumbCorner = Instance.new("UICorner")
+	thumbCorner.CornerRadius = UDim.new(1, 0)
+	thumbCorner.Parent = thumb
+
+	-- Drag interaction
+	local dragging = false
+	local inputBtn = Instance.new("TextButton")
+	inputBtn.Size = UDim2.new(1, 0, 0, 24)
+	inputBtn.Position = UDim2.new(0, 0, 0, 24)
+	inputBtn.BackgroundTransparency = 1
+	inputBtn.Text = ""
+	inputBtn.ZIndex = 25
+	inputBtn.Parent = row
+
+	local function updateSlider(inputX)
+		local trackAbsPos = track.AbsolutePosition.X
+		local trackAbsSize = track.AbsoluteSize.X
+		local pct = math.clamp((inputX - trackAbsPos) / trackAbsSize, 0, 1)
+		fill.Size = UDim2.new(pct, 0, 1, 0)
+		thumb.Position = UDim2.new(pct, -8, 0.5, -8)
+		valueLabel.Text = tostring(math.floor(pct * 100)) .. "%"
+		onChange(pct)
+	end
+
+	inputBtn.MouseButton1Down:Connect(function()
+		dragging = true
+	end)
+
+	inputBtn.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			updateSlider(input.Position.X)
+		end
+	end)
+
+	inputBtn.MouseButton1Up:Connect(function()
+		dragging = false
+	end)
+
+	inputBtn.MouseButton1Click:Connect(function(x)
+		local absX = inputBtn.AbsolutePosition.X
+		local relX = game:GetService("UserInputService"):GetMouseLocation().X
+		updateSlider(relX)
+	end)
+end
+
+-- Volume slider
+makeSlider("Volume", "Volume", 45, Constants.Music.Volume, function(pct)
+	music.Volume = pct
+end)
+
+-- Brightness slider
+local baseBrightness = Lighting.Brightness
+makeSlider("Brightness", "Brightness", 120, 0.5, function(pct)
+	Lighting.Brightness = pct * 2 -- 0% = 0, 50% = 1.0 (default), 100% = 2.0
+end)
+
+-- Toggle panel
+gearBtn.MouseButton1Click:Connect(function()
+	panel.Visible = not panel.Visible
+end)
+
+--------------------------------------------------------------------------------
+-- INTRO SCREEN + CHARACTER CREATION + SPAWN
+--------------------------------------------------------------------------------
+
+-- Keep camera locked during entire flow
+camera.CameraType = Enum.CameraType.Scriptable
+camera.CFrame = CFrame.new(0, 80, 90) * CFrame.Angles(math.rad(-35), 0, 0)
+
+-- Show intro screen (if enabled) and wait for Play
+if getFlag("IntroScreenEnabled") then
+	local introGui = createIntroScreen()
+	logToServer("intro_shown")
+
+	-- Wait until the intro screen is destroyed (Play was pressed)
+	introGui.Destroying:Wait()
+end
+
+-- Check if player needs character creation
+print("[Client] Waiting for CharacterCreated BoolValue...")
+local createdVal = player:WaitForChild("CharacterCreated", 10)
+if createdVal then
+	print(`[Client] CharacterCreated found, value = {createdVal.Value}`)
+else
+	print("[Client] CharacterCreated NOT FOUND (timeout)")
+end
+local needsCreation = not (createdVal and createdVal.Value)
+
+-- NewPlayer flag = true: always show gender selection (even for returning players)
+if not needsCreation and getFlag("NewPlayer") then
+	needsCreation = true
+end
+
+if needsCreation then
+	print("[Client] Showing gender selection...")
+	local gender = createGenderSelectScreen()
+	print(`[Client] Gender chosen: {gender}`)
+	logToServer("gender_selected", { gender = gender })
+
+	-- Tell server to save gender and spawn character
+	local genderEvent = ReplicatedStorage:WaitForChild("GenderSelected", 10)
+	if genderEvent then
+		print("[Client] Firing GenderSelected to server...")
+		genderEvent:FireServer(gender)
+	else
+		warn("[Client] GenderSelected RemoteEvent not found!")
+	end
+
+	-- Wait for character to actually spawn before camera intro
+	print("[Client] Waiting for character to spawn...")
+	player.CharacterAdded:Wait()
+	task.wait(0.5)
+else
+	-- Returning player — just spawn
+	print("[Client] Returning player, firing PlayerReady...")
+	local readyEvent = ReplicatedStorage:WaitForChild("PlayerReady", 10)
+	if readyEvent then
+		readyEvent:FireServer()
+	end
+	player.CharacterAdded:Wait()
+	task.wait(0.5)
+end
+
+-- Run camera intro after character exists
+print("[Client] Running camera intro...")
+cameraIntro()
+
+logToServer("ready")
+print("Social Spotlight Plaza client ready!")
+]]></string>
+        </Properties>
+      </Item>
+    </Item>
+  </Item>
+  <Item class="Workspace" referent="23">
+    <Properties>
+      <string name="Name">Workspace</string>
+      <bool name="FilteringEnabled">true</bool>
+      <bool name="NeedsPivotMigration">false</bool>
+    </Properties>
+  </Item>
 </roblox>
