@@ -71,6 +71,9 @@ local function logToServer(event: string, data: { [string]: any }?)
 	end
 end
 
+-- Forward declaration (defined after intro screen)
+local createCustomizeScreen
+
 --------------------------------------------------------------------------------
 -- INTRO SCREEN
 --------------------------------------------------------------------------------
@@ -167,7 +170,7 @@ local function createIntroScreen()
 	-- Positions are relative to the image (not the screen), so they stay accurate
 	local buttonDefs = {
 		{ name = "Play",      pos = UDim2.new(0.53, 0, 0.44, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "play" },
-		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.56, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
+		{ name = "Customize", pos = UDim2.new(0.53, 0, 0.56, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "customize" },
 		{ name = "Shop",      pos = UDim2.new(0.53, 0, 0.68, 0), size = UDim2.new(0.40, 0, 0.09, 0), action = "coming_soon" },
 	}
 
@@ -239,6 +242,10 @@ local function createIntroScreen()
 				logToServer("play_pressed")
 				gui:Destroy()
 			end)
+		elseif def.action == "customize" then
+			btn.MouseButton1Click:Connect(function()
+				createCustomizeScreen()
+			end)
 		else
 			btn.MouseButton1Click:Connect(function()
 				popup.Visible = true
@@ -247,6 +254,245 @@ local function createIntroScreen()
 	end
 
 	return gui
+end
+
+--------------------------------------------------------------------------------
+-- CUSTOMIZATION SCREEN (Face Selection)
+--------------------------------------------------------------------------------
+
+createCustomizeScreen = function()
+	local faces = Constants.Faces
+	if #faces == 0 then return end
+
+	local currentIndex = 1
+
+	local gui = Instance.new("ScreenGui")
+	gui.Name = "CustomizeScreen"
+	gui.IgnoreGuiInset = true
+	gui.DisplayOrder = 105
+	gui.ResetOnSpawn = false
+	gui.Parent = playerGui
+
+	-- Dark overlay background
+	local overlay = Instance.new("Frame")
+	overlay.Size = UDim2.new(1, 0, 1, 0)
+	overlay.BackgroundColor3 = Color3.fromRGB(15, 5, 25)
+	overlay.BackgroundTransparency = 0.3
+	overlay.BorderSizePixel = 0
+	overlay.ZIndex = 0
+	overlay.Parent = gui
+
+	-- Main panel
+	local panel = Instance.new("Frame")
+	panel.Size = UDim2.new(0, 520, 0, 480)
+	panel.AnchorPoint = Vector2.new(0.5, 0.5)
+	panel.Position = UDim2.new(0.5, 0, 0.5, 0)
+	panel.BackgroundColor3 = Color3.fromRGB(35, 12, 50)
+	panel.BackgroundTransparency = 0.05
+	panel.BorderSizePixel = 0
+	panel.ZIndex = 5
+	panel.Parent = gui
+
+	local panelCorner = Instance.new("UICorner")
+	panelCorner.CornerRadius = UDim.new(0, 20)
+	panelCorner.Parent = panel
+
+	local panelStroke = Instance.new("UIStroke")
+	panelStroke.Color = Color3.fromRGB(255, 100, 200)
+	panelStroke.Thickness = 2
+	panelStroke.Parent = panel
+
+	-- Title
+	local title = Instance.new("TextLabel")
+	title.Size = UDim2.new(1, 0, 0, 44)
+	title.Position = UDim2.new(0, 0, 0, 16)
+	title.BackgroundTransparency = 1
+	title.Text = "Choose Your Face"
+	title.TextColor3 = Color3.fromRGB(255, 200, 240)
+	title.TextScaled = true
+	title.Font = Enum.Font.GothamBold
+	title.ZIndex = 6
+	title.Parent = panel
+
+	-- Face preview image
+	local previewFrame = Instance.new("Frame")
+	previewFrame.Size = UDim2.new(0, 240, 0, 240)
+	previewFrame.AnchorPoint = Vector2.new(0.5, 0)
+	previewFrame.Position = UDim2.new(0.5, 0, 0, 70)
+	previewFrame.BackgroundColor3 = Color3.fromRGB(25, 8, 35)
+	previewFrame.BorderSizePixel = 0
+	previewFrame.ZIndex = 6
+	previewFrame.Parent = panel
+
+	local previewCorner = Instance.new("UICorner")
+	previewCorner.CornerRadius = UDim.new(0, 16)
+	previewCorner.Parent = previewFrame
+
+	local previewStroke = Instance.new("UIStroke")
+	previewStroke.Color = Color3.fromRGB(120, 60, 160)
+	previewStroke.Thickness = 1.5
+	previewStroke.Parent = previewFrame
+
+	local previewImage = Instance.new("ImageLabel")
+	previewImage.Name = "FacePreview"
+	previewImage.Size = UDim2.new(0.9, 0, 0.9, 0)
+	previewImage.AnchorPoint = Vector2.new(0.5, 0.5)
+	previewImage.Position = UDim2.new(0.5, 0, 0.5, 0)
+	previewImage.BackgroundTransparency = 1
+	previewImage.ScaleType = Enum.ScaleType.Fit
+	previewImage.Image = faces[1].TextureId
+	previewImage.ZIndex = 7
+	previewImage.Parent = previewFrame
+
+	-- Face name label
+	local faceNameLabel = Instance.new("TextLabel")
+	faceNameLabel.Size = UDim2.new(1, 0, 0, 30)
+	faceNameLabel.Position = UDim2.new(0, 0, 0, 320)
+	faceNameLabel.BackgroundTransparency = 1
+	faceNameLabel.Text = faces[1].Name
+	faceNameLabel.TextColor3 = Color3.fromRGB(255, 180, 230)
+	faceNameLabel.TextScaled = true
+	faceNameLabel.Font = Enum.Font.GothamMedium
+	faceNameLabel.ZIndex = 6
+	faceNameLabel.Parent = panel
+
+	-- Counter label (e.g., "1 / 3")
+	local counterLabel = Instance.new("TextLabel")
+	counterLabel.Size = UDim2.new(1, 0, 0, 22)
+	counterLabel.Position = UDim2.new(0, 0, 0, 350)
+	counterLabel.BackgroundTransparency = 1
+	counterLabel.Text = `1 / {#faces}`
+	counterLabel.TextColor3 = Color3.fromRGB(160, 130, 180)
+	counterLabel.TextScaled = true
+	counterLabel.Font = Enum.Font.Gotham
+	counterLabel.ZIndex = 6
+	counterLabel.Parent = panel
+
+	-- Navigation arrows
+	local function makeArrowButton(text: string, xPos: number): TextButton
+		local btn = Instance.new("TextButton")
+		btn.Size = UDim2.new(0, 50, 0, 50)
+		btn.AnchorPoint = Vector2.new(0.5, 0.5)
+		btn.Position = UDim2.new(xPos, 0, 0, 190)
+		btn.BackgroundColor3 = Color3.fromRGB(60, 25, 80)
+		btn.Text = text
+		btn.TextColor3 = Color3.fromRGB(255, 180, 230)
+		btn.TextSize = 28
+		btn.Font = Enum.Font.GothamBold
+		btn.ZIndex = 8
+		btn.Parent = panel
+
+		local corner = Instance.new("UICorner")
+		corner.CornerRadius = UDim.new(1, 0)
+		corner.Parent = btn
+
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = Color3.fromRGB(255, 100, 200)
+		stroke.Thickness = 1.5
+		stroke.Parent = btn
+
+		btn.MouseEnter:Connect(function()
+			btn.BackgroundColor3 = Color3.fromRGB(100, 40, 130)
+		end)
+		btn.MouseLeave:Connect(function()
+			btn.BackgroundColor3 = Color3.fromRGB(60, 25, 80)
+		end)
+
+		return btn
+	end
+
+	local leftArrow = makeArrowButton("<", 0.12)
+	local rightArrow = makeArrowButton(">", 0.88)
+
+	-- Preview event for live face changes
+	local previewEvent = ReplicatedStorage:WaitForChild("PreviewFace", 5)
+
+	local function updatePreview()
+		local face = faces[currentIndex]
+		previewImage.Image = face.TextureId
+		faceNameLabel.Text = face.Name
+		counterLabel.Text = `{currentIndex} / {#faces}`
+
+		-- Send live preview to server (applies texture to character in-game)
+		if previewEvent then
+			previewEvent:FireServer(face.Id)
+		end
+	end
+
+	leftArrow.MouseButton1Click:Connect(function()
+		currentIndex = currentIndex - 1
+		if currentIndex < 1 then currentIndex = #faces end
+		updatePreview()
+	end)
+
+	rightArrow.MouseButton1Click:Connect(function()
+		currentIndex = currentIndex + 1
+		if currentIndex > #faces then currentIndex = 1 end
+		updatePreview()
+	end)
+
+	-- Confirm button
+	local confirmBtn = Instance.new("TextButton")
+	confirmBtn.Size = UDim2.new(0, 200, 0, 48)
+	confirmBtn.AnchorPoint = Vector2.new(0.5, 0)
+	confirmBtn.Position = UDim2.new(0.5, 0, 0, 390)
+	confirmBtn.BackgroundColor3 = Color3.fromRGB(255, 80, 180)
+	confirmBtn.Text = "Apply Face"
+	confirmBtn.TextColor3 = Color3.new(1, 1, 1)
+	confirmBtn.TextSize = 20
+	confirmBtn.Font = Enum.Font.GothamBold
+	confirmBtn.ZIndex = 8
+	confirmBtn.Parent = panel
+
+	local confirmCorner = Instance.new("UICorner")
+	confirmCorner.CornerRadius = UDim.new(0, 12)
+	confirmCorner.Parent = confirmBtn
+
+	local confirmStroke = Instance.new("UIStroke")
+	confirmStroke.Color = Color3.fromRGB(255, 140, 220)
+	confirmStroke.Thickness = 0
+	confirmStroke.Parent = confirmBtn
+
+	confirmBtn.MouseEnter:Connect(function()
+		confirmStroke.Thickness = 2
+		confirmStroke.Color = Color3.new(1, 1, 1)
+	end)
+	confirmBtn.MouseLeave:Connect(function()
+		confirmStroke.Thickness = 0
+	end)
+
+	-- Close button (X in top-right)
+	local closeBtn = Instance.new("TextButton")
+	closeBtn.Size = UDim2.new(0, 36, 0, 36)
+	closeBtn.Position = UDim2.new(1, -46, 0, 10)
+	closeBtn.BackgroundColor3 = Color3.fromRGB(60, 25, 80)
+	closeBtn.BackgroundTransparency = 0.3
+	closeBtn.Text = "X"
+	closeBtn.TextColor3 = Color3.fromRGB(255, 150, 200)
+	closeBtn.TextSize = 18
+	closeBtn.Font = Enum.Font.GothamBold
+	closeBtn.ZIndex = 8
+	closeBtn.Parent = panel
+
+	local closeCorner = Instance.new("UICorner")
+	closeCorner.CornerRadius = UDim.new(1, 0)
+	closeCorner.Parent = closeBtn
+
+	-- Actions
+	local saveEvent = ReplicatedStorage:WaitForChild("SaveFace", 5)
+
+	confirmBtn.MouseButton1Click:Connect(function()
+		local face = faces[currentIndex]
+		if saveEvent then
+			saveEvent:FireServer(face.Id)
+		end
+		logToServer("face_applied", { faceId = face.Id })
+		gui:Destroy()
+	end)
+
+	closeBtn.MouseButton1Click:Connect(function()
+		gui:Destroy()
+	end)
 end
 
 --------------------------------------------------------------------------------
@@ -636,6 +882,31 @@ end)
 -- Toggle panel
 gearBtn.MouseButton1Click:Connect(function()
 	panel.Visible = not panel.Visible
+end)
+
+-- Customize button (palette icon, left of gear)
+local customizeBtn = Instance.new("TextButton")
+customizeBtn.Name = "CustomizeButton"
+customizeBtn.Size = UDim2.new(0, 40, 0, 40)
+customizeBtn.Position = UDim2.new(1, -100, 0, 15)
+customizeBtn.BackgroundColor3 = Color3.fromRGB(30, 15, 40)
+customizeBtn.BackgroundTransparency = 0.4
+customizeBtn.Text = "\u{1F3A8}"
+customizeBtn.TextColor3 = Color3.fromRGB(255, 150, 220)
+customizeBtn.TextSize = 22
+customizeBtn.Font = Enum.Font.GothamBold
+customizeBtn.ZIndex = 20
+customizeBtn.Parent = settingsGui
+
+local customizeBtnCorner = Instance.new("UICorner")
+customizeBtnCorner.CornerRadius = UDim.new(0, 10)
+customizeBtnCorner.Parent = customizeBtn
+
+customizeBtn.MouseButton1Click:Connect(function()
+	-- Only open if not already open
+	if not playerGui:FindFirstChild("CustomizeScreen") then
+		createCustomizeScreen()
+	end
 end)
 
 --------------------------------------------------------------------------------

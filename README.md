@@ -1,6 +1,6 @@
 # Baddies: Play to Slay!
 
-A neon-lit social hub built in Roblox using Luau and Rojo. The environment is constructed procedurally at runtime. Players choose a gender at first join and spawn with a custom outfit — the female body uses DTI (Dress to Impress) mesh parts loaded from the Creator Store.
+A neon-lit social hub built in Roblox using Luau and Rojo. The environment is constructed procedurally at runtime. Players choose a gender at first join and spawn with a custom character model — the female body is a custom Blender-sculpted R15 avatar imported via Roblox Avatar Auto-Setup and stored in ServerStorage.
 
 ## Quick Start
 
@@ -28,8 +28,8 @@ src/
       MapBuilder.luau          -- Procedural geometry (10 build phases)
       LightingController.luau  -- Atmosphere, bloom, color correction
       ScreenGenerator.luau     -- Cyan billboard SurfaceGui content
-      NPCSpawner.luau          -- R6 crowd with idle animations
-      CharacterCreator.luau    -- Gender-based outfits with DTI body mesh replacement
+      NPCSpawner.luau          -- R15 custom avatar crowd NPCs (cloned from ServerStorage)
+      CharacterCreator.luau    -- Gender-based character spawning (custom Blender avatar)
       PlayerData.luau           -- Persistent profiles via ProfileService
       ProfileService.luau       -- Third-party DataStore wrapper (madwork)
       FeatureFlags.luau         -- Firebase-backed remote flag system
@@ -46,9 +46,9 @@ The server builds the environment in three phases, then handles player character
 
 2. **LightingController.apply()** — Sets the pink/purple neon atmosphere: ambient lighting, Bloom, ColorCorrection, Atmosphere haze, and auto-attaches PointLights to Neon material parts.
 
-3. **NPCSpawner.spawn()** — Creates 20 R6 humanoid NPCs with random colors that wander between navigation points.
+3. **NPCSpawner.spawn()** — Clones 20 R15 custom avatar NPCs from the `BaddieFemale` model in ServerStorage. NPCs wander between navigation points, watch screens, and sit in chairs.
 
-4. **Character Creation** — `CharacterAutoLoads` is disabled. New players see a gender selection screen (Male/Female). The server spawns characters via `LoadCharacterWithHumanoidDescription` with the configured outfit. Female characters get DTI body meshes swapped in post-spawn by cloning MeshParts from a Creator Store model. Returning players respawn with their saved gender automatically.
+4. **Character Creation** — `CharacterAutoLoads` is disabled. New players see a gender selection screen (Male/Female). Female characters are cloned directly from the `BaddieFemale` R15 model in ServerStorage (custom Blender avatar imported via Avatar Auto-Setup). Male characters use the standard Roblox "Man" body bundle. Returning players respawn with their saved gender automatically.
 
 ## Visual Style
 

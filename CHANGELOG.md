@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-09 (rev 9)
+### Changed
+- **Custom Blender avatar integration**: Replaced DTI Creator Store model with a custom Blender-sculpted R15 character (`BaddieFemale`) imported via Roblox Avatar Auto-Setup and stored in ServerStorage.
+- **NPCSpawner rewritten**: NPCs now clone the `BaddieFemale` R15 model from ServerStorage instead of building blocky R6 rigs programmatically. Removed `buildTemplate()` and `colorize()` functions. Added `applyCollisionGroup()` for setting NPC collision on all BaseParts. Uses `PivotTo()` instead of deprecated `SetPrimaryPartCFrame()`. Disables Jumping/FallingDown/Ragdoll humanoid states per NPC.
+- **CharacterCreator updated**: Female characters now clone the full `BaddieFemale` model directly from ServerStorage and assign it as `player.Character`, instead of the previous approach of spawning a default R15 character and swapping individual body parts with DTI MeshParts. Male path unchanged (bundle 238).
+- **CharacterCreator loadDTIModel simplified**: No longer calls `InsertService:LoadAsset()` with a Roblox asset ID. Reads directly from `ServerStorage.BaddieFemale` and caches R15 MeshParts + Motor6D joint data.
+- **Constants updated**: Female outfit config now uses `DTIRig = "BaddieFemale"` with `UseServerStorage = true`. Removed `DTIModelId` (no longer loading from Creator Store). Removed `ClassicShirt`/`ClassicPants` from Female config.
+
+### Avatar Pipeline (Blender → Roblox)
+- Mesh exported from Blender 5.1.0 as FBX (mesh only, no armature, embedded textures, FBX All scalings, scale 0.01)
+- Mesh cleanup: Merge by Distance, Recalculate Normals, Delete Loose, Non-Manifold check (clean)
+- Armature and Armature modifier removed before export to allow Avatar Auto-Setup to generate its own rig
+- Imported in Roblox Studio via Avatar tab → Setup → Import 3D
+- Avatar Auto-Setup generated full R15 rig: 15 body parts, Humanoid, AnimateScript, HumanoidRootPart
+- 9 validation warnings (facial expressions, poly count on Torso/legs, grip attachment orientation) — non-blocking for in-game use
+
 ## 2026-04-06 (rev 8)
 ### Changed
 - DTI body parts now use solid `Color3` skin tone instead of `SurfaceAppearance` textures. SurfaceAppearance from the DTI model caused blue/purple skin tint because the baked textures didn't render correctly outside the DTI game context.

@@ -52,28 +52,31 @@ Configures `Lighting` service properties and post-processing effects:
 
 ### NPCSpawner (`src/server/Modules/NPCSpawner.luau`)
 
-Spawns crowd NPCs from a cloned R6 rig template (no network dependency):
+Spawns crowd NPCs by cloning the custom `BaddieFemale` R15 model from ServerStorage:
 
 - **Count**: 20 NPCs (configurable in Constants)
-- **Architecture**: Builds one R6 template at module load, clones it per NPC for efficiency
-- **Appearance**: Random HSV skin/shirt/pants coloring, R6 rig with face decal
-- **Collision**: Uses PhysicsService collision groups — NPCs pass through each other and players, but collide with environment (floors, walls)
-- **Behavior**: Wanders between navigation points with random pauses (2-6 seconds), cleanup via `model.Destroying`
+- **Architecture**: Loads the `BaddieFemale` model from ServerStorage at module load via `WaitForChild`, clones it per NPC for efficiency
+- **Appearance**: Custom Blender-sculpted R15 avatar (imported via Roblox Avatar Auto-Setup). All NPCs share the same base model with unique display names
+- **Collision**: Uses PhysicsService collision groups — NPCs pass through each other and players, but collide with environment (floors, walls). Collision group applied to all BaseParts in cloned rig via `applyCollisionGroup()`
+- **Behavior**: Wanders between navigation points, watches nearby screens (4-12s), sits in empty chairs (25% chance, 6-15s). Cleanup via `model.Destroying`
+- **Humanoid states**: Jumping, FallingDown, and Ragdoll disabled on each NPC to prevent physics issues
+- **Positioning**: Uses `PivotTo()` for placing cloned models
 - **Safety**: Wrapped in pcall for graceful failure
+- **Dependency**: Requires `BaddieFemale` Model in ServerStorage (placed via Roblox Studio)
 
 ### CharacterCreator (`src/server/Modules/CharacterCreator.luau`)
 
 Manages character appearance based on gender selection. Uses two approaches depending on gender:
 
-- **Female**: Spawns with `LoadCharacterWithHumanoidDescription` (face, skin color, hair, head scale), then **replaces all R15 body parts (except Head)** with cloned DTI (Dress to Impress) MeshParts loaded from a Creator Store model (`InsertService:LoadAsset`). MeshId is read-only in Roblox, so entire MeshParts are cloned and swapped — Motor6D joints are reconnected and C0/C1 offsets updated to DTI proportions. SurfaceAppearance is stripped from DTI parts; skin color applied via solid `Color3`. Head is kept as default R15 with `HeadScale = 0.65` and head color matched to body. DTI clothing meshes from `EquippedAccessories` are welded onto the character. Classic `Shirt`/`Pants` instances are removed (incompatible UV mapping with DTI meshes).
-- **Male**: Uses the standard Roblox "Man" body bundle (238) via `GetBundleDetailsAsync` + `GetHumanoidDescriptionFromOutfitId`.
+- **Female**: Clones the `BaddieFemale` R15 model directly from ServerStorage, sets it as the player's character, and positions at a spawn point. This is a custom Blender-sculpted avatar imported via Roblox Avatar Auto-Setup with full R15 body parts (Head, UpperTorso, LowerTorso, arms, legs, hands, feet), Humanoid, AnimateScript, and HumanoidRootPart.
+- **Male**: Uses the standard Roblox "Man" body bundle (238) via `GetBundleDetailsAsync` + `GetHumanoidDescriptionFromOutfitId` with `LoadCharacterWithHumanoidDescription`.
 
-**Startup**: Loads the DTI model (asset 90731674309295) in a background `task.spawn` during `init()`. Caches clonable MeshPart templates (all children stripped including SurfaceAppearance), Motor6D C0/C1 joint data, and clothing mesh templates with CFrame offsets from `EquippedAccessories`.
+**Startup**: Caches R15 MeshPart templates and Motor6D joint data from the `BaddieFemale` model in ServerStorage during `init()` via a background `task.spawn`.
 
 **Spawn flow**:
-1. `buildDescription(gender)` — creates a `HumanoidDescription` with face, skin color, hair, body scales, head scale (cached per gender). Skips classic clothing for DTI outfits.
-2. `spawnWithOutfit(player, gender)` — calls `LoadCharacterWithHumanoidDescription`, then runs `applyDTIBody` for female characters
-3. `applyDTIBody(character, rigName, skinColor)` — Phase 1: clones DTI MeshParts with solid skin Color3, moves children (Motor6D, Attachments) from old parts, fixes Part0/Part1 references. Phase 2: updates Motor6D C0/C1 to DTI proportions. Phase 3: clones and welds DTI clothing meshes onto body parts. Also sets head color to match body and removes classic Shirt/Pants.
+1. `spawnWithOutfit(player, gender)` — For Female: clones `BaddieFemale` from ServerStorage, sets `player.Character`, positions at a random spawn point. For Male: builds a `HumanoidDescription` and calls `LoadCharacterWithHumanoidDescription`.
+2. `buildDescription(gender)` — creates a `HumanoidDescription` with face, skin color, hair, body scales (cached per gender). Used for Male path only.
+3. `saveGender(player, gender)` — persists gender choice to player profile via PlayerData.
 
 **API**:
 
@@ -180,7 +183,7 @@ Central configuration:
 - **IntroScreen**: `ImageId` for the intro background image asset
 - **Music**: `SoundId` and `Volume` for looping background music
 - **Outfits**: Gender-based outfit definitions:
-  - `Female`: DTI body model (asset 90731674309295, WomanRig), UseDefaultHead, hair accessory, face (86487766), skin color (warm caramel), BodyTypeScale=1, ProportionScale=10, HeadScale=0.65
+  - `Female`: Custom Blender avatar (`BaddieFemale` R15 model in ServerStorage, imported via Avatar Auto-Setup), `UseServerStorage=true`, hair accessory, face (86487766), skin color (warm caramel), BodyTypeScale=1, ProportionScale=0, HeadScale=0.65
   - `Male`: Man body bundle (238), classic shirt/pants IDs
 - **FeatureFlags**: Default values for `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer`, `Maintenance` — overridable via Firebase
 - **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging and feature flag configuration
@@ -214,13 +217,13 @@ init.server.luau
   │    ├─ Configures Lighting service + adds PointLights to hub
   │    └─ FirebaseLogger (lighting/applied)
   ├─ if NPCsEnabled: NPCSpawner.spawn({ navPoints })
-  │    ├─ Creates NPC folder, clones R6 template rigs
+  │    ├─ Creates NPC folder, clones BaddieFemale R15 model from ServerStorage
   │    ├─ Caches screen + seat parts for NPC interactions
   │    └─ FirebaseLogger (spawn_start / spawn_failed / spawn_summary)
   ├─ FirebaseLogger.log("server", "startup_complete")
   ├─ Players.CharacterAutoLoads = false (set BEFORE all requires)
   ├─ CharacterCreator.init(spawnedPlayers)
-  │    ├─ task.spawn(loadDTIModel) — loads Creator Store model, caches MeshParts + joints
+  │    ├─ task.spawn(loadDTIModel) — caches MeshParts + joints from BaddieFemale in ServerStorage
   │    └─ GenderSelected RemoteEvent → saveGender + spawnWithOutfit
   ├─ PlayerReady RemoteEvent → spawnWithOutfit (returning) or LoadCharacter (new)
   ├─ Players.PlayerAdded → PlayerData.loadProfile + FirebaseLogger (player/joined)

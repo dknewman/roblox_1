@@ -18,6 +18,12 @@ local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
 
 local CharacterCreator = {}
 
+-- Build a lookup table for face catalog
+local faceLookup: { [string]: { TextureId: string } } = {}
+for _, face in Constants.Faces do
+	faceLookup[face.Id] = face
+end
+
 -- Cache built descriptions so API calls only happen once per gender
 local descriptionCache: { [string]: HumanoidDescription } = {}
 
@@ -130,7 +136,9 @@ local function loadDTIModel()
 		clothing = {},
 	}
 
-	print(`[CharacterCreator] Cached BaddieFemale rig from ServerStorage ({#partCache} parts)`)
+	local partCount = 0
+	for _ in partCache do partCount += 1 end
+	print(`[CharacterCreator] Cached BaddieFemale rig from ServerStorage ({partCount} parts)`)
 end
 
 ---------------------------------------------------------------------------
@@ -358,10 +366,142 @@ function CharacterCreator.buildDescription(gender: string): HumanoidDescription?
 end
 
 ---------------------------------------------------------------------------
+-- Face Texture Application
+---------------------------------------------------------------------------
+
+local function applyFaceTexture(character: Model, faceId: string?)
+	local resolvedId = faceId or Constants.DefaultFaceId
+	local faceData = faceLookup[resolvedId]
+	if not faceData then
+		warn(`[CharacterCreator] Unknown face ID: {resolvedId}`)
+		return
+	end
+
+	local head = character:FindFirstChild("Head")
+	if not head then
+		warn("[CharacterCreator] No Head found in character")
+		return
+	end
+
+	-- Debug: log what type the head is and what children it has
+	print(`[CharacterCreator] Head class: {head.ClassName}`)
+	for _, child in head:GetChildren() do
+		print(`[CharacterCreator]   Head child: {child.Name} ({child.ClassName})`)
+	end
+
+	if head:IsA("MeshPart") then
+		-- Remove any SurfaceAppearance that would override TextureID
+		for _, child in head:GetChildren() do
+			if child:IsA("SurfaceAppearance") then
+				print(`[CharacterCreator] Removing existing SurfaceAppearance from Head`)
+				child:Destroy()
+			end
+		end
+
+		-- Remove any existing face Decal
+		for _, child in head:GetChildren() do
+			if child:IsA("Decal") and child.Name == "face" then
+				child:Destroy()
+			end
+		end
+
+		-- Set TextureID (uses mesh UV mapping)
+		head.TextureID = faceData.TextureId
+		print(`[CharacterCreator] Set Head.TextureID = {faceData.TextureId}`)
+
+	elseif head:IsA("Part") then
+		-- Check for SpecialMesh child
+		local specialMesh = head:FindFirstChildWhichIsA("SpecialMesh")
+		if specialMesh then
+			specialMesh.TextureId = faceData.TextureId
+			print(`[CharacterCreator] Set SpecialMesh.TextureId = {faceData.TextureId}`)
+		end
+
+		-- Also try a Decal on the front face as fallback
+		local existing = head:FindFirstChild("FaceTexture")
+		if existing then existing:Destroy() end
+
+		-- Remove default face decal
+		local oldFace = head:FindFirstChild("face")
+		if oldFace and oldFace:IsA("Decal") then
+			oldFace:Destroy()
+		end
+
+		local decal = Instance.new("Decal")
+		decal.Name = "FaceTexture"
+		decal.Texture = faceData.TextureId
+		decal.Face = Enum.NormalId.Front
+		decal.Parent = head
+		print(`[CharacterCreator] Added Decal to Part Head: {faceData.TextureId}`)
+	end
+
+	print(`[CharacterCreator] Applied face texture: {resolvedId}`)
+end
+
+-- Public: apply face to a player's current character (for live preview)
+function CharacterCreator.applyFace(player: Player, faceId: string)
+	if not player.Character then return end
+	applyFaceTexture(player.Character, faceId)
+end
+
+-- Public: save face choice to player data
+function CharacterCreator.saveFace(player: Player, faceId: string): boolean
+	if not faceLookup[faceId] then return false end
+	local data = PlayerData.get(player)
+	if not data then return false end
+	data.Character.FaceId = faceId
+	return true
+end
+
+---------------------------------------------------------------------------
 -- Spawn
 ---------------------------------------------------------------------------
 
 function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
+	local outfitDef = Constants.Outfits[gender]
+
+	-- Female: clone BaddieFemale model directly from ServerStorage
+	if outfitDef and outfitDef.UseServerStorage then
+		local template = ServerStorage:FindFirstChild(outfitDef.DTIRig)
+		if template then
+			local character = template:Clone()
+			character.Name = player.Name
+
+			-- Set up Humanoid for player control
+			local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+			if humanoid then
+				humanoid.DisplayName = player.DisplayName
+			end
+
+			-- Position at spawn point
+			local spawnPoints = workspace:FindFirstChild("Spawns")
+			local spawnCF = CFrame.new(0, 5, 0)
+			if spawnPoints then
+				local spawns = spawnPoints:GetChildren()
+				if #spawns > 0 then
+					local sp = spawns[math.random(1, #spawns)]
+					spawnCF = sp.CFrame + Vector3.new(0, 3, 0)
+				end
+			end
+			character:PivotTo(spawnCF)
+
+			-- Parent to workspace and assign to player
+			player.Character = character
+			character.Parent = workspace
+
+			-- Apply saved face texture (or default)
+			local data = PlayerData.get(player)
+			local faceId = (data and data.Character.FaceId ~= "") and data.Character.FaceId or Constants.DefaultFaceId
+			applyFaceTexture(character, faceId)
+
+			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
+			return
+		else
+			warn("[CharacterCreator] BaddieFemale not found in ServerStorage, falling back to default")
+		end
+	end
+
+	-- Male / fallback: use HumanoidDescription
 	local desc = CharacterCreator.buildDescription(gender)
 	if desc then
 		local ok, err = pcall(function()
@@ -373,12 +513,6 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 		end
 	else
 		player:LoadCharacter()
-	end
-
-	-- Replace body parts with DTI clones + weld clothing
-	local outfitDef = Constants.Outfits[gender]
-	if outfitDef and outfitDef.DTIRig and player.Character then
-		applyDTIBody(player.Character, outfitDef.DTIRig, outfitDef.SkinColor)
 	end
 end
 
@@ -409,6 +543,7 @@ function CharacterCreator.init(spawnedPlayers: { [number]: true })
 	-- Load DTI model in background (will be ready before any player clicks gender)
 	task.spawn(loadDTIModel)
 
+	-- Gender selection event
 	local genderEvent = Instance.new("RemoteEvent")
 	genderEvent.Name = "GenderSelected"
 	genderEvent.Parent = ReplicatedStorage
@@ -433,6 +568,33 @@ function CharacterCreator.init(spawnedPlayers: { [number]: true })
 			displayName = player.DisplayName,
 			gender = gender,
 		})
+	end)
+
+	-- Face preview event (live preview while browsing)
+	local facePreviewEvent = Instance.new("RemoteEvent")
+	facePreviewEvent.Name = "PreviewFace"
+	facePreviewEvent.Parent = ReplicatedStorage
+
+	facePreviewEvent.OnServerEvent:Connect(function(player, faceId)
+		if type(faceId) ~= "string" then return end
+		if not faceLookup[faceId] then return end
+		CharacterCreator.applyFace(player, faceId)
+	end)
+
+	-- Face save event (confirm selection)
+	local faceSaveEvent = Instance.new("RemoteEvent")
+	faceSaveEvent.Name = "SaveFace"
+	faceSaveEvent.Parent = ReplicatedStorage
+
+	faceSaveEvent.OnServerEvent:Connect(function(player, faceId)
+		if type(faceId) ~= "string" then return end
+		if CharacterCreator.saveFace(player, faceId) then
+			CharacterCreator.applyFace(player, faceId)
+			FirebaseLogger.log("character", "face_changed", {
+				userId = player.UserId,
+				faceId = faceId,
+			})
+		end
 	end)
 end
 

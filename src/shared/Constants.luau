@@ -100,6 +100,17 @@ Constants.Outfits = {
 	},
 }
 
+-- Customization catalog
+-- Each face entry: { Id = string key, Name = display name, TextureId = Roblox asset ID }
+Constants.Faces = {
+	{ Id = "baddie_glam", Name = "Baddie Glam", TextureId = "rbxassetid://106110901976339" },
+	-- Add more faces here as they are created:
+	-- { Id = "soft_doll", Name = "Soft Doll", TextureId = "rbxassetid://XXXXXXXXXX" },
+	-- { Id = "fierce_cat", Name = "Fierce Cat", TextureId = "rbxassetid://XXXXXXXXXX" },
+}
+
+Constants.DefaultFaceId = "baddie_glam"
+
 -- Feature flags: defaults used when Firebase is unreachable.
 -- Remote overrides are fetched from Firebase at /config/featureFlags.json
 Constants.FeatureFlags = {

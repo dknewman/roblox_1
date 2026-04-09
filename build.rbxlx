@@ -1716,17 +1716,15 @@ Constants.Music = {
 -- All IDs verified via economy.roblox.com/v2/assets/{id}/details
 Constants.Outfits = {
 	Female = {
-		DTIModelId = 84170624795797, -- custom baddie base body
-		DTIRig = "baddie_base_rig", -- rig name inside the uploaded model
-		UseDefaultHead = true,       -- skip DTI head, use default R15 head
-		ClassicShirt = 855773575,    -- Roblox Pink Shirt (AssetTypeId 11)
-		ClassicPants = 398633812,    -- Black Jeans with White Shoes (AssetTypeId 12, free)
+		DTIRig = "BaddieFemale",     -- R15 rig from ServerStorage (Avatar Auto-Setup)
+		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
+		UseDefaultHead = false,      -- use the model's own head
 		HairAccessory = "62724852",  -- Chestnut Bun
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
 		ProportionScale = 0,         -- wider proportions
-		HeadScale = 0.65,             -- smaller head to match DTI body proportions
+		HeadScale = 0.65,            -- smaller head to match body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)
@@ -1963,6 +1961,7 @@ local AssetService = game:GetService("AssetService")
 local InsertService = game:GetService("InsertService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
@@ -2038,172 +2037,52 @@ end
 ---------------------------------------------------------------------------
 
 local function loadDTIModel()
-	local outfitDef = Constants.Outfits.Female
-	if not outfitDef or not outfitDef.DTIModelId then return end
-
-	local ok, model = pcall(function()
-		return InsertService:LoadAsset(outfitDef.DTIModelId)
-	end)
-	if not ok or not model then
-		warn(`[CharacterCreator] Failed to load DTI model: {model}`)
+	-- Load from ServerStorage instead of InsertService
+	local model = ServerStorage:FindFirstChild("BaddieFemale")
+	if not model then
+		warn("[CharacterCreator] BaddieFemale model not found in ServerStorage!")
 		return
 	end
 
-	-- DEBUG: Print full model hierarchy so we can see what's inside
-	print("[CharacterCreator] === MODEL HIERARCHY ===")
-	for _, obj in model:GetDescendants() do
-		local depth = 0
-		local parent = obj.Parent
-		while parent and parent ~= model do
-			depth += 1
-			parent = parent.Parent
-		end
-		local indent = string.rep("  ", depth)
-		local extra = ""
-		if obj:IsA("MeshPart") then
-			extra = ` [MeshPart, MeshId={obj.MeshId}]`
-		elseif obj:IsA("Motor6D") then
-			local p0 = obj.Part0 and obj.Part0.Name or "nil"
-			local p1 = obj.Part1 and obj.Part1.Name or "nil"
-			extra = ` [Motor6D, Part0={p0}, Part1={p1}]`
-		elseif obj:IsA("Humanoid") then
-			extra = ` [Humanoid, RigType={obj.RigType}]`
-		end
-		print(`[CharacterCreator] {indent}{obj.Name} ({obj.ClassName}){extra}`)
-	end
-	print("[CharacterCreator] === END HIERARCHY ===")
+	-- Cache the R15 body parts and Motor6D joints from the model
+	local partCache = {}
+	local jointCache = {}
 
-	-- Try to find rig by exact name first, then by pattern
-	local targetRigName = outfitDef.DTIRig or "WomanRig"
-	for _, rig in model:GetDescendants() do
-		if rig:IsA("Model") then
-			local isMatch = rig.Name == targetRigName
-				or string.lower(rig.Name):match("rig$")
-			if isMatch then
-				local partCache = {}
-				local jointCache = {}
-
-			for _, part in rig:GetDescendants() do
-				if part:IsA("MeshPart") and part.Name ~= "Handle" then
-					local mappedName = mapDTIPartName(part.Name)
-					-- Template strips all children; skin color set via Color3 at spawn time
-					local template = part:Clone()
-					for _, child in template:GetChildren() do
-						child:Destroy()
-					end
-					template.Name = mappedName
-					partCache[mappedName] = template
-
-					-- Cache Motor6D C0/C1 for joint alignment
-					local partJoints = {}
-					for _, child in part:GetChildren() do
-						if child:IsA("Motor6D") then
-							partJoints[child.Name] = {
-								C0 = child.C0,
-								C1 = child.C1,
-							}
-						end
-					end
-					if next(partJoints) then
-						jointCache[part.Name] = partJoints
-					end
+	for _, part in model:GetDescendants() do
+		if part:IsA("MeshPart") and part.Name ~= "HumanoidRootPart" then
+			local template = part:Clone()
+			for _, child in template:GetChildren() do
+				if not child:IsA("Motor6D") then
+					child:Destroy()
 				end
 			end
+			template.Name = part.Name
+			partCache[part.Name] = template
 
-			-- Cache clothing meshes from EquippedAccessories
-			local clothingCache = {}
-			local accessories = rig:FindFirstChild("EquippedAccessories", true)
-			if accessories then
-				for _, meshPart in accessories:GetDescendants() do
-					if meshPart:IsA("MeshPart") then
-						-- Determine which body part this attaches to
-					local folder = meshPart.Parent
-					local bodyPartName = "UpperTorso"
-					if folder:IsA("Folder") and rig:FindFirstChild(folder.Name) then
-						bodyPartName = mapDTIPartName(folder.Name)
-						end
-
-						-- Calculate CFrame offset relative to the body part
-						local bodyPart = rig:FindFirstChild(bodyPartName)
-						local offset = CFrame.new()
-						if bodyPart then
-							offset = bodyPart.CFrame:Inverse() * meshPart.CFrame
-						end
-
-						-- Clone template, strip welds
-						local template = meshPart:Clone()
-						for _, child in template:GetChildren() do
-							if child:IsA("WeldConstraint") or child:IsA("Weld") then
-								child:Destroy()
-							end
-						end
-
-						table.insert(clothingCache, {
-							template = template,
-							offset = offset,
-							bodyPart = bodyPartName,
-						})
-					end
+			-- Cache Motor6D C0/C1 for joint alignment
+			local partJoints = {}
+			for _, child in part:GetChildren() do
+				if child:IsA("Motor6D") then
+					partJoints[child.Name] = {
+						C0 = child.C0,
+						C1 = child.C1,
+					}
 				end
 			end
-
-			dtiRigs[rig.Name] = {
-				parts = partCache,
-				joints = jointCache,
-				clothing = clothingCache,
-			}
-				print(`[CharacterCreator] Cached DTI rig: {rig.Name} ({#clothingCache} clothing pieces)`)
+			if next(partJoints) then
+				jointCache[part.Name] = partJoints
 			end
 		end
 	end
 
-	-- If no rig was found by name, try any Model with a Humanoid
-	if not next(dtiRigs) then
-		warn("[CharacterCreator] No rig found by name pattern. Trying Models with Humanoid...")
-		for _, obj in model:GetDescendants() do
-			if obj:IsA("Model") and obj:FindFirstChildOfClass("Humanoid") then
-				print(`[CharacterCreator] Found Model with Humanoid: "{obj.Name}"`)
-				local partCache = {}
-				local jointCache = {}
-				for _, part in obj:GetDescendants() do
-					if part:IsA("MeshPart") then
-						local mappedName = mapDTIPartName(part.Name)
-						local template = part:Clone()
-						for _, child in template:GetChildren() do
-							child:Destroy()
-						end
-						template.Name = mappedName
-						partCache[mappedName] = template
-						print(`[CharacterCreator]   Part: {part.Name} -> {mappedName}`)
+	local rigName = Constants.Outfits.Female.DTIRig or "BaddieFemale"
+	dtiRigs[rigName] = {
+		parts = partCache,
+		joints = jointCache,
+		clothing = {},
+	}
 
-						local partJoints = {}
-						for _, child in part:GetChildren() do
-							if child:IsA("Motor6D") then
-								partJoints[child.Name] = { C0 = child.C0, C1 = child.C1 }
-								print(`[CharacterCreator]     Motor6D: {child.Name}`)
-							end
-						end
-						if next(partJoints) then
-							jointCache[part.Name] = partJoints
-						end
-					end
-				end
-				-- Cache under both the actual name and the configured DTI rig name
-				local rigEntry = { parts = partCache, joints = jointCache, clothing = {} }
-				dtiRigs[obj.Name] = rigEntry
-				dtiRigs[targetRigName] = rigEntry
-				print(`[CharacterCreator] Cached rig "{obj.Name}" (also as "{targetRigName}") with {#partCache} parts`)
-				break
-			end
-		end
-	end
-
-	if not next(dtiRigs) then
-		warn("[CharacterCreator] No rigs found in model at all! Check the model hierarchy above.")
-	end
-
-	model:Destroy()
-	print("[CharacterCreator] DTI model loaded and cached")
+	print(`[CharacterCreator] Cached BaddieFemale rig from ServerStorage ({#partCache} parts)`)
 end
 
 ---------------------------------------------------------------------------
@@ -3659,12 +3538,13 @@ return MapBuilder
             <string name="Name">NPCSpawner</string>
             <string name="Source"><![CDATA[--[[
 	NPCSpawner - Spawns crowd NPCs throughout the Social Spotlight Plaza
-	Builds one R6 rig template at startup, then clones it for each NPC.
+	Clones the BaddieFemale R15 rig from ServerStorage for each NPC.
 ]]
 
 local PhysicsService = game:GetService("PhysicsService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local FirebaseLogger = require(script.Parent.FirebaseLogger)
@@ -3702,99 +3582,19 @@ local DISPLAY_NAMES = {
 	"Patron", "Regular", "VIP", "Streamer", "DJ",
 }
 
-local function randomColor()
-	return Color3.fromHSV(math.random(), 0.5 + math.random() * 0.4, 0.85 + math.random() * 0.15)
+-- Get the R15 character template from ServerStorage
+local rigTemplate = ServerStorage:WaitForChild("BaddieFemale", 10)
+if not rigTemplate then
+	warn("[NPCSpawner] BaddieFemale model not found in ServerStorage! Place your Avatar Setup model there.")
 end
 
--- Build the R6 rig template once (never parented to workspace)
-local function buildTemplate()
-	local model = Instance.new("Model")
-
-	local function makePart(name, size, canCollide)
-		local p = Instance.new("Part")
-		p.Name = name
-		p.Size = size
-		p.Material = Enum.Material.SmoothPlastic
-		p.CanCollide = canCollide or false
-		p.CollisionGroup = NPC_GROUP
-		p.Parent = model
-		return p
+-- Apply NPC collision group to all BaseParts in a cloned rig
+local function applyCollisionGroup(model)
+	for _, part in model:GetDescendants() do
+		if part:IsA("BasePart") then
+			part.CollisionGroup = NPC_GROUP
+		end
 	end
-
-	local function makeJoint(name, parent, part0, part1, c0, c1)
-		local motor = Instance.new("Motor6D")
-		motor.Name = name
-		motor.Part0 = part0
-		motor.Part1 = part1
-		motor.C0 = c0
-		motor.C1 = c1
-		motor.Parent = parent
-	end
-
-	local rootPart = makePart("HumanoidRootPart", Vector3.new(2, 2, 1))
-	rootPart.Transparency = 1
-
-	local torso = makePart("Torso", Vector3.new(2, 2, 1))
-
-	local head = makePart("Head", Vector3.new(1.2, 1.2, 1.2))
-	head.TopSurface = Enum.SurfaceType.Smooth
-
-	local face = Instance.new("Decal")
-	face.Name = "face"
-	face.Texture = "rbxasset://textures/face.png"
-	face.Face = Enum.NormalId.Front
-	face.Parent = head
-
-	makePart("Left Arm", Vector3.new(1, 2, 1))
-	makePart("Right Arm", Vector3.new(1, 2, 1))
-	makePart("Left Leg", Vector3.new(1, 2, 1))
-	makePart("Right Leg", Vector3.new(1, 2, 1))
-
-	local HP = math.pi / 2
-
-	makeJoint("RootJoint", rootPart, rootPart, torso,
-		CFrame.Angles(-HP, 0, math.pi), CFrame.Angles(-HP, 0, math.pi))
-	makeJoint("Neck", torso, torso, head,
-		CFrame.new(0, 1, 0) * CFrame.Angles(-HP, 0, math.pi),
-		CFrame.new(0, -0.5, 0) * CFrame.Angles(-HP, 0, math.pi))
-	makeJoint("Left Shoulder", torso, torso, model["Left Arm"],
-		CFrame.new(-1, 0.5, 0) * CFrame.Angles(0, -HP, 0),
-		CFrame.new(0.5, 0.5, 0) * CFrame.Angles(0, -HP, 0))
-	makeJoint("Right Shoulder", torso, torso, model["Right Arm"],
-		CFrame.new(1, 0.5, 0) * CFrame.Angles(0, HP, 0),
-		CFrame.new(-0.5, 0.5, 0) * CFrame.Angles(0, HP, 0))
-	makeJoint("Left Hip", torso, torso, model["Left Leg"],
-		CFrame.new(-1, -1, 0) * CFrame.Angles(0, -HP, 0),
-		CFrame.new(-0.5, 1, 0) * CFrame.Angles(0, -HP, 0))
-	makeJoint("Right Hip", torso, torso, model["Right Leg"],
-		CFrame.new(1, -1, 0) * CFrame.Angles(0, HP, 0),
-		CFrame.new(0.5, 1, 0) * CFrame.Angles(0, HP, 0))
-
-	local humanoid = Instance.new("Humanoid")
-	humanoid.RigType = Enum.HumanoidRigType.R6
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-	humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
-	humanoid.Parent = model
-
-	model.PrimaryPart = rootPart
-	return model
-end
-
-local rigTemplate = buildTemplate()
-
--- Apply random colors to a cloned rig
-local function colorize(model)
-	local skin = randomColor()
-	local shirt = randomColor()
-	local pants = shirt:Lerp(Color3.new(0, 0, 0), 0.4)
-
-	model.Head.Color = skin
-	model["Left Arm"].Color = skin
-	model["Right Arm"].Color = skin
-	model.Torso.Color = shirt
-	model["Left Leg"].Color = pants
-	model["Right Leg"].Color = pants
 end
 
 local SCREEN_RANGE = 18
@@ -3919,20 +3719,30 @@ function NPCSpawner.spawn(config)
 	container.Parent = workspace
 
 	local failCount = 0
+	if not rigTemplate then
+		warn("[NPCSpawner] No rig template — skipping NPC spawn")
+		return
+	end
+
 	for i = 1, count do
 		task.defer(function()
 			local ok, err = pcall(function()
 				local rig = rigTemplate:Clone()
 				rig.Name = `PlazaNPC_{i}`
-				colorize(rig)
+				applyCollisionGroup(rig)
 
 				local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
 				humanoid.DisplayName = DISPLAY_NAMES[math.random(1, #DISPLAY_NAMES)]
 				humanoid.WalkSpeed = 7 + math.random() * 5
 
+				-- Disable states that cause ragdoll/falling issues for NPCs
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+
 				local anchor = info.navPoints[math.random(1, #info.navPoints)]
 				local offset = Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
-				rig:SetPrimaryPartCFrame(CFrame.new(anchor + offset + Vector3.new(0, 3, 0)))
+				rig:PivotTo(CFrame.new(anchor + offset + Vector3.new(0, 3, 0)))
 				rig.Parent = container
 
 				wander(rig, info.navPoints)
