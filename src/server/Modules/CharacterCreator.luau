@@ -489,11 +489,46 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			player.Character = character
 			character.Parent = workspace
 
-			-- Model has built-in face; skip face texture override for now
-			-- TODO: re-enable when custom face textures are ready
-			-- local data = PlayerData.get(player)
-			-- local faceId = (data and data.Character.FaceId ~= "") and data.Character.FaceId or Constants.DefaultFaceId
-			-- applyFaceTexture(character, faceId)
+			-- Apply hair accessory from outfit config
+			if outfitDef.HairAccessory and outfitDef.HairAccessory ~= "" then
+				task.spawn(function()
+					local ok, result = pcall(function()
+						return InsertService:LoadAsset(tonumber(outfitDef.HairAccessory))
+					end)
+					if ok and result then
+						local accessory = result:FindFirstChildWhichIsA("Accessory")
+						if accessory then
+							local hum = character:FindFirstChildWhichIsA("Humanoid")
+							if hum then
+								hum:AddAccessory(accessory)
+								-- Scale and offset hair to fit custom head
+								local handle = accessory:FindFirstChild("Handle")
+								if handle then
+									local scale = outfitDef.HairScale or 1
+									if scale ~= 1 then
+										local mesh = handle:FindFirstChildWhichIsA("SpecialMesh")
+										if mesh then
+											mesh.Scale = mesh.Scale * scale
+										elseif handle:IsA("MeshPart") then
+											handle.Size = handle.Size * scale
+										end
+									end
+									local offset = outfitDef.HairOffset
+									if offset then
+										local weld = handle:FindFirstChildWhichIsA("Weld")
+										if weld then
+											weld.C1 = weld.C1 * CFrame.new(-offset)
+										end
+									end
+								end
+							end
+						end
+						result:Destroy()
+					else
+						warn(`[CharacterCreator] Failed to load hair accessory: {result}`)
+					end
+				end)
+			end
 
 			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return
