@@ -84,6 +84,7 @@ Constants.Music = {
 Constants.Outfits = {
 	Female = {
 		DTIRig = "BaddieFemale",     -- R15 rig from ServerStorage (Avatar Auto-Setup)
+		DTIModelId = 76767800092615, -- Roblox asset ID (fallback if not in ServerStorage)
 		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
 		UseDefaultHead = false,      -- use the model's own head
 		HairAccessory = "62724852",  -- Chestnut Bun

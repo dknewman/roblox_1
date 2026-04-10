@@ -489,10 +489,11 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			player.Character = character
 			character.Parent = workspace
 
-			-- Apply saved face texture (or default)
-			local data = PlayerData.get(player)
-			local faceId = (data and data.Character.FaceId ~= "") and data.Character.FaceId or Constants.DefaultFaceId
-			applyFaceTexture(character, faceId)
+			-- Model has built-in face; skip face texture override for now
+			-- TODO: re-enable when custom face textures are ready
+			-- local data = PlayerData.get(player)
+			-- local faceId = (data and data.Character.FaceId ~= "") and data.Character.FaceId or Constants.DefaultFaceId
+			-- applyFaceTexture(character, faceId)
 
 			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return

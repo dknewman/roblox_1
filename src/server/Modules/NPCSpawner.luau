@@ -202,34 +202,7 @@ function NPCSpawner.spawn(config)
 				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
 				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 
-				-- Apply default face texture to NPC head
-				local head = rig:FindFirstChild("Head")
-				local defaultFace = Constants.Faces[1]
-				if head and defaultFace then
-					-- Remove SurfaceAppearance (overrides TextureID)
-					for _, child in head:GetChildren() do
-						if child:IsA("SurfaceAppearance") then
-							child:Destroy()
-						end
-						if child:IsA("Decal") and child.Name == "face" then
-							child:Destroy()
-						end
-					end
-
-					if head:IsA("MeshPart") then
-						head.TextureID = defaultFace.TextureId
-					elseif head:IsA("Part") then
-						local specialMesh = head:FindFirstChildWhichIsA("SpecialMesh")
-						if specialMesh then
-							specialMesh.TextureId = defaultFace.TextureId
-						end
-						local decal = Instance.new("Decal")
-						decal.Name = "FaceTexture"
-						decal.Texture = defaultFace.TextureId
-						decal.Face = Enum.NormalId.Front
-						decal.Parent = head
-					end
-				end
+				-- Model has built-in face; skip face texture override
 
 				local anchor = info.navPoints[math.random(1, #info.navPoints)]
 				local offset = Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
