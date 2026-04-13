@@ -10,6 +10,7 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local FirebaseLogger = require(script.Parent.FirebaseLogger)
+local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
 
 local NPCSpawner = {}
 
@@ -44,10 +45,11 @@ local DISPLAY_NAMES = {
 	"Patron", "Regular", "VIP", "Streamer", "DJ",
 }
 
--- Get the R15 character template from ServerStorage
-local rigTemplate = ServerStorage:WaitForChild("BaddieFemale", 10)
+local femaleOutfit = Constants.Outfits.Female
+local rigName = femaleOutfit and femaleOutfit.DTIRig or "BaddieFemale"
+local rigTemplate = RigBootstrapper.ensureServerStorageRig(rigName, femaleOutfit and femaleOutfit.DTIModelId)
 if not rigTemplate then
-	warn("[NPCSpawner] BaddieFemale model not found in ServerStorage! Place your Avatar Setup model there.")
+	warn("[NPCSpawner] Unable to load BaddieFemale rig — NPCs disabled")
 end
 
 -- Apply NPC collision group to all BaseParts in a cloned rig

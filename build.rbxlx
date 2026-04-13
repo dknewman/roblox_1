@@ -1721,6 +1721,8 @@ Constants.Outfits = {
 		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
 		UseDefaultHead = false,      -- use the model's own head
 		HairAccessory = "62724852",  -- Chestnut Bun
+		HairScale = 1.4,             -- scale up to fit custom head
+		HairOffset = Vector3.new(0, 0.12, -0.2), -- shift down and back
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
@@ -2453,11 +2455,46 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			player.Character = character
 			character.Parent = workspace
 
-			-- Model has built-in face; skip face texture override for now
-			-- TODO: re-enable when custom face textures are ready
-			-- local data = PlayerData.get(player)
-			-- local faceId = (data and data.Character.FaceId ~= "") and data.Character.FaceId or Constants.DefaultFaceId
-			-- applyFaceTexture(character, faceId)
+			-- Apply hair accessory from outfit config
+			if outfitDef.HairAccessory and outfitDef.HairAccessory ~= "" then
+				task.spawn(function()
+					local ok, result = pcall(function()
+						return InsertService:LoadAsset(tonumber(outfitDef.HairAccessory))
+					end)
+					if ok and result then
+						local accessory = result:FindFirstChildWhichIsA("Accessory")
+						if accessory then
+							local hum = character:FindFirstChildWhichIsA("Humanoid")
+							if hum then
+								hum:AddAccessory(accessory)
+								-- Scale and offset hair to fit custom head
+								local handle = accessory:FindFirstChild("Handle")
+								if handle then
+									local scale = outfitDef.HairScale or 1
+									if scale ~= 1 then
+										local mesh = handle:FindFirstChildWhichIsA("SpecialMesh")
+										if mesh then
+											mesh.Scale = mesh.Scale * scale
+										elseif handle:IsA("MeshPart") then
+											handle.Size = handle.Size * scale
+										end
+									end
+									local offset = outfitDef.HairOffset
+									if offset then
+										local weld = handle:FindFirstChildWhichIsA("Weld")
+										if weld then
+											weld.C1 = weld.C1 * CFrame.new(-offset)
+										end
+									end
+								end
+							end
+						end
+						result:Destroy()
+					else
+						warn(`[CharacterCreator] Failed to load hair accessory: {result}`)
+					end
+				end)
+			end
 
 			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return
@@ -3772,6 +3809,160 @@ local function applyCollisionGroup(model)
 	end
 end
 
+-- R15 animation asset IDs
+local ANIM_IDS = {
+	Idle1 = "rbxassetid://507766388",  -- subtle breathing idle
+	Idle2 = "rbxassetid://507766666",  -- weight-shift idle (more movement)
+	Walk  = "rbxassetid://507777826",  -- standard walk
+	Wave  = "rbxassetid://507770239",  -- friendly wave
+	Laugh = "rbxassetid://507770818",  -- laughing gesture
+	Cheer = "rbxassetid://507770677",  -- cheer / excited
+	Point = "rbxassetid://507770453",  -- pointing gesture
+}
+
+-- Gesture pool for conversations (played on top of idle)
+local GESTURE_IDS = { ANIM_IDS.Wave, ANIM_IDS.Laugh, ANIM_IDS.Cheer, ANIM_IDS.Point }
+
+-- Per-NPC animation state returned by setupAnimations
+type AnimState = {
+	animator: Animator,
+	idleTrack: AnimationTrack,
+	walkTrack: AnimationTrack,
+	gestureTracks: { AnimationTrack },
+	playGesture: () -> (),
+	stopAll: () -> (),
+}
+
+-- Track which NPCs are currently in a conversation (model -> true)
+local inConversation: { [Model]: boolean } = {}
+
+-- Set up server-side animations for an NPC rig
+local function setupAnimations(rig): AnimState?
+	local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then return nil end
+
+	-- Remove any Animate LocalScript (won't work for NPCs)
+	local animateScript = rig:FindFirstChild("Animate")
+	if animateScript then animateScript:Destroy() end
+
+	local animator = humanoid:FindFirstChildWhichIsA("Animator")
+	if not animator then
+		animator = Instance.new("Animator")
+		animator.Parent = humanoid
+	end
+
+	-- Load idle tracks
+	local idleAnim1 = Instance.new("Animation")
+	idleAnim1.AnimationId = ANIM_IDS.Idle1
+	local idleTrack = animator:LoadAnimation(idleAnim1)
+	idleTrack.Priority = Enum.AnimationPriority.Idle
+	idleTrack.Looped = true
+
+	-- Load walk track — play at reduced speed for a casual stroll
+	local walkAnim = Instance.new("Animation")
+	walkAnim.AnimationId = ANIM_IDS.Walk
+	local walkTrack = animator:LoadAnimation(walkAnim)
+	walkTrack.Priority = Enum.AnimationPriority.Movement
+	walkTrack.Looped = true
+
+	-- Load gesture tracks (for conversations)
+	local gestureTracks = {}
+	for _, id in GESTURE_IDS do
+		local anim = Instance.new("Animation")
+		anim.AnimationId = id
+		local track = animator:LoadAnimation(anim)
+		track.Priority = Enum.AnimationPriority.Action
+		track.Looped = false
+		table.insert(gestureTracks, track)
+	end
+
+	-- Start with idle
+	idleTrack:Play(0.3)
+
+	-- Switch between idle and walk based on movement
+	-- Keep idle always playing for natural body sway; layer walk on top at
+	-- low weight (0.4) so strides are subtle, not exaggerated prancing.
+	-- Speed is scaled to match ground movement so feet don't slide.
+	idleTrack:Play(0.3)
+	humanoid.Running:Connect(function(speed)
+		if speed > 0.5 then
+			if not walkTrack.IsPlaying then
+				walkTrack:Play(0.3, 0.4) -- weight 0.4 = softened strides
+			end
+			walkTrack:AdjustSpeed(speed / 16)
+			walkTrack:AdjustWeight(0.4)
+		else
+			if walkTrack.IsPlaying then walkTrack:Stop(0.3) end
+		end
+	end)
+
+	local state: AnimState = {
+		animator = animator,
+		idleTrack = idleTrack,
+		walkTrack = walkTrack,
+		gestureTracks = gestureTracks,
+		playGesture = function()
+			local track = gestureTracks[math.random(1, #gestureTracks)]
+			if not track.IsPlaying then
+				track:Play(0.2, 1, 0.8)
+			end
+		end,
+		stopAll = function()
+			idleTrack:Stop(0)
+			walkTrack:Stop(0)
+			for _, t in gestureTracks do t:Stop(0) end
+		end,
+	}
+
+	return state
+end
+
+-- Smoothly turn an NPC to face a target position (horizontal only)
+local function faceTarget(rootPart: BasePart, targetPos: Vector3)
+	local dir = (targetPos - rootPart.Position) * Vector3.new(1, 0, 1)
+	if dir.Magnitude > 0.1 then
+		rootPart.CFrame = CFrame.new(rootPart.Position, rootPart.Position + dir)
+	end
+end
+
+-- Run a conversation between two NPCs
+local function doConversation(npcA, animA: AnimState, npcB, animB: AnimState)
+	local rootA = npcA.PrimaryPart
+	local rootB = npcB.PrimaryPart
+	if not rootA or not rootB then return end
+
+	inConversation[npcA] = true
+	inConversation[npcB] = true
+
+	-- Face each other
+	faceTarget(rootA, rootB.Position)
+	faceTarget(rootB, rootA.Position)
+
+	-- Conversation lasts 6-14 seconds with alternating gestures
+	local duration = math.random(6, 14)
+	local elapsed = 0
+	while elapsed < duration and npcA.Parent and npcB.Parent do
+		-- One NPC gestures, the other listens
+		local speaker = math.random(1, 2)
+		if speaker == 1 then
+			animA.playGesture()
+		else
+			animB.playGesture()
+		end
+
+		-- Re-face each other (in case of drift)
+		faceTarget(rootA, rootB.Position)
+		faceTarget(rootB, rootA.Position)
+
+		local pause = math.random() * 2 + 1.5 -- 1.5-3.5s between gestures
+		task.wait(pause)
+		elapsed += pause
+	end
+
+	inConversation[npcA] = nil
+	inConversation[npcB] = nil
+end
+
 local SCREEN_RANGE = 18
 local WATCH_TIME_MIN = 4
 local WATCH_TIME_MAX = 12
@@ -3830,7 +4021,54 @@ local function findEmptySeat(pos: Vector3): Seat?
 	return best
 end
 
-local function wander(model, anchors)
+-- All spawned NPC data for conversation pairing
+local allNPCs: { { model: Model, anim: AnimState } } = {}
+local CONVO_RANGE = 25   -- max distance to find a conversation partner
+local CONVO_CHANCE = 0.15 -- 15% chance to try chatting after reaching a waypoint
+
+-- Find a nearby NPC not currently in a conversation
+local function findConvoPartner(model: Model, rootPos: Vector3): ({ model: Model, anim: AnimState })?
+	local best, bestDist = nil, CONVO_RANGE
+	for _, npcData in allNPCs do
+		if npcData.model == model then continue end
+		if inConversation[npcData.model] then continue end
+		if not npcData.model.Parent then continue end
+		local otherRoot = npcData.model.PrimaryPart
+		if not otherRoot then continue end
+		local dist = (otherRoot.Position - rootPos).Magnitude
+		if dist < bestDist then
+			best = npcData
+			bestDist = dist
+		end
+	end
+	return best
+end
+
+local NPC_MIN_DIST = 12 -- minimum distance NPCs try to keep from each other
+
+-- Pick a nav target that isn't too close to other NPCs
+local function pickSpreadTarget(model: Model, anchors: { Vector3 }): Vector3
+	for _ = 1, 5 do -- try up to 5 times to find a non-crowded spot
+		local base = anchors[math.random(1, #anchors)]
+		local candidate = base + Vector3.new(math.random(-20, 20), 0, math.random(-20, 20))
+		local tooClose = false
+		for _, npcData in allNPCs do
+			if npcData.model == model then continue end
+			local otherRoot = npcData.model.PrimaryPart
+			if not otherRoot then continue end
+			if (otherRoot.Position - candidate).Magnitude < NPC_MIN_DIST then
+				tooClose = true
+				break
+			end
+		end
+		if not tooClose then return candidate end
+	end
+	-- Fallback: just pick a random point with a wide offset
+	local base = anchors[math.random(1, #anchors)]
+	return base + Vector3.new(math.random(-25, 25), 0, math.random(-25, 25))
+end
+
+local function wander(model, anchors, animState: AnimState)
 	local humanoid = model:FindFirstChildWhichIsA("Humanoid")
 	local rootPart = model.PrimaryPart
 	if not humanoid or not rootPart then return end
@@ -3838,29 +4076,46 @@ local function wander(model, anchors)
 	local alive = true
 	model.Destroying:Connect(function()
 		alive = false
+		inConversation[model] = nil
 	end)
 
 	task.spawn(function()
 		while alive and model.Parent do
-			-- Walk to a random nav point
-			local target = anchors[math.random(1, #anchors)]
-			local offset = Vector3.new(math.random(-8, 8), 0, math.random(-8, 8))
-			humanoid:MoveTo(target + offset)
+			-- Skip turn if already pulled into a conversation by another NPC
+			if inConversation[model] then
+				task.wait(1)
+				continue
+			end
+
+			-- Walk to a spread-out nav point (avoids clustering)
+			local target = pickSpreadTarget(model, anchors)
+			humanoid:MoveTo(target)
 			humanoid.MoveToFinished:Wait()
 			if not alive then break end
+
+			-- Try to start a conversation with a nearby NPC (35% chance)
+			if math.random() < CONVO_CHANCE then
+				local partner = findConvoPartner(model, rootPart.Position)
+				if partner then
+					doConversation(model, animState, partner.model, partner.anim)
+					if not alive then break end
+					-- After chatting, pause briefly then continue wandering
+					task.wait(math.random() * 2 + 1)
+					continue
+				end
+			end
 
 			-- Try to sit in a nearby chair (25% chance)
 			if math.random() < SIT_CHANCE then
 				local seat = findEmptySeat(rootPart.Position)
 				if seat then
-					-- Walk to the seat, then sit
 					humanoid:MoveTo(seat.Position)
 					humanoid.MoveToFinished:Wait()
 					if not alive then break end
 					seat:Sit(humanoid)
 					task.wait(math.random(SIT_TIME_MIN, SIT_TIME_MAX))
 					if not alive then break end
-					humanoid.Jump = true -- stand up
+					humanoid.Jump = true
 					task.wait(0.5)
 					continue
 				end
@@ -3869,13 +4124,11 @@ local function wander(model, anchors)
 			-- Check for a nearby screen to watch
 			local screen = findNearbyScreen(rootPart.Position)
 			if screen then
-				local lookDir = (screen.Position - rootPart.Position) * Vector3.new(1, 0, 1)
-				if lookDir.Magnitude > 0.1 then
-					rootPart.CFrame = CFrame.new(rootPart.Position, rootPart.Position + lookDir)
-				end
+				faceTarget(rootPart, screen.Position)
 				task.wait(math.random(WATCH_TIME_MIN, WATCH_TIME_MAX))
 			else
-				task.wait(math.random(2, 6))
+				-- Just pause and idle for a moment
+				task.wait(math.random(3, 7))
 			end
 		end
 	end)
@@ -3899,6 +4152,9 @@ function NPCSpawner.spawn(config)
 		return
 	end
 
+	-- Reset NPC registry for conversation pairing
+	allNPCs = {}
+
 	for i = 1, count do
 		task.defer(function()
 			local ok, err = pcall(function()
@@ -3908,21 +4164,23 @@ function NPCSpawner.spawn(config)
 
 				local humanoid = rig:FindFirstChildWhichIsA("Humanoid")
 				humanoid.DisplayName = DISPLAY_NAMES[math.random(1, #DISPLAY_NAMES)]
-				humanoid.WalkSpeed = 7 + math.random() * 5
+				humanoid.WalkSpeed = 6 + math.random() * 2 -- casual stroll (6-8)
 
 				-- Disable states that cause ragdoll/falling issues for NPCs
 				humanoid:SetStateEnabled(Enum.HumanoidStateType.Jumping, false)
 				humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
 				humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 
-				-- Model has built-in face; skip face texture override
-
 				local anchor = info.navPoints[math.random(1, #info.navPoints)]
-				local offset = Vector3.new(math.random(-10, 10), 0, math.random(-10, 10))
+				local offset = Vector3.new(math.random(-30, 30), 0, math.random(-30, 30))
 				rig:PivotTo(CFrame.new(anchor + offset + Vector3.new(0, 3, 0)))
 				rig.Parent = container
 
-				wander(rig, info.navPoints)
+				local animState = setupAnimations(rig)
+				if animState then
+					table.insert(allNPCs, { model = rig, anim = animState })
+					wander(rig, info.navPoints, animState)
+				end
 			end)
 			if not ok then
 				failCount += 1

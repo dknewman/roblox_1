@@ -136,7 +136,7 @@ local function startPolling()
 	end)
 end
 
--- Initialize: fetch remote, sync to clients, start polling
+syncToClients()
 fetchRemote()
 syncToClients()
 startPolling()

@@ -15,6 +15,7 @@ local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild(
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
 local FirebaseLogger = require(script.Parent:WaitForChild("FirebaseLogger"))
 local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
+local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
 
 local CharacterCreator = {}
 
@@ -91,10 +92,16 @@ end
 ---------------------------------------------------------------------------
 
 local function loadDTIModel()
-	-- Load from ServerStorage instead of InsertService
-	local model = ServerStorage:FindFirstChild("BaddieFemale")
+	local outfit = Constants.Outfits.Female
+	if not outfit then
+		warn("[CharacterCreator] Constants.Outfits.Female is missing")
+		return
+	end
+
+	local rigName = outfit.DTIRig or "BaddieFemale"
+	local model = RigBootstrapper.ensureServerStorageRig(rigName, outfit.DTIModelId)
 	if not model then
-		warn("[CharacterCreator] BaddieFemale model not found in ServerStorage!")
+		warn("[CharacterCreator] Unable to load female rig into ServerStorage")
 		return
 	end
 
@@ -129,7 +136,6 @@ local function loadDTIModel()
 		end
 	end
 
-	local rigName = Constants.Outfits.Female.DTIRig or "BaddieFemale"
 	dtiRigs[rigName] = {
 		parts = partCache,
 		joints = jointCache,
@@ -462,7 +468,8 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 
 	-- Female: clone BaddieFemale model directly from ServerStorage
 	if outfitDef and outfitDef.UseServerStorage then
-		local template = ServerStorage:FindFirstChild(outfitDef.DTIRig)
+		local rigName = outfitDef.DTIRig or "BaddieFemale"
+		local template = RigBootstrapper.ensureServerStorageRig(rigName, outfitDef.DTIModelId)
 		if template then
 			local character = template:Clone()
 			character.Name = player.Name
