@@ -1,6 +1,6 @@
 # Baddies: Play to Slay!
 
-A neon-lit social hub built in Roblox using Luau and Rojo. The environment is constructed procedurally at runtime. Players choose a gender at first join and spawn with a custom character model — the female body is a custom Blender-sculpted R15 avatar imported via Roblox Avatar Auto-Setup and stored in ServerStorage.
+A neon-lit social hub built in Roblox using Luau and Rojo. The environment is constructed procedurally at runtime. Players choose a gender at first join and spawn with a custom character model — the female body is a custom Blender-sculpted R15 avatar imported via Roblox Avatar Auto-Setup, but its head MeshPart is swapped with the Roblox catalog head (`rbxassetid://113842569610805`) for compatibility with standard accessories.
 
 ## Quick Start
 
@@ -28,8 +28,10 @@ src/
       MapBuilder.luau          -- Procedural geometry (10 build phases)
       LightingController.luau  -- Atmosphere, bloom, color correction
       ScreenGenerator.luau     -- Cyan billboard SurfaceGui content
-      NPCSpawner.luau          -- R15 custom avatar crowd NPCs (cloned from ServerStorage)
-      CharacterCreator.luau    -- Gender-based character spawning (custom Blender avatar)
+      NPCSpawner.luau          -- R15 custom avatar crowd NPCs (cloned from ServerStorage, head swapped to catalog)
+      CharacterCreator.luau    -- Gender-based character spawning (custom Blender body + catalog head, stock hair)
+      RigBootstrapper.luau     -- Loads the BaddieFemale rig into ServerStorage on demand
+      CatalogHead.luau         -- Caches the catalog head mesh and applies it to rigs
       PlayerData.luau           -- Persistent profiles via ProfileService
       ProfileService.luau       -- Third-party DataStore wrapper (madwork)
       FeatureFlags.luau         -- Firebase-backed remote flag system
@@ -46,9 +48,9 @@ The server builds the environment in three phases, then handles player character
 
 2. **LightingController.apply()** — Sets the pink/purple neon atmosphere: ambient lighting, Bloom, ColorCorrection, Atmosphere haze, and auto-attaches PointLights to Neon material parts.
 
-3. **NPCSpawner.spawn()** — Clones 20 R15 custom avatar NPCs from the `BaddieFemale` model in ServerStorage. NPCs wander between navigation points, watch screens, and sit in chairs.
+3. **NPCSpawner.spawn()** — Clones 20 R15 custom avatar NPCs from the `BaddieFemale` model in ServerStorage, replaces each Head with the catalog mesh (`113842569610805`), and equips the same free Avatar Shop hair so the crowd matches the playable avatar.
 
-4. **Character Creation** — `CharacterAutoLoads` is disabled. New players see a gender selection screen (Male/Female). Female characters are cloned directly from the `BaddieFemale` R15 model in ServerStorage (custom Blender avatar imported via Avatar Auto-Setup). Male characters use the standard Roblox "Man" body bundle. Returning players respawn with their saved gender automatically.
+4. **Character Creation** — `CharacterAutoLoads` is disabled. New players see a gender selection screen (Male/Female). Female characters clone the `BaddieFemale` R15 model, immediately replace the head with the catalog mesh, and equip stock Roblox hair plus layered clothing accessories defined in `Constants.Outfits.Female`. Male characters use the standard Roblox "Man" body bundle. Returning players respawn with their saved gender automatically.
 
 ## Visual Style
 

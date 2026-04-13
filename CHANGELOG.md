@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-04-16 (rev 11)
+### Changed
+- **Female head swap**: CharacterCreator now replaces the BaddieFemale head MeshPart with the Roblox catalog head (`rbxassetid://113842569610805`) via a new `CatalogHead` helper so standard faces/hair align correctly.
+- **NPC head swap**: NPCSpawner applies the same catalog head to each cloned Baddie body, keeping the crowd visuals in sync with the playable avatar.
+- **Rig bootstrapper**: Added `RigBootstrapper.ensureServerStorageRig` to automatically ingest the configured `DTIModelId` into ServerStorage when the Baddie rig is missing, avoiding manual Studio setup.
+- **Feature flag replication**: The `FeatureFlags` folder is created and populated with defaults before any remote fetch, preventing client `WaitForChild` hangs if HttpService stalls.
+- **Catalog head tuning**: The imported head now recolors to the female skin tone, applies a configurable `CatalogHeadScale`, and hair accessories use stock sizing (no extra scale/offset overrides).
+- **Avatar Shop hair**: Female outfits now reference a free Roblox hair accessory (`HairAccessory`), loaded directly via `Humanoid:AddAccessory` with fallback logging.
+- **Layered clothing**: Added `LayeredAccessories` support so the female avatar (and NPCs) can wear layered tops/skirts (currently tie front top `9240752338` + ruffle skirt `9240776381`).
+
+## 2026-04-15 (rev 10)
+### Changed
+- **Female avatar source updated**: Load the custom `BaddieFemale` rig directly from ServerStorage (ingested via Studio or `RigBootstrapper`) instead of rebuilding a default R15 with `applyDTIBody`.
+- **NPCSpawner**: Clones the same `BaddieFemale` rig for crowd NPCs instead of generating ad-hoc rigs, keeping animations/attachments consistent.
+- **Constants**: Female outfit config now references `DTIRig = "BaddieFemale"` with `UseServerStorage = true` and documents the fallback asset ID for automatic ingestion.
+
 ## 2026-04-09 (rev 9)
 ### Changed
 - **Custom Blender avatar integration**: Replaced DTI Creator Store model with a custom Blender-sculpted R15 character (`BaddieFemale`) imported via Roblox Avatar Auto-Setup and stored in ServerStorage.

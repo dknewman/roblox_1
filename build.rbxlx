@@ -1720,14 +1720,18 @@ Constants.Outfits = {
 		DTIModelId = 76767800092615, -- Roblox asset ID (fallback if not in ServerStorage)
 		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
 		UseDefaultHead = false,      -- use the model's own head
-		HairAccessory = "62724852",  -- Chestnut Bun
-		HairScale = 1.4,             -- scale up to fit custom head
-		HairOffset = Vector3.new(0, 0.12, -0.2), -- shift down and back
+		HeadAssetId = 113842569610805, -- catalog head mesh to override the custom sculpt
+		CatalogHeadScale = 0.92,    -- uniform scale applied to catalog head MeshPart
+		HairAccessory = "140198630246272",  -- Voxlore Long Hair (catalog asset)
+		LayeredAccessories = {
+			"9240752338", -- tie front top
+			"9240776381", -- ruffle skirt white
+		},
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
 		ProportionScale = 0,         -- wider proportions
-		HeadScale = 0.65,            -- smaller head to match body proportions
+		HeadScale = 0.50,            -- smaller head to match body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)
@@ -1963,6 +1967,212 @@ end)
         </Properties>
         <Item class="ModuleScript" referent="9">
           <Properties>
+            <string name="Name">AccessoryUtil</string>
+            <string name="Source"><![CDATA[local InsertService = game:GetService("InsertService")
+
+local AccessoryUtil = {}
+
+local function findAccessory(container: Instance): Accessory?
+	local accessory = container:FindFirstChildWhichIsA("Accessory")
+	if accessory then
+		return accessory
+	end
+	for _, desc in container:GetDescendants() do
+		if desc:IsA("Accessory") then
+			return desc
+		end
+	end
+	return nil
+end
+
+function AccessoryUtil.loadAccessory(assetId: string): Accessory?
+	local numericId = tonumber(assetId)
+	if not numericId then
+		warn(`[AccessoryUtil] Invalid accessory asset ID: {assetId}`)
+		return nil
+	end
+
+	local ok, asset = pcall(function()
+		return InsertService:LoadAsset(numericId)
+	end)
+	if not ok or not asset then
+		warn(`[AccessoryUtil] Failed to load asset {assetId}: {asset}`)
+		return nil
+	end
+
+	local accessory = findAccessory(asset)
+	if not accessory then
+		warn(`[AccessoryUtil] Asset {assetId} did not contain an Accessory`)
+		asset:Destroy()
+		return nil
+	end
+
+	local clone = accessory:Clone()
+	asset:Destroy()
+	return clone
+end
+
+function AccessoryUtil.addAccessory(character: Model, accessory: Accessory, label: string?)
+	local humanoid = character:FindFirstChildWhichIsA("Humanoid")
+	if not humanoid then
+		accessory:Destroy()
+		warn(`[AccessoryUtil] Humanoid missing when adding accessory {label or accessory.Name}`)
+		return false
+	end
+
+	local ok, err = pcall(function()
+		humanoid:AddAccessory(accessory)
+	end)
+	if not ok then
+		accessory:Destroy()
+		warn(`[AccessoryUtil] Failed to AddAccessory {label or accessory.Name}: {err}`)
+		return false
+	end
+
+	return true
+end
+
+function AccessoryUtil.applyAccessoryAsset(character: Model, assetId: string, label: string?)
+	if type(assetId) ~= "string" or assetId == "" then
+		return false
+	end
+	local accessory = AccessoryUtil.loadAccessory(assetId)
+	if not accessory then
+		return false
+	end
+	return AccessoryUtil.addAccessory(character, accessory, label or assetId)
+end
+
+return AccessoryUtil
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="10">
+          <Properties>
+            <string name="Name">CatalogHead</string>
+            <string name="Source"><![CDATA[local InsertService = game:GetService("InsertService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+
+local CatalogHead = {}
+
+local cachedHead: BasePart?
+local femaleOutfit = Constants.Outfits.Female
+
+local function findHead(instance: Instance): BasePart?
+	if instance:IsA("BasePart") and instance.Name == "Head" then
+		return instance
+	end
+	for _, child in instance:GetChildren() do
+		local found = findHead(child)
+		if found then
+			return found
+		end
+	end
+	return nil
+end
+
+local function loadHeadTemplate(): BasePart?
+	if cachedHead then
+		return cachedHead
+	end
+
+	local assetId = femaleOutfit and femaleOutfit.HeadAssetId
+	if not assetId then
+		warn("[CatalogHead] Constants.Outfits.Female.HeadAssetId missing")
+		return nil
+	end
+
+	local ok, asset = pcall(function()
+		return InsertService:LoadAsset(assetId)
+	end)
+	if not ok or not asset then
+		warn(`[CatalogHead] Failed to load asset {assetId}: {asset}`)
+		return nil
+	end
+
+	local container = asset:FindFirstChildWhichIsA("Model") or asset
+	local head = container and findHead(container)
+	if head then
+		cachedHead = head:Clone()
+	else
+		warn(`[CatalogHead] Could not find Head in asset {assetId}`)
+	end
+
+	asset:Destroy()
+	return cachedHead
+end
+
+function CatalogHead.apply(character: Model): boolean
+	local template = loadHeadTemplate()
+	if not template then
+		return false
+	end
+
+	local oldHead = character:FindFirstChild("Head")
+	if not oldHead or not oldHead:IsA("BasePart") then
+		return false
+	end
+
+	local newHead = template:Clone()
+	local scale = femaleOutfit and femaleOutfit.CatalogHeadScale or 1
+	if scale and math.abs(scale - 1) > 1e-3 then
+		newHead.Size = Vector3.new(
+			newHead.Size.X * scale,
+			newHead.Size.Y * scale,
+			newHead.Size.Z * scale
+		)
+	end
+	newHead.Name = "Head"
+	newHead.CFrame = oldHead.CFrame
+	newHead.Anchored = false
+	newHead.CanCollide = oldHead.CanCollide
+	newHead.Massless = oldHead.Massless
+	newHead.Transparency = oldHead.Transparency
+	local skinColor = femaleOutfit and femaleOutfit.SkinColor
+	if skinColor then
+		newHead.Color = skinColor
+		newHead.Material = Enum.Material.SmoothPlastic
+	else
+		newHead.Color = oldHead.Color
+		newHead.Material = oldHead.Material
+	end
+
+	-- Move attachments/Motor6Ds from the old head so cameras/faces still align
+	for _, child in oldHead:GetChildren() do
+		if child:IsA("Motor6D") or child:IsA("Attachment") then
+			child.Parent = newHead
+			if child:IsA("Motor6D") then
+				if child.Part0 == oldHead then child.Part0 = newHead end
+				if child.Part1 == oldHead then child.Part1 = newHead end
+			end
+		elseif child:IsA("Decal") or child:IsA("SurfaceAppearance") then
+			child:Destroy()
+		else
+			child:Destroy()
+		end
+	end
+
+	-- Rewire any Motor6Ds elsewhere that reference the old head
+	for _, desc in character:GetDescendants() do
+		if desc:IsA("Motor6D") then
+			if desc.Part0 == oldHead then desc.Part0 = newHead end
+			if desc.Part1 == oldHead then desc.Part1 = newHead end
+		end
+	end
+
+	oldHead:Destroy()
+	newHead.Parent = character
+	return true
+end
+
+return CatalogHead
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="11">
+          <Properties>
             <string name="Name">CharacterCreator</string>
             <string name="Source"><![CDATA[--[[
 	CharacterCreator - Applies outfits based on gender selection.
@@ -1972,15 +2182,17 @@ end)
 ]]
 
 local AssetService = game:GetService("AssetService")
-local InsertService = game:GetService("InsertService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local AccessoryUtil = require(script.Parent:WaitForChild("AccessoryUtil"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
 local FirebaseLogger = require(script.Parent:WaitForChild("FirebaseLogger"))
 local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
+local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
+local CatalogHead = require(script.Parent:WaitForChild("CatalogHead"))
 
 local CharacterCreator = {}
 
@@ -2057,10 +2269,16 @@ end
 ---------------------------------------------------------------------------
 
 local function loadDTIModel()
-	-- Load from ServerStorage instead of InsertService
-	local model = ServerStorage:FindFirstChild("BaddieFemale")
+	local outfit = Constants.Outfits.Female
+	if not outfit then
+		warn("[CharacterCreator] Constants.Outfits.Female is missing")
+		return
+	end
+
+	local rigName = outfit.DTIRig or "BaddieFemale"
+	local model = RigBootstrapper.ensureServerStorageRig(rigName, outfit.DTIModelId)
 	if not model then
-		warn("[CharacterCreator] BaddieFemale model not found in ServerStorage!")
+		warn("[CharacterCreator] Unable to load female rig into ServerStorage")
 		return
 	end
 
@@ -2095,7 +2313,6 @@ local function loadDTIModel()
 		end
 	end
 
-	local rigName = Constants.Outfits.Female.DTIRig or "BaddieFemale"
 	dtiRigs[rigName] = {
 		parts = partCache,
 		joints = jointCache,
@@ -2428,10 +2645,13 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 
 	-- Female: clone BaddieFemale model directly from ServerStorage
 	if outfitDef and outfitDef.UseServerStorage then
-		local template = ServerStorage:FindFirstChild(outfitDef.DTIRig)
+		local rigName = outfitDef.DTIRig or "BaddieFemale"
+		local template = RigBootstrapper.ensureServerStorageRig(rigName, outfitDef.DTIModelId)
 		if template then
 			local character = template:Clone()
 			character.Name = player.Name
+
+			CatalogHead.apply(character)
 
 			-- Set up Humanoid for player control
 			local humanoid = character:FindFirstChildWhichIsA("Humanoid")
@@ -2458,43 +2678,18 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			-- Apply hair accessory from outfit config
 			if outfitDef.HairAccessory and outfitDef.HairAccessory ~= "" then
 				task.spawn(function()
-					local ok, result = pcall(function()
-						return InsertService:LoadAsset(tonumber(outfitDef.HairAccessory))
-					end)
-					if ok and result then
-						local accessory = result:FindFirstChildWhichIsA("Accessory")
-						if accessory then
-							local hum = character:FindFirstChildWhichIsA("Humanoid")
-							if hum then
-								hum:AddAccessory(accessory)
-								-- Scale and offset hair to fit custom head
-								local handle = accessory:FindFirstChild("Handle")
-								if handle then
-									local scale = outfitDef.HairScale or 1
-									if scale ~= 1 then
-										local mesh = handle:FindFirstChildWhichIsA("SpecialMesh")
-										if mesh then
-											mesh.Scale = mesh.Scale * scale
-										elseif handle:IsA("MeshPart") then
-											handle.Size = handle.Size * scale
-										end
-									end
-									local offset = outfitDef.HairOffset
-									if offset then
-										local weld = handle:FindFirstChildWhichIsA("Weld")
-										if weld then
-											weld.C1 = weld.C1 * CFrame.new(-offset)
-										end
-									end
-								end
-							end
-						end
-						result:Destroy()
-					else
-						warn(`[CharacterCreator] Failed to load hair accessory: {result}`)
-					end
+					AccessoryUtil.applyAccessoryAsset(character, outfitDef.HairAccessory, "hair accessory")
 				end)
 			end
+
+			if outfitDef.LayeredAccessories then
+				for _, assetId in outfitDef.LayeredAccessories do
+					if type(assetId) == "string" and assetId ~= "" then
+						task.spawn(function()
+							AccessoryUtil.applyAccessoryAsset(character, assetId, "layered accessory")
+						end)
+					end
+				end
 
 			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return
@@ -2604,7 +2799,7 @@ return CharacterCreator
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="10">
+        <Item class="ModuleScript" referent="12">
           <Properties>
             <string name="Name">FeatureFlags</string>
             <string name="Source"><![CDATA[--[[
@@ -2745,7 +2940,7 @@ local function startPolling()
 	end)
 end
 
--- Initialize: fetch remote, sync to clients, start polling
+syncToClients()
 fetchRemote()
 syncToClients()
 startPolling()
@@ -2754,7 +2949,7 @@ return FeatureFlags
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="11">
+        <Item class="ModuleScript" referent="13">
           <Properties>
             <string name="Name">FirebaseConfig</string>
             <string name="Source"><![CDATA[--[[
@@ -2800,7 +2995,7 @@ return {
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="12">
+        <Item class="ModuleScript" referent="14">
           <Properties>
             <string name="Name">FirebaseLogger</string>
             <string name="Source"><![CDATA[--[[
@@ -2885,7 +3080,7 @@ return FirebaseLogger
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="13">
+        <Item class="ModuleScript" referent="15">
           <Properties>
             <string name="Name">LightingController</string>
             <string name="Source"><![CDATA[--[[
@@ -2989,7 +3184,7 @@ return LightingController
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="14">
+        <Item class="ModuleScript" referent="16">
           <Properties>
             <string name="Name">MapBuilder</string>
             <string name="Source"><![CDATA[--[[
@@ -3745,7 +3940,7 @@ return MapBuilder
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="15">
+        <Item class="ModuleScript" referent="17">
           <Properties>
             <string name="Name">NPCSpawner</string>
             <string name="Source"><![CDATA[--[[
@@ -3760,6 +3955,9 @@ local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local FirebaseLogger = require(script.Parent.FirebaseLogger)
+local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
+local CatalogHead = require(script.Parent:WaitForChild("CatalogHead"))
+local AccessoryUtil = require(script.Parent:WaitForChild("AccessoryUtil"))
 
 local NPCSpawner = {}
 
@@ -3794,10 +3992,11 @@ local DISPLAY_NAMES = {
 	"Patron", "Regular", "VIP", "Streamer", "DJ",
 }
 
--- Get the R15 character template from ServerStorage
-local rigTemplate = ServerStorage:WaitForChild("BaddieFemale", 10)
+local femaleOutfit = Constants.Outfits.Female
+local rigName = femaleOutfit and femaleOutfit.DTIRig or "BaddieFemale"
+local rigTemplate = RigBootstrapper.ensureServerStorageRig(rigName, femaleOutfit and femaleOutfit.DTIModelId)
 if not rigTemplate then
-	warn("[NPCSpawner] BaddieFemale model not found in ServerStorage! Place your Avatar Setup model there.")
+	warn("[NPCSpawner] Unable to load BaddieFemale rig — NPCs disabled")
 end
 
 -- Apply NPC collision group to all BaseParts in a cloned rig
@@ -4159,6 +4358,14 @@ function NPCSpawner.spawn(config)
 		task.defer(function()
 			local ok, err = pcall(function()
 				local rig = rigTemplate:Clone()
+				CatalogHead.apply(rig)
+				if femaleOutfit and femaleOutfit.LayeredAccessories then
+					for _, assetId in femaleOutfit.LayeredAccessories do
+						if type(assetId) == "string" and assetId ~= "" then
+							AccessoryUtil.applyAccessoryAsset(rig, assetId, "NPC layered accessory")
+						end
+					end
+				end
 				rig.Name = `PlazaNPC_{i}`
 				applyCollisionGroup(rig)
 
@@ -4204,7 +4411,7 @@ return NPCSpawner
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="16">
+        <Item class="ModuleScript" referent="18">
           <Properties>
             <string name="Name">PlayerData</string>
             <string name="Source"><![CDATA[--[[
@@ -4331,7 +4538,7 @@ return PlayerData
 ]]></string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="17">
+        <Item class="ModuleScript" referent="19">
           <Properties>
             <string name="Name">ProfileService</string>
             <string name="Source">-- local Madwork = _G.Madwork
@@ -6750,7 +6957,61 @@ end)
 return ProfileService</string>
           </Properties>
         </Item>
-        <Item class="ModuleScript" referent="18">
+        <Item class="ModuleScript" referent="20">
+          <Properties>
+            <string name="Name">RigBootstrapper</string>
+            <string name="Source"><![CDATA[local InsertService = game:GetService("InsertService")
+local ServerStorage = game:GetService("ServerStorage")
+
+local RigBootstrapper = {}
+
+local function loadAsset(assetId: number): Model?
+	local ok, asset = pcall(function()
+		return InsertService:LoadAsset(assetId)
+	end)
+	if not ok or not asset then
+		warn(`[RigBootstrapper] Failed to load asset {assetId}: {asset}`)
+		return nil
+	end
+
+	local model = asset:FindFirstChildWhichIsA("Model")
+	if not model then
+		warn(`[RigBootstrapper] Asset {assetId} does not contain a Model instance`)
+		asset:Destroy()
+		return nil
+	end
+
+	model.Parent = nil
+	asset:Destroy()
+	return model
+end
+
+function RigBootstrapper.ensureServerStorageRig(rigName: string, assetId: number?): Model?
+	local existing = ServerStorage:FindFirstChild(rigName)
+	if existing and existing:IsA("Model") then
+		return existing
+	end
+
+	if not assetId then
+		warn(`[RigBootstrapper] Missing asset ID for rig {rigName}`)
+		return nil
+	end
+
+	local rig = loadAsset(assetId)
+	if not rig then
+		return nil
+	end
+
+	rig.Name = rigName
+	rig.Parent = ServerStorage
+	return rig
+end
+
+return RigBootstrapper
+]]></string>
+          </Properties>
+        </Item>
+        <Item class="ModuleScript" referent="21">
           <Properties>
             <string name="Name">ScreenGenerator</string>
             <string name="Source"><![CDATA[--[[
@@ -6968,21 +7229,21 @@ return ScreenGenerator
       </Item>
     </Item>
   </Item>
-  <Item class="SoundService" referent="19">
+  <Item class="SoundService" referent="22">
     <Properties>
       <string name="Name">SoundService</string>
       <bool name="RespectFilteringEnabled">true</bool>
     </Properties>
   </Item>
-  <Item class="StarterPlayer" referent="20">
+  <Item class="StarterPlayer" referent="23">
     <Properties>
       <string name="Name">StarterPlayer</string>
     </Properties>
-    <Item class="StarterPlayerScripts" referent="21">
+    <Item class="StarterPlayerScripts" referent="24">
       <Properties>
         <string name="Name">StarterPlayerScripts</string>
       </Properties>
-      <Item class="LocalScript" referent="22">
+      <Item class="LocalScript" referent="25">
         <Properties>
           <string name="Name">Client</string>
           <string name="Source"><![CDATA[--[[
@@ -7969,7 +8230,7 @@ print("Social Spotlight Plaza client ready!")
       </Item>
     </Item>
   </Item>
-  <Item class="Workspace" referent="23">
+  <Item class="Workspace" referent="26">
     <Properties>
       <string name="Name">Workspace</string>
       <bool name="FilteringEnabled">true</bool>

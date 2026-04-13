@@ -52,11 +52,11 @@ Configures `Lighting` service properties and post-processing effects:
 
 ### NPCSpawner (`src/server/Modules/NPCSpawner.luau`)
 
-Spawns crowd NPCs by cloning the custom `BaddieFemale` R15 model from ServerStorage:
+Spawns crowd NPCs by cloning the custom `BaddieFemale` R15 model from ServerStorage, then swapping the head MeshPart with a Roblox catalog head (`113842569610805`):
 
 - **Count**: 20 NPCs (configurable in Constants)
-- **Architecture**: Loads the `BaddieFemale` model from ServerStorage at module load via `WaitForChild`, clones it per NPC for efficiency
-- **Appearance**: Custom Blender-sculpted R15 avatar (imported via Roblox Avatar Auto-Setup). All NPCs share the same base model with unique display names
+- **Architecture**: Loads the `BaddieFemale` model via `RigBootstrapper.ensureServerStorageRig`, clones it per NPC, then calls `CatalogHead.apply(rig)` to replace the head mesh
+- **Appearance**: Custom Blender-sculpted torso/limbs with the catalog head MeshPart and matching stock hair accessory so NPCs mirror the playable avatar
 - **Collision**: Uses PhysicsService collision groups — NPCs pass through each other and players, but collide with environment (floors, walls). Collision group applied to all BaseParts in cloned rig via `applyCollisionGroup()`
 - **Behavior**: Wanders between navigation points, watches nearby screens (4-12s), sits in empty chairs (25% chance, 6-15s). Cleanup via `model.Destroying`
 - **Humanoid states**: Jumping, FallingDown, and Ragdoll disabled on each NPC to prevent physics issues
@@ -68,13 +68,13 @@ Spawns crowd NPCs by cloning the custom `BaddieFemale` R15 model from ServerStor
 
 Manages character appearance based on gender selection. Uses two approaches depending on gender:
 
-- **Female**: Clones the `BaddieFemale` R15 model directly from ServerStorage, sets it as the player's character, and positions at a spawn point. This is a custom Blender-sculpted avatar imported via Roblox Avatar Auto-Setup with full R15 body parts (Head, UpperTorso, LowerTorso, arms, legs, hands, feet), Humanoid, AnimateScript, and HumanoidRootPart.
+- **Female**: Clones the `BaddieFemale` R15 model directly from ServerStorage, immediately swaps the Head with the catalog mesh (`CatalogHead.apply`) sourced from asset `113842569610805`, sets it as the player's character, and positions at a spawn point. Torso/limbs remain the custom Blender-sculpted parts imported via Avatar Auto-Setup.
 - **Male**: Uses the standard Roblox "Man" body bundle (238) via `GetBundleDetailsAsync` + `GetHumanoidDescriptionFromOutfitId` with `LoadCharacterWithHumanoidDescription`.
 
 **Startup**: Caches R15 MeshPart templates and Motor6D joint data from the `BaddieFemale` model in ServerStorage during `init()` via a background `task.spawn`.
 
 **Spawn flow**:
-1. `spawnWithOutfit(player, gender)` — For Female: clones `BaddieFemale` from ServerStorage, sets `player.Character`, positions at a random spawn point. For Male: builds a `HumanoidDescription` and calls `LoadCharacterWithHumanoidDescription`.
+1. `spawnWithOutfit(player, gender)` — For Female: clones `BaddieFemale`, replaces the head MeshPart with the catalog version, equips stock hair and layered clothing accessories defined in `Constants.Outfits.Female`, then sets `player.Character`. For Male: builds a `HumanoidDescription` and calls `LoadCharacterWithHumanoidDescription`.
 2. `buildDescription(gender)` — creates a `HumanoidDescription` with face, skin color, hair, body scales (cached per gender). Used for Male path only.
 3. `saveGender(player, gender)` — persists gender choice to player profile via PlayerData.
 
@@ -83,9 +83,9 @@ Manages character appearance based on gender selection. Uses two approaches depe
 | Method | Signature | Description |
 |--------|-----------|-------------|
 | `buildDescription` | `(gender: string) → HumanoidDescription?` | Build outfit description (cached) |
-| `spawnWithOutfit` | `(player, gender)` | Spawn character with full outfit + DTI body |
+| `spawnWithOutfit` | `(player, gender)` | Spawn character with Baddie body + catalog head (Female) or HumanoidDescription (Male) |
 | `saveGender` | `(player, gender) → boolean` | Persist gender choice to profile |
-| `init` | `(spawnedPlayers)` | Load DTI model, create GenderSelected RemoteEvent |
+| `init` | `(spawnedPlayers)` | Load DTI model, preload catalog head, create GenderSelected RemoteEvent |
 
 ### PlayerData (`src/server/Modules/PlayerData.luau`)
 
@@ -183,7 +183,7 @@ Central configuration:
 - **IntroScreen**: `ImageId` for the intro background image asset
 - **Music**: `SoundId` and `Volume` for looping background music
 - **Outfits**: Gender-based outfit definitions:
-  - `Female`: Custom Blender avatar (`BaddieFemale` R15 model in ServerStorage, imported via Avatar Auto-Setup), `UseServerStorage=true`, hair accessory, face (86487766), skin color (warm caramel), BodyTypeScale=1, ProportionScale=0, HeadScale=0.65
+  - `Female`: Custom Blender avatar torso/limbs (`BaddieFemale` in ServerStorage) with a catalog head override (`HeadAssetId = 113842569610805`, `CatalogHeadScale = 0.92`), stock Avatar Shop hair (`HairAccessory`), face (86487766), skin color (warm caramel), BodyTypeScale=1, ProportionScale=0, HeadScale=0.65
   - `Male`: Man body bundle (238), classic shirt/pants IDs
 - **FeatureFlags**: Default values for `NPCsEnabled`, `MusicEnabled`, `IntroScreenEnabled`, `NewPlayer`, `Maintenance` — overridable via Firebase
 - **Firebase**: `DatabaseUrl` (string) and `Enabled` (boolean) for logging and feature flag configuration

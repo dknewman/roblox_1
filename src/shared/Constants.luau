@@ -87,14 +87,18 @@ Constants.Outfits = {
 		DTIModelId = 76767800092615, -- Roblox asset ID (fallback if not in ServerStorage)
 		UseServerStorage = true,     -- load from ServerStorage instead of InsertService
 		UseDefaultHead = false,      -- use the model's own head
-		HairAccessory = "62724852",  -- Chestnut Bun
-		HairScale = 1.4,             -- scale up to fit custom head
-		HairOffset = Vector3.new(0, 0.12, -0.2), -- shift down and back
+		HeadAssetId = 113842569610805, -- catalog head mesh to override the custom sculpt
+		CatalogHeadScale = 0.92,    -- uniform scale applied to catalog head MeshPart
+		HairAccessory = "140198630246272",  -- Voxlore Long Hair (catalog asset)
+		LayeredAccessories = {
+			"139099128619770", -- tie front top
+			"103286965048329", -- ruffle skirt white
+		},
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
 		BodyTypeScale = 1,           -- fully proportioned R15 body
 		ProportionScale = 0,         -- wider proportions
-		HeadScale = 0.65,            -- smaller head to match body proportions
+		HeadScale = 0.50,            -- smaller head to match body proportions
 	},
 	Male = {
 		BundleId = 238,              -- "Man" body bundle (free, official)

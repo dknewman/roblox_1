@@ -6,16 +6,17 @@
 ]]
 
 local AssetService = game:GetService("AssetService")
-local InsertService = game:GetService("InsertService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ServerStorage = game:GetService("ServerStorage")
 
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
+local AccessoryUtil = require(script.Parent:WaitForChild("AccessoryUtil"))
 local PlayerData = require(script.Parent:WaitForChild("PlayerData"))
 local FirebaseLogger = require(script.Parent:WaitForChild("FirebaseLogger"))
 local FeatureFlags = require(script.Parent:WaitForChild("FeatureFlags"))
 local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
+local CatalogHead = require(script.Parent:WaitForChild("CatalogHead"))
 
 local CharacterCreator = {}
 
@@ -474,6 +475,8 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			local character = template:Clone()
 			character.Name = player.Name
 
+			CatalogHead.apply(character)
+
 			-- Set up Humanoid for player control
 			local humanoid = character:FindFirstChildWhichIsA("Humanoid")
 			if humanoid then
@@ -499,45 +502,21 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 			-- Apply hair accessory from outfit config
 			if outfitDef.HairAccessory and outfitDef.HairAccessory ~= "" then
 				task.spawn(function()
-					local ok, result = pcall(function()
-						return InsertService:LoadAsset(tonumber(outfitDef.HairAccessory))
-					end)
-					if ok and result then
-						local accessory = result:FindFirstChildWhichIsA("Accessory")
-						if accessory then
-							local hum = character:FindFirstChildWhichIsA("Humanoid")
-							if hum then
-								hum:AddAccessory(accessory)
-								-- Scale and offset hair to fit custom head
-								local handle = accessory:FindFirstChild("Handle")
-								if handle then
-									local scale = outfitDef.HairScale or 1
-									if scale ~= 1 then
-										local mesh = handle:FindFirstChildWhichIsA("SpecialMesh")
-										if mesh then
-											mesh.Scale = mesh.Scale * scale
-										elseif handle:IsA("MeshPart") then
-											handle.Size = handle.Size * scale
-										end
-									end
-									local offset = outfitDef.HairOffset
-									if offset then
-										local weld = handle:FindFirstChildWhichIsA("Weld")
-										if weld then
-											weld.C1 = weld.C1 * CFrame.new(-offset)
-										end
-									end
-								end
-							end
-						end
-						result:Destroy()
-					else
-						warn(`[CharacterCreator] Failed to load hair accessory: {result}`)
-					end
+					AccessoryUtil.applyAccessoryAsset(character, outfitDef.HairAccessory, "hair accessory")
 				end)
 			end
 
-			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
+				if outfitDef.LayeredAccessories then
+					for _, assetId in outfitDef.LayeredAccessories do
+						if type(assetId) == "string" and assetId ~= "" then
+							task.spawn(function()
+								AccessoryUtil.applyAccessoryAsset(character, assetId, "layered accessory")
+							end)
+						end
+					end
+				end
+
+				print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return
 		else
 			warn("[CharacterCreator] BaddieFemale not found in ServerStorage, falling back to default")

@@ -11,6 +11,8 @@ local ServerStorage = game:GetService("ServerStorage")
 local Constants = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Constants"))
 local FirebaseLogger = require(script.Parent.FirebaseLogger)
 local RigBootstrapper = require(script.Parent:WaitForChild("RigBootstrapper"))
+local CatalogHead = require(script.Parent:WaitForChild("CatalogHead"))
+local AccessoryUtil = require(script.Parent:WaitForChild("AccessoryUtil"))
 
 local NPCSpawner = {}
 
@@ -411,6 +413,14 @@ function NPCSpawner.spawn(config)
 		task.defer(function()
 			local ok, err = pcall(function()
 				local rig = rigTemplate:Clone()
+				CatalogHead.apply(rig)
+				if femaleOutfit and femaleOutfit.LayeredAccessories then
+					for _, assetId in femaleOutfit.LayeredAccessories do
+						if type(assetId) == "string" and assetId ~= "" then
+							AccessoryUtil.applyAccessoryAsset(rig, assetId, "NPC layered accessory")
+						end
+					end
+				end
 				rig.Name = `PlazaNPC_{i}`
 				applyCollisionGroup(rig)
 
