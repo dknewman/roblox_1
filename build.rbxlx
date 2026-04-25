@@ -1724,8 +1724,8 @@ Constants.Outfits = {
 		CatalogHeadScale = 0.92,    -- uniform scale applied to catalog head MeshPart
 		HairAccessory = "140198630246272",  -- Voxlore Long Hair (catalog asset)
 		LayeredAccessories = {
-			"9240752338", -- tie front top
-			"9240776381", -- ruffle skirt white
+			"139099128619770", -- tie front top
+			"87502719821746", -- ruffle skirt white
 		},
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
@@ -2682,16 +2682,17 @@ function CharacterCreator.spawnWithOutfit(player: Player, gender: string)
 				end)
 			end
 
-			if outfitDef.LayeredAccessories then
-				for _, assetId in outfitDef.LayeredAccessories do
-					if type(assetId) == "string" and assetId ~= "" then
-						task.spawn(function()
-							AccessoryUtil.applyAccessoryAsset(character, assetId, "layered accessory")
-						end)
+				if outfitDef.LayeredAccessories then
+					for _, assetId in outfitDef.LayeredAccessories do
+						if type(assetId) == "string" and assetId ~= "" then
+							task.spawn(function()
+								AccessoryUtil.applyAccessoryAsset(character, assetId, "layered accessory")
+							end)
+						end
 					end
 				end
 
-			print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
+				print(`[CharacterCreator] Spawned BaddieFemale for {player.Name}`)
 			return
 		else
 			warn("[CharacterCreator] BaddieFemale not found in ServerStorage, falling back to default")

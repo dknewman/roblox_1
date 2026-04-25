@@ -13,39 +13,33 @@ This repo uses a hybrid approach: the female avatar body comes from our custom *
 
 ## 2. Finding Assets
 
-- **Hair & Layered Clothing:** Use the [Avatar Shop](https://www.roblox.com/catalog) and filter by **Accessories → Hair** or **Clothing → Layered**. Set price to `0` for free items or buy the ones you need.
+- **Hair & Layered Clothing:** Use the [Avatar Shop](https://www.roblox.com/catalog) and filter by **Accessories → Hair** (or **Clothing → Layered**). Set price -> `0` to surface free items.
 - **Asset IDs:** Copy the numeric ID from the URL (e.g., `https://www.roblox.com/catalog/9240776381/...`).
-- **Permissions:** The asset must allow copying; otherwise InsertService will reject it.
+- **Permissions:** Asset must allow copying; otherwise InsertService cannot deliver it.
 
-## 3. Updating the Game
+## 3. Adding or Changing Pieces
 
 1. Edit `src/shared/Constants.luau`:
    - Set `HairAccessory` to the hair asset ID.
-   - Update `LayeredAccessories` with any layered clothing IDs (e.g., `tie front top (9240752338)`, `ruffle skirt (9240776381)`).
-2. The server automatically equips those accessories for:
-   - Female players inside `CharacterCreator.spawnWithOutfit`.
-   - Female NPCs when `NPCSpawner` clones each rig.
-3. No extra code changes are needed as long as you just add IDs.
+   - Add layered accessories (tops, skirts, shoes) to `LayeredAccessories`.
+2. NPCs and player females will automatically equip whatever IDs you specify (handled in `CharacterCreator` and `NPCSpawner`).
 
-## 4. Creating Custom Clothing
+## 4. Creating Custom Accessories (Meshy boots example)
 
-If you want a look that doesn’t exist in the Avatar Shop:
-1. **Model in Blender** against the Baddie rig.
-2. Export as FBX, then in Studio use **Avatar → Setup → Import 3D** to convert it into an `Accessory` with attachments.
-3. Publish the accessory (allow copying) or place it in `ServerStorage/HairAccessories` so the server can clone it directly.
-4. Add the new asset ID to `LayeredAccessories`.
+1. **Import:** Insert the MeshPart into Workspace.
+2. **Convert to Accessory:** Avatar tab → `Accessory`. Studio creates an accessory with a `Handle`.
+3. **Add Attachments:** On the Handle, add two attachments named `LeftFootAttachment` and `RightFootAttachment`. Position them at the ankle origin for each boot while previewing with a dummy Baddie rig.
+4. **Scale/Align:** Use Move/Scale tools so the boots match the rig’s proportions. If they appear huge, scale the Handle (maintaining file scale in Blender before export helps).
+5. **Publish/Store:** Save to Roblox (ensure “Allow copying”) or place the accessory in `ServerStorage/LayeredAccessories`.
+6. **Wire into the game:** Add the asset ID to `Constants.Outfits.Female.LayeredAccessories`.
 
-## 5. Troubleshooting
+## 5. Troubleshooting Boots
 
-- **"Asset … did not contain an Accessory":** The ID is probably a MeshPart/Model. Convert it to an accessory in Studio or choose another asset.
-- **"SurfaceAppearance can only be parented to MeshParts":** Indicates we tried to reuse decals/SurfaceAppearance from the original head. This was fixed by `CatalogHead.apply`; ensure you’re on the latest code.
-- **Accessory not visible:** Make sure the asset is a layered accessory compatible with R15. Classic `Shirt`/`Pants` won’t render on our custom mesh.
-
-Keeping this doc updated: whenever you add a new outfit component, list it below so designers know what the current look uses.
+- Boots appearing in front of the character usually mean the attachments are at the world origin. After adding `LeftFootAttachment` / `RightFootAttachment`, use the Move tool to snap each to the expected foot location on a preview rig.
+- If the boots follow you but float, adjust the attachment’s CFrame or use the Rig Builder dummy to align them precisely.
 
 ### Current Female Outfit
-- Hair: 140198630246272 (Voxlore Long Hair)
-- Layered top: 9240752338 (Tie Front Top)
-- Layered skirt: 9240776381 (Ruffle Skirt – White)
-
-Feel free to extend the list with shoes, jackets, etc.
+- Hair: `140198630246272` (Voxlore Long Hair)
+- Top: `9240752338` (Tie Front Top)
+- Skirt: `9240776381` (Ruffle Skirt White)
+- Shoes: *Add your boot asset ID once published*

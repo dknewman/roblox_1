@@ -92,7 +92,7 @@ Constants.Outfits = {
 		HairAccessory = "140198630246272",  -- Voxlore Long Hair (catalog asset)
 		LayeredAccessories = {
 			"139099128619770", -- tie front top
-			"103286965048329", -- ruffle skirt white
+			"87502719821746", -- ruffle skirt white
 		},
 		Face = 86487766,             -- Woman Face (feminine, eyelashes)
 		SkinColor = Color3.fromRGB(204, 142, 105), -- warm caramel / nougat
